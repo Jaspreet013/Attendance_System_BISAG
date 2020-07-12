@@ -27,6 +27,7 @@
                 android:layout_height="match_parent"
                 android:hint="Enter First Name"
                 android:paddingLeft="15sp"
+                android:paddingRight="15sp"
                 android:id="@+id/register_fname"
                 android:inputType="textCapWords"
                 android:maxLength="15"
@@ -51,6 +52,7 @@
                 android:layout_height="match_parent"
                 android:hint="Enter Last Name"
                 android:paddingLeft="15sp"
+                android:paddingRight="15sp"
                 android:id="@+id/register_lname"
                 android:inputType="textCapWords"
                 android:maxLength="15"/>
@@ -74,6 +76,7 @@
                 android:layout_height="match_parent"
                 android:hint="Enter Email"
                 android:paddingLeft="15sp"
+                android:paddingRight="15sp"
                 android:id="@+id/register_email"
                 android:inputType="textEmailAddress"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -96,6 +99,7 @@
                 android:layout_height="match_parent"
                 android:hint="Password"
                 android:paddingLeft="15sp"
+                android:paddingRight="15sp"
                 android:id="@+id/register_password"
                 android:maxLength="12"
                 android:inputType="textPassword"/>
@@ -119,6 +123,7 @@
                 android:layout_height="match_parent"
                 android:hint="Confirm Password"
                 android:paddingLeft="15sp"
+                android:paddingRight="15sp"
                 android:id="@+id/register_cnfpassword"
                 android:maxLength="12"
                 android:inputType="textPassword"/>
