@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "750942877953",
+    "firebase_url": "https://attendance-system-bisag.firebaseio.com",
+    "project_id": "attendance-system-bisag",
+    "storage_bucket": "attendance-system-bisag.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750942877953:android:dc39d07ce491859c634300",
+        "android_client_info": {
+          "package_name": "com.example.attendancesystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750942877953-mibdnom027ja84f0uputnamadjqlecko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.attendancesystem",
+            "certificate_hash": "d3500e64be9f02f5f8685f68125f13067f32eb52"
+          }
+        },
+        {
+          "client_id": "750942877953-hqk7vet8g4hahbghc67l32qdl6lqhit9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbsycaF4OUY1RFil-5vyIrdSzQDIYRhFA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750942877953-hqk7vet8g4hahbghc67l32qdl6lqhit9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

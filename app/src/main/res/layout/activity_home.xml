@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/layout_welcome">
+
+            <TextView
+                android:id="@+id/welcome_message"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome,"
+                android:textSize="45sp"/>
+
+            <TextView
+                android:id="@+id/message_person_name"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/welcome_message"
+                android:textSize="30sp"/>
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/take_attendance"
+            android:layout_below="@+id/layout_welcome"
+            android:textColor="#FFFFFF"
+            android:text="Take Attendance"
+            android:textSize="20sp"
+            android:background="@drawable/rounded_button"/>
+
+        <Button
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/modify_subjects"
+            android:textColor="#FFFFFF"
+            android:text="Modify Events"
+            android:textSize="20sp"
+            android:layout_below="@+id/take_attendance"
+            android:background="@drawable/rounded_button"/>
+
+        <Button
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/check_attendance"
+            android:textColor="#FFFFFF"
+            android:text="Check Attendance"
+            android:textSize="20sp"
+            android:layout_below="@+id/modify_subjects"
+            android:background="@drawable/rounded_button"/>
+
+        <Button
+            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/logout"
+            android:textColor="#FFFFFF"
+            android:text="Logout"
+            android:textSize="20sp"
+            android:layout_below="@+id/check_attendance"
+            android:background="@drawable/rounded_button"/>
+
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>

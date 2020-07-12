@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistrationActivity">
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="45dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border2"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter First Name"
+                android:paddingLeft="15sp"
+                android:id="@+id/register_fname"
+                android:inputType="textCapWords"
+                android:maxLength="15"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="15dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border3"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp"
+            android:layout_below="@+id/border2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter Last Name"
+                android:paddingLeft="15sp"
+                android:id="@+id/register_lname"
+                android:inputType="textCapWords"
+                android:maxLength="15"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="15dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border4"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp"
+            android:layout_below="@+id/border3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter Email"
+                android:paddingLeft="15sp"
+                android:id="@+id/register_email"
+                android:inputType="textEmailAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_below="@+id/border4"
+            android:layout_marginTop="15dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border5"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Password"
+                android:paddingLeft="15sp"
+                android:id="@+id/register_password"
+                android:maxLength="12"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_below="@+id/border5"
+            android:layout_marginTop="15dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border6"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Confirm Password"
+                android:paddingLeft="15sp"
+                android:id="@+id/register_cnfpassword"
+                android:maxLength="12"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:shadowColor="#FFFFFF"
+            android:layout_marginTop="65dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/registration_submit"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:text="Submit"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/border6"
+            android:background="@drawable/rounded_button"/>
+
+        <Button
+            android:shadowColor="#FFFFFF"
+            android:layout_marginTop="15dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/registration_clear"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:text="Clear"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/registration_submit"
+            android:background="@drawable/rounded_button"/>
+
+    </RelativeLayout>
+
+</androidx.core.widget.NestedScrollView>
