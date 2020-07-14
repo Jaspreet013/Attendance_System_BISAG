@@ -29,9 +29,6 @@
             android:name=".HomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyAdapter"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".RegistrationActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddEventActivity">
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="45dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:id="@+id/border7"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter Event Name"
+                android:paddingLeft="15sp"
+                android:paddingRight="15sp"
+                android:id="@+id/event_name"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="25dp"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/border7"
+            android:id="@+id/border8"
+            android:layout_centerHorizontal="true"
+            app:boxCornerRadiusBottomStart="5dp"
+            app:boxCornerRadiusBottomEnd="5dp"
+            app:boxCornerRadiusTopStart="5dp"
+            app:boxCornerRadiusTopEnd="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Enter Organisation"
+                android:paddingLeft="15sp"
+                android:paddingRight="15sp"
+                android:id="@+id/event_organisation"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:shadowColor="#FFFFFF"
+            android:layout_marginTop="25dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/event_submit"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:text="Submit"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/border8"
+            android:background="@drawable/rounded_button"/>
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="200dp"
+            android:minHeight="50dp"
+            android:minWidth="200dp"
+            android:max="100"
+            android:indeterminate="false"
+            android:progress="0" />
+
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
