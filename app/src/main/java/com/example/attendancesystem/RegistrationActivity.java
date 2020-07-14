@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Button submit,clear;
         submit=findViewById(R.id.registration_submit);
         clear=findViewById(R.id.registration_clear);
@@ -55,6 +57,13 @@ public class RegistrationActivity extends AppCompatActivity {
                 || TextUtils.isEmpty(cnfpassword.getText().toString())){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please fill up all the values");
+                    builder.setPositiveButton("Ok",null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else if(!(fname.getText().toString().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().matches("^[a-zA-Z]*$"))){
+                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
+                    builder.setTitle("Please provide a proper name");
                     builder.setPositiveButton("Ok",null);
                     builder.setCancelable(false);
                     builder.show();
@@ -112,6 +121,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     finish();
                                     startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
                                 } else {
+                                    firebaseAuth.signOut();
                                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                                     builder.setTitle("Cannot Register");
                                     builder.setPositiveButton("Ok",null);

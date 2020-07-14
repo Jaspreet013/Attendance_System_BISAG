@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         if(get_user.contains("Current User")){
             startActivity(new Intent(MainActivity.this,HomeActivity.class));
@@ -99,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                                         String userID = verify.getUid();
                                         Log.e("UID", userID);
                                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID);
-                                        databaseReference.getClass();
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
