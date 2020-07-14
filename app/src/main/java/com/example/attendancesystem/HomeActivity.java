@@ -32,6 +32,13 @@ public class HomeActivity extends AppCompatActivity {
         String json=get_user.getString("Current User","");
         User current_user=gson.fromJson(json,User.class);
         person_name.setText(current_user.getFname()+" "+current_user.getLname());
+        Button take_attendance=findViewById(R.id.take_attendance);
+        take_attendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this,SelectSubjectActivity.class));
+            }
+        });
         Button logout=findViewById(R.id.logout),modify_events=findViewById(R.id.modify_subjects);
         modify_events.setOnClickListener(new View.OnClickListener() {
             @Override

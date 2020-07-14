@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddPerson"></activity>
+        <activity android:name=".AttendanceActivity"></activity>
+        <activity android:name=".SelectSubjectActivity" />
+        <activity android:name=".AddPerson" />
         <activity
             android:name=".selectedEventModificationActivity"
             android:screenOrientation="portrait" />
