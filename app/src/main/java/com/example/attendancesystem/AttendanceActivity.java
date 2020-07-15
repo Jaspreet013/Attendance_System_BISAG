@@ -82,6 +82,7 @@ public class AttendanceActivity extends AppCompatActivity {
                             for(int i=0;i<keys.size();i++){
                                 databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
                             }
+                            finish();
                             /*databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
