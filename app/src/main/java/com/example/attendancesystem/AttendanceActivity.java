@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -127,6 +128,12 @@ public class AttendanceActivity extends AppCompatActivity {
             builder.show();
         }
         try {
+            ProgressDialog waiting;
+            waiting = new ProgressDialog(AttendanceActivity.this);
+            waiting.setMessage("Please Wait");
+            waiting.setCancelable(false);
+            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = database.getReference("Persons");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,7 +172,9 @@ public class AttendanceActivity extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
+
             });
+            waiting.dismiss();
         } catch (Exception e) {
 
         }

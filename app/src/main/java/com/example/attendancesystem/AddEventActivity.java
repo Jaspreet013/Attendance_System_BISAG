@@ -30,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class AddEventActivity extends AppCompatActivity {
-    boolean set=true;
     EditText event_name;
     EditText event_organisation;
     Button button;
@@ -79,7 +78,6 @@ public class AddEventActivity extends AppCompatActivity {
                 }*/
                 else {
                     try {
-                        final event ev=new event(event_name.getText().toString().toUpperCase(),event_organisation.getText().toString().toUpperCase(),current_user.getEmail());
                         progressDialog=new ProgressDialog(AddEventActivity.this);
                         progressDialog.setMessage("Please Wait");
                         progressDialog.setCancelable(false);
@@ -90,9 +88,12 @@ public class AddEventActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
+                                boolean set=true;
+                                event ev=new event(event_name.getText().toString().toUpperCase(),event_organisation.getText().toString().toUpperCase(),current_user.getEmail());
                                 for(DataSnapshot child:children){
                                     event eve=child.getValue(event.class);
-                                    if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation()) && eve.getCoordinator_email().equals(eve.getCoordinator_email())){
+                                    Log.e(eve.getCoordinator_email(),ev.getCoordinator_email());
+                                    if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation()) && eve.getCoordinator_email().equals(ev.getCoordinator_email())){
                                         set=false;
                                     }
                                     /*if(!dataSnapshot.exists()) {

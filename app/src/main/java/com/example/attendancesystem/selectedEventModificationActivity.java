@@ -120,6 +120,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(selectedEventModificationActivity.this);
                 alertDialog.setTitle("Rename Event");
+                final EditText input = new EditText(selectedEventModificationActivity.this);
                 input.setText(current_event.getName());
                 ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                         ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -152,11 +153,11 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             set=true;
                                             for(DataSnapshot child:children){
                                                 ev=child.getValue(event.class);
-                                                if(input.getText().toString().toUpperCase().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation())){
+                                                if(input.getText().toString().toUpperCase().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
                                                     set=false;
                                                     key="";
                                                 }
-                                                else if(current_event.getName().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation())){
+                                                else if(current_event.getName().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
                                                     key=child.getKey();
                                                 }
                                             }
@@ -281,11 +282,11 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                             for(DataSnapshot child:children){
                                                 ev=child.getValue(event.class);
-                                                if(input.getText().toString().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName())){
+                                                if(input.getText().toString().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
                                                     set=false;
                                                     key="";
                                                 }
-                                                else if(current_event.getOrganisation().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName())){
+                                                else if(current_event.getOrganisation().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
                                                     key=child.getKey();
                                                 }
                                             }
