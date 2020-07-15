@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -72,6 +73,19 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
                                 adapter.notifyDataSetChanged();
+                            }
+                            if(arrayList.size()==0) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
+                                builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
+                                builder.setTitle("No people are in this event");
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                builder.show();
                             }
                         }
                     } catch (Exception e) {

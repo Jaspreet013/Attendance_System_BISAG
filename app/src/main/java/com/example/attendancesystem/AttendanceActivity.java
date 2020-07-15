@@ -143,6 +143,19 @@ public class AttendanceActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
+                            if(arrayList.size()==0) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
+                                builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
+                                builder.setTitle("No people are in this event");
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                builder.show();
+                            }
                         }
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());
@@ -182,28 +195,28 @@ public class AttendanceActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
-            View view=inflater.inflate(R.layout.person_attendance,null);
+            View view = inflater.inflate(R.layout.person_attendance, null);
             /*final Person std=arrayList.get(position);
             std.increment_attendance_total();*/
             //std.increment_attendance_total();
-            TextView tv1=view.findViewById(R.id.disp_name);
-            tv1.setText(arrayList.get(position).getFname()+" "+arrayList.get(position).getLname());
-            TextView tv2=view.findViewById(R.id.disp_id);
+            TextView tv1 = view.findViewById(R.id.disp_name);
+            tv1.setText(arrayList.get(position).getFname() + " " + arrayList.get(position).getLname());
+            TextView tv2 = view.findViewById(R.id.disp_id);
             tv2.setText(arrayList.get(position).getPerson_ID());
-            final CheckBox ispresent=view.findViewById(R.id.ispresent);
+            final CheckBox ispresent = view.findViewById(R.id.ispresent);
             view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(ispresent.isChecked()){
-                        ispresent.setChecked(false);
-                        //arrayList.get(position).decrement_attendance();
+                    @Override
+                    public void onClick(View v) {
+                        if (ispresent.isChecked()) {
+                            ispresent.setChecked(false);
+                            //arrayList.get(position).decrement_attendance();
+                        }
+                        else {
+                            ispresent.setChecked(true);
+                            //arrayList.get(position).increment_attendance();
+                        }
                     }
-                    else{
-                        ispresent.setChecked(true);
-                        //arrayList.get(position).increment_attendance();
-                    }
-                }
-            });
+                });
             return view;
         }
     }
