@@ -54,6 +54,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view);
         adapter=new MyBaseAdapter(ModifyEventActivity.this);
         listView.setAdapter(adapter);
+        listView.setEmptyView(findViewById(R.id.modification_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

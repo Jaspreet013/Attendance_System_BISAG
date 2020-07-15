@@ -54,6 +54,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         listView.setAdapter(adapter);
+        listView.setEmptyView(findViewById(R.id.select_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -70,6 +70,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
+        listView.setEmptyView(findViewById(R.id.empty_message));
         current_event = gson.fromJson(json, event.class);
         Button add_person=findViewById(R.id.add_person_button);
         add_person.setOnClickListener(new View.OnClickListener() {
