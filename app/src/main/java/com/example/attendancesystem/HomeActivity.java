@@ -39,6 +39,13 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeActivity.this,SelectSubjectActivity.class));
             }
         });
+        Button checkAttendance=findViewById(R.id.check_attendance);
+        checkAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this,CheckSelectActivity.class));
+            }
+        });
         Button logout=findViewById(R.id.logout),modify_events=findViewById(R.id.modify_subjects);
         modify_events.setOnClickListener(new View.OnClickListener() {
             @Override

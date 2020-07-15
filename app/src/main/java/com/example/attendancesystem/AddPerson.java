@@ -47,7 +47,7 @@ public class AddPerson extends AppCompatActivity {
         email=findViewById(R.id.register_email);
         id=findViewById(R.id.register_id);
         Button submit=findViewById(R.id.register_submit);
-        Button clear=findViewById(R.id.registration_clear);
+        Button clear=findViewById(R.id.register_clear);
         preferences=getSharedPreferences("Events",MODE_PRIVATE);
         SharedPreferences.Editor editor=preferences.edit();
         Gson gson = new Gson();
@@ -57,6 +57,15 @@ public class AddPerson extends AppCompatActivity {
         get_user=getSharedPreferences("User",MODE_PRIVATE);
         String json1=get_user.getString("Current User","");
         current_user=gson1.fromJson(json1,User.class);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fname.getText().clear();
+                lname.getText().clear();
+                email.getText().clear();
+                id.getText().clear();
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

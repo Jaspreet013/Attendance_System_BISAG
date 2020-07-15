@@ -2,7 +2,7 @@ package com.example.attendancesystem;
 
 public class Person {
         private String person_email,person_ID,fname,lname,event_name,organisation,coordinator_email;
-        private long attendance=0,total_attendance=0;
+        private long attendance=0,attendance_total=0;
         public Person(){}
         public Person(String fname,String lname,String person_email,String person_ID,String event_name,String organisation,String coordinator_email){
             this.fname=fname;
@@ -24,10 +24,10 @@ public class Person {
     public long getAttendance() { return attendance; }
     public void increment_attendance(){ attendance+=1; }
     public void decrement_attendance(){ attendance-=1; }
-    public long getTotalAttendance(){ return total_attendance; }
+    public long getAttendance_total(){ return attendance_total; }
     public String getEvent_name() { return event_name; }
     public void setEvent_name(String event_name) { this.event_name = event_name; }
-    public void increment_total_attendance(){ total_attendance+=1; }
+    public void increment_attendance_total(){ this.attendance_total+=1; }
     public void setOrganisation(String organisation) { this.organisation = organisation; }
     public String getOrganisation() { return organisation; }
     public String getCoordinator_email() { return coordinator_email; }

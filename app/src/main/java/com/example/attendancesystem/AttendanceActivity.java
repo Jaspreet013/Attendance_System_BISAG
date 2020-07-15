@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
+    ArrayList<String> keys=new ArrayList<>();
     ListView listView;
     SharedPreferences get_event;
     event current_event;
@@ -55,16 +57,32 @@ public class AttendanceActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this);
                 alertDialog.setTitle("Submit Attendance?");
                 alertDialog.setNegativeButton("Cancel",null);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
+                            for(int i=0;i<arrayList.size();i++){
+                                View newView=listView.getChildAt(i);
+                                arrayList.get(i).increment_attendance_total();
+                                CheckBox cb=newView.findViewById(R.id.ispresent);
+                                if(cb.isChecked()){
+                                    arrayList.get(i).increment_attendance();
+                                }
+                            }
+                            /*int count=0;
+                            for(Person person:arrayList){
+                                arrayList.set(count,person);
+                                count++;
+                            }*/
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference databaseReference = database.getReference("Persons");
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            for(int i=0;i<keys.size();i++){
+                                databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
+                            }
+                            /*databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     try {
@@ -76,11 +94,11 @@ public class AttendanceActivity extends AppCompatActivity {
                                                 Person person = child.getValue(Person.class);
                                                 if (person.getCoordinator_email().equals(data.getCoordinator_email()) && person.getEvent_name().equals(data.getEvent_name()) && person.getOrganisation().equals(data.getOrganisation()) && person.getPerson_ID().equals(data.getPerson_ID()) && person.getPerson_email().equals(data.getPerson_email())) {
                                                     String key = child.getKey();
-                                                    data.increment_total_attendance();
                                                     databaseReference.child(key).setValue(data);
                                                 }
                                             }
                                         }
+                                        finish();
                                     } catch (Exception e) {
                                         Log.e("Exception : ", e.getMessage());
                                     }
@@ -90,13 +108,13 @@ public class AttendanceActivity extends AppCompatActivity {
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
-                            });
+                            });*/
                         } catch (Exception e) {
 
                         }
-                        finish();
                     }
                 });
+                alertDialog.show();
             }
         });
         if (!isNetworkAvailable()) {
@@ -121,6 +139,7 @@ public class AttendanceActivity extends AppCompatActivity {
                             Person person = child.getValue(Person.class);
                             if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
+                                keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
@@ -156,29 +175,31 @@ public class AttendanceActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
-            View view=inflater.inflate(R.layout.person_attendance, null);
-            final Person std=arrayList.get(position);
+            View view=inflater.inflate(R.layout.person_attendance,null);
+            /*final Person std=arrayList.get(position);
+            std.increment_attendance_total();*/
+            //std.increment_attendance_total();
             TextView tv1=view.findViewById(R.id.disp_name);
-            tv1.setText(std.getFname()+" "+std.getLname());
+            tv1.setText(arrayList.get(position).getFname()+" "+arrayList.get(position).getLname());
             TextView tv2=view.findViewById(R.id.disp_id);
-            tv2.setText(std.getOrganisation());
+            tv2.setText(arrayList.get(position).getPerson_ID());
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(ispresent.isChecked()){
                         ispresent.setChecked(false);
-                        std.decrement_attendance();
+                        //arrayList.get(position).decrement_attendance();
                     }
                     else{
                         ispresent.setChecked(true);
-                        std.increment_attendance();
+                        //arrayList.get(position).increment_attendance();
                     }
                 }
             });
@@ -190,5 +211,11 @@ public class AttendanceActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        arrayList.clear();
     }
 }
