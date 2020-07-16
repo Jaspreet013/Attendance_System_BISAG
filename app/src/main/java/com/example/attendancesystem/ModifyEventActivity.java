@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 public class ModifyEventActivity extends AppCompatActivity {
     private ListView listView;
     SharedPreferences get_user;
-    private ArrayList<event> arrayList=new ArrayList<>();
+    private ArrayList<event> arrayList = new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
     @Override
@@ -47,12 +49,13 @@ public class ModifyEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_user=getSharedPreferences("User",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=get_user.getString("Current User","");
-        final User current_user=gson.fromJson(json,User.class);
-        listView=findViewById(R.id.list_view);
-        adapter=new MyBaseAdapter(ModifyEventActivity.this);
+        get_user = getSharedPreferences("User", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = get_user.getString("Current User", "");
+        final User current_user = gson.fromJson(json, User.class);
+        adapter = new MyBaseAdapter(ModifyEventActivity.this);
+        final TextView total_events=findViewById(R.id.total_events);
+        listView = findViewById(R.id.list_view);
         listView.setAdapter(adapter);
         listView.setEmptyView(findViewById(R.id.modification_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -61,11 +64,11 @@ public class ModifyEventActivity extends AppCompatActivity {
                 Log.e("String is", "Hello Dude");
             }
         });
-        Button add_event=findViewById(R.id.add_event_button);
+        Button add_event = findViewById(R.id.add_event_button);
         add_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ModifyEventActivity.this,AddEventActivity.class));
+                startActivity(new Intent(ModifyEventActivity.this, AddEventActivity.class));
                 finish();
             }
         });
@@ -76,8 +79,7 @@ public class ModifyEventActivity extends AppCompatActivity {
             builder.setPositiveButton("Ok", null);
             builder.setCancelable(false);
             builder.show();
-        }
-        else {
+        } else {
             try {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("events");
@@ -89,17 +91,20 @@ public class ModifyEventActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 //Iterable<DataSnapshot> data = child.getChildren();
                                 //for (DataSnapshot Class : data) {
-                                    event ev = child.getValue(event.class);
-                                    if (ev.getCoordinator_email().equals(current_user.getEmail())) {
-                                        arrayList.add(ev);
-                                        adapter.notifyDataSetChanged();
+                                event ev = child.getValue(event.class);
+                                if (ev.getCoordinator_email().equals(current_user.getEmail())) {
+                                    arrayList.add(ev);
+                                    adapter.notifyDataSetChanged();
                                     //}
                                 }
                             }
+                            String str=total_events.getText().toString();
+                            total_events.setText(str+arrayList.size());
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -112,6 +117,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         /*MyAdapter mpa=new MyAdapter(ModifyEventActivity.this,arrayList);
         listView.setAdapter(mpa);*/
     }
+
     public class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
@@ -120,6 +126,7 @@ public class ModifyEventActivity extends AppCompatActivity {
             this.context = context;
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
+
         @Override
         public int getCount() {
             return arrayList.size();
@@ -137,23 +144,23 @@ public class ModifyEventActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater=getLayoutInflater();
-            View view=inflater.inflate(R.layout.event_list_view, null);
-            final event std=arrayList.get(position);
-            TextView tv1=view.findViewById(R.id.dispname);
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.event_list_view, null);
+            final event std = arrayList.get(position);
+            TextView tv1 = view.findViewById(R.id.dispname);
             tv1.setText(std.getName());
-            TextView tv2=view.findViewById(R.id.disporganisation);
+            TextView tv2 = view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    get_event=getSharedPreferences("Events",MODE_PRIVATE);
+                    get_event = getSharedPreferences("Events", MODE_PRIVATE);
                     SharedPreferences.Editor prefsEditor = get_event.edit();
                     Gson gson = new Gson();
                     String json = gson.toJson(std);
                     prefsEditor.putString("Current event", json);
                     prefsEditor.commit();
-                    startActivity(new Intent(ModifyEventActivity.this,selectedEventModificationActivity.class));
+                    startActivity(new Intent(ModifyEventActivity.this, selectedEventModificationActivity.class));
                     finish();
                 }
             });

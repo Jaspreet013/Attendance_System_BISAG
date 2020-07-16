@@ -48,6 +48,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
     String id="";
     String key;
     private ListView listView;
+    ArrayList<String> keys=new ArrayList<>();
     event ev;
     EditText input;
     long count=0;
@@ -98,6 +99,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             Person person = child.getValue(Person.class);
                             if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
+                                keys.add(child.getKey());
                                 count++;
                                 adapter.notifyDataSetChanged();
                             }
@@ -140,13 +142,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.show();
                                 }
                                 else {
-                                    final ProgressDialog waiting;
                                     databaseReference = database.getReference("events");
-                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                                    waiting.setMessage("Please Wait");
-                                    waiting.setCancelable(false);
-                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                    waiting.show();
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -185,12 +181,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                                     }
                                                 });
-                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this,"Name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
-                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
@@ -270,13 +264,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.show();
                                 }
                                 else {
-                                    final ProgressDialog waiting;
                                     databaseReference = database.getReference("events");
-                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                                    waiting.setMessage("Please Wait");
-                                    waiting.setCancelable(false);
-                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                    waiting.show();
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -314,12 +302,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                                     }
                                                 });
-                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
-                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
@@ -512,7 +498,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ArrayList<String> keys=new ArrayList<>();
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                     builder.setTitle("Are you sure to delete this User?");
                     builder.setMessage("All the information regarding this user will be deleted");
@@ -528,13 +513,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                    for(DataSnapshot child:children){
-                                        Person person=child.getValue(Person.class);
-                                        if(person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.getPerson_ID().equals(temp.getPerson_ID())){
-                                            key=child.getKey();
-                                        }
-                                    }
-                                    reference.child(key).removeValue();
+                                    reference.child(keys.get(position)).removeValue();
                                     recreate();
                                 }
 
@@ -552,7 +531,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    SharedPreferences preferences=getSharedPreferences("Person",MODE_PRIVATE);
+                    SharedPreferences.Editor pref=preferences.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(std);
+                    pref.putString("Current Person", json);
+                    pref.putString("Key",keys.get(position));
+                    pref.commit();
+                    startActivity(new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class));
                 }
             });
             return view;

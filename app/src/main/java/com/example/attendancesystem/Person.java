@@ -28,6 +28,8 @@ public class Person {
     public String getEvent_name() { return event_name; }
     public void setEvent_name(String event_name) { this.event_name = event_name; }
     public void increment_attendance_total(){ this.attendance_total+=1; }
+    public void setAttendance(long attendance) { this.attendance = attendance; }
+    public void setAttendance_total(long attendance_total) { this.attendance_total = attendance_total; }
     public void setOrganisation(String organisation) { this.organisation = organisation; }
     public String getOrganisation() { return organisation; }
     public String getCoordinator_email() { return coordinator_email; }
