@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -69,11 +70,16 @@ public class CheckSelectActivity extends AppCompatActivity {
                 final ProgressDialog waiting;
                 waiting = new ProgressDialog(CheckSelectActivity.this);
                 waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
+                waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish();
+                    }
+                });
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events");
+                final DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -81,10 +87,8 @@ public class CheckSelectActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 event ev = child.getValue(event.class);
-                                if (ev.getCoordinator_email().equals(current_user.getEmail())) {
-                                    arrayList.add(ev);
-                                    adapter.notifyDataSetChanged();
-                                }
+                                arrayList.add(ev);
+                                adapter.notifyDataSetChanged();
                             }
                             waiting.dismiss();
                         } catch (Exception e) {
@@ -100,8 +104,6 @@ public class CheckSelectActivity extends AppCompatActivity {
 
             }
         }
-        /*MyAdapter mpa=new MyAdapter(SelectSubjectActivity.this,arrayList);
-        listView.setAdapter(mpa);*/
     }
     public class MyBaseAdapter extends BaseAdapter {
         Context context;
@@ -143,9 +145,8 @@ public class CheckSelectActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String json = gson.toJson(std);
                     prefsEditor.putString("Current event", json);
-                    prefsEditor.commit();
+                    prefsEditor.apply();
                     startActivity(new Intent(CheckSelectActivity.this,CheckAttendanceActivity.class));
-                    finish();
                 }
             });
             return view;

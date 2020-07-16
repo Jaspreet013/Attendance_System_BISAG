@@ -75,11 +75,16 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 final ProgressDialog waiting;
                 waiting = new ProgressDialog(SelectSubjectActivity.this);
                 waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
+                waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish();
+                    }
+                });
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events");
+                final DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,10 +92,8 @@ public class SelectSubjectActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 event ev = child.getValue(event.class);
-                                if (ev.getCoordinator_email().equals(current_user.getEmail())) {
-                                    arrayList.add(ev);
-                                    adapter.notifyDataSetChanged();
-                                }
+                                arrayList.add(ev);
+                                adapter.notifyDataSetChanged();
                             }
                             waiting.dismiss();
                         } catch (Exception e) {
@@ -147,9 +150,8 @@ public class SelectSubjectActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String json = gson.toJson(std);
                     prefsEditor.putString("Current event", json);
-                    prefsEditor.commit();
+                    prefsEditor.apply();
                     startActivity(new Intent(SelectSubjectActivity.this,AttendanceActivity.class));
-                    finish();
                 }
             });
             return view;

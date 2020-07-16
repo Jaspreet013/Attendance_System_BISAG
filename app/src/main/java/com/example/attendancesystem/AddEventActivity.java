@@ -38,7 +38,6 @@ public class AddEventActivity extends AppCompatActivity {
     EditText event_organisation;
     Button button;
     SharedPreferences preferences;
-   // FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     @Override
@@ -79,17 +78,16 @@ public class AddEventActivity extends AppCompatActivity {
                         progressDialog.setCancelable(false);
                         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.show();
-                        databaseReference = FirebaseDatabase.getInstance().getReference("events");
+                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                 boolean set=true;
-                                event ev=new event(event_name.getText().toString().toUpperCase(),event_organisation.getText().toString().toUpperCase(),current_user.getEmail());
+                                event ev=new event(event_name.getText().toString().toUpperCase(),event_organisation.getText().toString().toUpperCase());
                                 for(DataSnapshot child:children){
                                     event eve=child.getValue(event.class);
-                                    Log.e(eve.getCoordinator_email(),ev.getCoordinator_email());
-                                    if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation()) && eve.getCoordinator_email().equals(ev.getCoordinator_email())){
+                                    if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())){
                                         set=false;
                                     }
                                 }
@@ -101,7 +99,6 @@ public class AddEventActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.setPositiveButton("Ok", null);
                                     builder.show();
-                                    //firebaseAuth.signOut();
                                 }
                                 else{
                                     SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
@@ -109,11 +106,9 @@ public class AddEventActivity extends AppCompatActivity {
                                     String json = prefs.getString("users", null);
                                     Type type = new TypeToken<ArrayList<Person>>() {}.getType();
                                     ArrayList<Person> person=gson.fromJson(json, type);
-                                    Log.e("p","1");
                                     if(person!=null){
-                                        Log.e("p","2");
                                         for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons");
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
                                             String key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);

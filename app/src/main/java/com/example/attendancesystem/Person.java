@@ -1,17 +1,16 @@
 package com.example.attendancesystem;
 
 public class Person {
-        private String person_email,person_ID,fname,lname,event_name,organisation,coordinator_email;
+        private String person_email,person_ID,fname,lname,event_name,organisation;
         private long attendance=0,attendance_total=0;
         public Person(){}
-        public Person(String fname,String lname,String person_email,String person_ID,String event_name,String organisation,String coordinator_email){
+        public Person(String fname,String lname,String person_email,String person_ID,String event_name,String organisation){
             this.fname=fname;
             this.lname=lname;
             this.person_email=person_email;
             this.person_ID=person_ID;
             this.event_name=event_name;
             this.organisation=organisation;
-            this.coordinator_email=coordinator_email;
         }
     public void setFname(String fname) { this.fname = fname; }
     public String getFname() { return fname; }
@@ -32,6 +31,4 @@ public class Person {
     public void setAttendance_total(long attendance_total) { this.attendance_total = attendance_total; }
     public void setOrganisation(String organisation) { this.organisation = organisation; }
     public String getOrganisation() { return organisation; }
-    public String getCoordinator_email() { return coordinator_email; }
-    public void setCoordinator_email(String coordinator_email) { this.coordinator_email = coordinator_email; }
 }

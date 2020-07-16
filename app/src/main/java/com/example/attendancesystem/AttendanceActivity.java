@@ -39,11 +39,9 @@ public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
     ListView listView;
-    SharedPreferences get_event;
+    SharedPreferences get_event,get_user;
     event current_event;
     MyBaseAdapter adapter;
-    AlertDialog.Builder builder;
-    AlertDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +51,11 @@ public class AttendanceActivity extends AppCompatActivity {
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
+        get_user = getSharedPreferences("User",MODE_PRIVATE);
+        Gson gson1=new Gson();
+        TextView person_name=findViewById(R.id.message_person_name);
+        String json1=get_user.getString("Current User","");
+        final User current_user=gson1.fromJson(json1,User.class);
         TextView set_event_name=findViewById(R.id.message_event_name);
         TextView set_organisation_name=findViewById(R.id.message_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -61,8 +64,6 @@ public class AttendanceActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
-        progressDialog = getDialogProgressBar().create();
-        for(int i=0;i<50000000;i++){}
         Button submit=findViewById(R.id.attendance_submit_button);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +84,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 }
                             }
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference databaseReference = database.getReference("Persons");
+                            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                             for(int i=0;i<keys.size();i++){
                                 databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
                             }
@@ -108,11 +109,16 @@ public class AttendanceActivity extends AppCompatActivity {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(AttendanceActivity.this);
             waiting.setMessage("Please Wait");
-            waiting.setCancelable(false);
+            waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons");
+            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -120,14 +126,14 @@ public class AttendanceActivity extends AppCompatActivity {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
-                            if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                            if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
                         waiting.dismiss();
-                        if(arrayList.size()==0) {
+                        if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
                             builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
                             builder.setTitle("No people are in this event");
@@ -210,24 +216,5 @@ public class AttendanceActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         arrayList.clear();
-    }
-    public AlertDialog.Builder getDialogProgressBar() {
-        if (builder == null) {
-            builder = new AlertDialog.Builder(this);
-            final ProgressBar progressBar = new ProgressBar(this);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            builder.setTitle("Please Wait while we get your data");
-            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
-            builder.setView(progressBar);
-            progressBar.setLayoutParams(lp);
-        }
-        return builder;
     }
 }

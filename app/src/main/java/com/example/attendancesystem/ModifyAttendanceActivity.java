@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 public class ModifyAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_person;
+    SharedPreferences get_person,get_user;
     Person current_person;
     String key;
     EditText Attendance,Total_Attendance;
@@ -33,6 +33,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         Gson gson=new Gson();
         String json=get_person.getString("Current Person","");
         current_person=gson.fromJson(json,Person.class);
+        get_user = getSharedPreferences("User",MODE_PRIVATE);
+        Gson gson1=new Gson();
+        TextView person_name=findViewById(R.id.message_person_name);
+        String json1=get_user.getString("Current User","");
+        final User current_user=gson1.fromJson(json1,User.class);
         key=get_person.getString("Key","");
         TextView username=findViewById(R.id.disp_user_name);
         TextView id=findViewById(R.id.disp_user_id);
@@ -84,7 +89,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     dialog.show();
                     FirebaseDatabase database=FirebaseDatabase.getInstance();
-                    DatabaseReference databaseReference=database.getReference("Persons");
+                    DatabaseReference databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                     current_person.setAttendance(Long.parseLong(Attendance.getText().toString()));
                     current_person.setAttendance_total(Long.parseLong(Total_Attendance.getText().toString()));
                     databaseReference.child(key).setValue(current_person);

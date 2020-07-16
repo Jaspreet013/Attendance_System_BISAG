@@ -12,7 +12,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="65dp"
             android:layout_width="350dp"
             android:layout_height="60dp"
             android:id="@+id/border2"

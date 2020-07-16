@@ -32,9 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class MainActivity extends AppCompatActivity {
     ProgressDialog waiting;
     FirebaseAuth firebaseAuth;
@@ -49,11 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-        get_user = getSharedPreferences("User",MODE_PRIVATE);
-        if(get_user.contains("Current User")){
-            startActivity(new Intent(MainActivity.this,HomeActivity.class));
-        }
-        else {
             login = findViewById(R.id.login_submit);
             new_user = findViewById(R.id.new_user);
             new_user.setOnClickListener(new View.OnClickListener() {
@@ -95,22 +87,19 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     try {
-                                        FirebaseUser verify = firebaseAuth.getCurrentUser();
-                                        String userID = verify.getUid();
-                                        Log.e("UID", userID);
-                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + userID);
+                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/"+firebaseAuth.getCurrentUser().getUid());
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 try {
                                                     User user = dataSnapshot.getValue(User.class);
-                                                    Log.e("email ", user.getEmail());
                                                     final_user = user;
+                                                    get_user=getSharedPreferences("User",MODE_PRIVATE);
                                                     SharedPreferences.Editor prefsEditor = get_user.edit();
                                                     Gson gson = new Gson();
                                                     String json = gson.toJson(final_user);
                                                     prefsEditor.putString("Current User", json);
-                                                    prefsEditor.commit();
+                                                    prefsEditor.apply();
                                                     startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                                     firebaseAuth.signOut();
                                                     waiting.dismiss();
@@ -137,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
     }
     @Override
     public void onBackPressed() {

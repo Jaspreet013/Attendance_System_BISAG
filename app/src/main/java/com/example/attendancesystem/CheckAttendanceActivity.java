@@ -31,7 +31,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_event;
+    SharedPreferences get_event,get_user;
     event current_event;
     ListView listView;
     ArrayList<Person> arrayList=new ArrayList<>();
@@ -46,6 +46,10 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
+        get_user = getSharedPreferences("User",MODE_PRIVATE);
+        Gson gson1=new Gson();
+        String json1=get_user.getString("Current User","");
+        User current_user=gson1.fromJson(json1,User.class);
         TextView set_event_name=findViewById(R.id.check_event_name);
         TextView set_organisation_name=findViewById(R.id.check_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -66,11 +70,16 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(CheckAttendanceActivity.this);
             waiting.setMessage("Please Wait");
-            waiting.setCancelable(false);
+            waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons");
+            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -78,7 +87,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
-                            if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                            if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
                                 adapter.notifyDataSetChanged();
                             }
@@ -144,7 +153,12 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             TextView check_attendance=view.findViewById(R.id.check_attendance);
             TextView check_total_attendance=view.findViewById(R.id.check_total_attendance);
             TextView attendance_percent=view.findViewById(R.id.attendance_percent);
-            percent=((float)std.getAttendance()/(float)std.getAttendance_total())*100;
+            if(std.getAttendance()==0){
+                percent=(float)0.00;
+            }
+            else {
+                percent = ((float) std.getAttendance() / (float) std.getAttendance_total()) * 100;
+            }
             check_name.setText(std.getFname()+" "+std.getLname());
             check_id.setText(std.getPerson_ID());
             check_email.setText(std.getPerson_email());
@@ -153,7 +167,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             check_total_attendance.setText(
                     "Total Attendance taken : "+Long.toString(std.getAttendance_total()));
             attendance_percent.setText(
-                    "Attendance (in Percent): "+Float.toString(percent)+"%");
+                    "Attendance (in Percent): "+String.format("%.2f",percent)+"%");
             return view;
         }
     }

@@ -109,7 +109,7 @@ public class AddPerson extends AppCompatActivity {
                     progressDialog.show();
                     try {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = database.getReference("Persons");
+                        final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -118,20 +118,20 @@ public class AddPerson extends AppCompatActivity {
                                 for(DataSnapshot child:children){
                                     Person person=child.getValue(Person.class);
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) &&
-                                            person.getPerson_email().equals(email.getText().toString()) && person.getEvent_name().equals(current_event.getName().toUpperCase()) && person.getCoordinator_email().equals(current_event.getCoordinator_email())){
+                                            person.getPerson_email().equals(email.getText().toString()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
                                         set=false;
                                         builder.setTitle("This email is already registered to this event");
                                     }
-                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getPerson_ID().equals(id.getText().toString())){
+                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString())){
                                         set=false;
                                         builder.setTitle("This ID is already registered to this event");
                                     }
                                 }
                                 if(set) {
                                     String key = databaseReference.push().getKey();
-                                    databaseReference.child(key).setValue(new Person(fname.getText().toString(), lname.getText().toString(), email.getText().toString(), id.getText().toString(), current_event.getName(), current_event.getOrganisation(), current_event.getCoordinator_email()));
+                                    databaseReference.child(key).setValue(new Person(fname.getText().toString(), lname.getText().toString(), email.getText().toString(), id.getText().toString(), current_event.getName(), current_event.getOrganisation()));
                                     progressDialog.dismiss();
-                                    builder.setTitle("User Added");
+                                    builder.setTitle("Person Added");
                                 }
                                 else{
                                     progressDialog.dismiss();

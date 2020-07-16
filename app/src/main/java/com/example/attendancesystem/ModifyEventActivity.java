@@ -90,11 +90,16 @@ public class ModifyEventActivity extends AppCompatActivity {
                 final ProgressDialog waiting;
                 waiting = new ProgressDialog(ModifyEventActivity.this);
                 waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
+                waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish();
+                    }
+                });
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events");
+                final DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -102,10 +107,8 @@ public class ModifyEventActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 event ev = child.getValue(event.class);
-                                if (ev.getCoordinator_email().equals(current_user.getEmail())) {
-                                    arrayList.add(ev);
-                                    adapter.notifyDataSetChanged();
-                                }
+                                arrayList.add(ev);
+                                adapter.notifyDataSetChanged();
                             }
                             total_events.setText(total_events.getText().toString() + arrayList.size());
                             waiting.dismiss();

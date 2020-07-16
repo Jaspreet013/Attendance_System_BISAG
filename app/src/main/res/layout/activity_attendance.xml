@@ -14,13 +14,14 @@
         <TextView
             android:id="@+id/message_event_name"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="45dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:textAlignment="center"
             android:textSize="45sp"/>
 
         <TextView
+            android:textAlignment="center"
             android:id="@+id/message_organisation_name"
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
@@ -36,7 +37,7 @@
             android:orientation="vertical">
 
             <ListView
-                android:layout_height="450dp"
+                android:layout_height="480dp"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view3"
                 android:layout_gravity="center_horizontal"

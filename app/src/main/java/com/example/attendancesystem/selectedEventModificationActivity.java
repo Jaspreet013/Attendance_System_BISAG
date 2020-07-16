@@ -44,15 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class selectedEventModificationActivity extends AppCompatActivity {
-    SharedPreferences preferences;
+    SharedPreferences preferences,get_user;
     String id="";
     String key;
     private ListView listView;
+    User current_user;
     ArrayList<String> keys=new ArrayList<>();
-    event ev;
     EditText input;
     long count=0;
-    boolean set=true;
     MyPeopleAdapter adapter;
     event current_event;
     ArrayList<Person> arrayList=new ArrayList<>();
@@ -64,10 +63,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_selected_event_modification);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         preferences = getSharedPreferences("Events", MODE_PRIVATE);
-        SharedPreferences.Editor edit = preferences.edit();
         input = new EditText(selectedEventModificationActivity.this);
         Gson gson = new Gson();
         String json = preferences.getString("Current event", "");
+        get_user = getSharedPreferences("User",MODE_PRIVATE);
+        Gson gson1=new Gson();
+        String json1=get_user.getString("Current User","");
+        current_user=gson1.fromJson(json1,User.class);
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
@@ -96,7 +98,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 }
                 else if(arrayList.isEmpty()){
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("There are no currently people in this event");
+                    builder.setTitle("There are currently no people in this event");
                     builder.setPositiveButton("Ok", null);
                     builder.setCancelable(false);
                     builder.show();
@@ -121,11 +123,16 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(selectedEventModificationActivity.this);
             waiting.setMessage("Please Wait");
-            waiting.setCancelable(false);
+            waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons");
+            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -133,7 +140,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
-                            if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                            if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
                                 keys.add(child.getKey());
                                 count++;
@@ -178,34 +185,50 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
+                                else if(input.getText().toString().length()>20){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                                    builder.setTitle("Length cannot be more than 20");
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.setCancelable(false);
+                                    builder.show();
+                                }
                                 else {
-                                    databaseReference = database.getReference("events");
+                                    final ProgressDialog waiting;
+                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
+                                    waiting.setMessage("Please Wait");
+                                    waiting.setCancelable(false);
+                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                    waiting.show();
+                                    databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                            set=true;
+                                            boolean set=true;
+                                            event eve=new event();
                                             for(DataSnapshot child:children){
-                                                ev=child.getValue(event.class);
-                                                if(input.getText().toString().toUpperCase().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
+                                                event ev=child.getValue(event.class);
+                                                if(input.getText().toString().toUpperCase().equals(ev.getName().toUpperCase()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation().toUpperCase())){
                                                     set=false;
                                                     key="";
+                                                    break;
                                                 }
-                                                else if(current_event.getName().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
+                                                else if(current_event.getName().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation())){
                                                     key=child.getKey();
+                                                    eve=ev;
                                                 }
                                             }
                                             if(set){
-                                                ev.setName(input.getText().toString().toUpperCase());
-                                                databaseReference.child(key).setValue(ev);
-                                                databaseReference=database.getReference("Persons");
+                                                eve.setName(input.getText().toString().toUpperCase());
+                                                databaseReference.child(key).setValue(eve);
+                                                databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                                         for(DataSnapshot child:children){
                                                             Person person=child.getValue(Person.class);
-                                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getCoordinator_email().equals(current_event.getCoordinator_email())){
+                                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
                                                                 person.setEvent_name(input.getText().toString().toUpperCase());
                                                                 String key=child.getKey();
                                                                 databaseReference.child(key).setValue(person);
@@ -218,10 +241,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                                     }
                                                 });
+                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this,"Name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
+                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
@@ -272,33 +297,50 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
+                                else if(input.getText().toString().length()>20){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                                    builder.setTitle("Length cannot be more than 20");
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.setCancelable(false);
+                                    builder.show();
+                                }
                                 else {
-                                    databaseReference = database.getReference("events");
+                                    final ProgressDialog waiting;
+                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
+                                    waiting.setMessage("Please Wait");
+                                    waiting.setCancelable(false);
+                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                    waiting.show();
+                                    databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Iterable<DataSnapshot> children=dataSnapshot.getChildren();
+                                            boolean set=true;
+                                            event eve=new event();
                                             for(DataSnapshot child:children){
-                                                ev=child.getValue(event.class);
-                                                if(input.getText().toString().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
+                                                event ev=child.getValue(event.class);
+                                                if(input.getText().toString().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().toUpperCase().equals(ev.getName().toUpperCase())){
                                                     set=false;
                                                     key="";
+                                                    break;
                                                 }
-                                                else if(current_event.getOrganisation().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName()) && current_event.getCoordinator_email().equals(ev.getCoordinator_email())){
+                                                else if(current_event.getOrganisation().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName())){
                                                     key=child.getKey();
+                                                    eve=ev;
                                                 }
                                             }
                                             if(set){
-                                                ev.setOrganisation(input.getText().toString().toUpperCase());
-                                                databaseReference.child(key).setValue(ev);
-                                                databaseReference=database.getReference("Persons");
+                                                eve.setOrganisation(input.getText().toString().toUpperCase());
+                                                databaseReference.child(key).setValue(eve);
+                                                databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                                         for(DataSnapshot child:children){
                                                             Person person=child.getValue(Person.class);
-                                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getCoordinator_email().equals(current_event.getCoordinator_email())){
+                                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
                                                                 person.setOrganisation(input.getText().toString().toUpperCase());
                                                                 String key=child.getKey();
                                                                 databaseReference.child(key).setValue(person);
@@ -311,10 +353,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                                     }
                                                 });
+                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
+                                                waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
@@ -367,7 +411,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference databaseReference = database.getReference("events");
+                            DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
                             try {
                                 waiting.show();
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -377,7 +421,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                             for (DataSnapshot child : children) {
                                                 event ev = child.getValue(event.class);
-                                                if (ev.getName().equals(current_event.getName()) && ev.getCoordinator_email().equals(current_event.getCoordinator_email()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
+                                                if (ev.getName().equals(current_event.getName()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
                                                     child.getRef().removeValue();
                                                     Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
                                                     waiting.dismiss();
@@ -402,7 +446,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 }
                 try {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference databaseReference = database.getReference("Persons");
+                    final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -411,7 +455,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 final ArrayList<String> key=new ArrayList<>();
                                 for (DataSnapshot child : children) {
                                     Person person = child.getValue(Person.class);
-                                    if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                                    if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                         key.add(child.getKey());
                                         adapter.notifyDataSetChanged();
                                     }
@@ -477,15 +521,19 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            final ProgressDialog waiting = new ProgressDialog(selectedEventModificationActivity.this);
+                            waiting.setMessage("Please Wait");
+                            waiting.setCancelable(false);
+                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            waiting.show();
                             FirebaseDatabase database=FirebaseDatabase.getInstance();
-                            final Person temp=arrayList.get(position);
-                            //String key=""
-                            final DatabaseReference reference=database.getReference("Persons");
+                            final DatabaseReference reference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                     reference.child(keys.get(position)).removeValue();
+                                    waiting.dismiss();
                                     recreate();
                                 }
 
