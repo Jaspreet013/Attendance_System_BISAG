@@ -50,8 +50,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 EditText email=findViewById(R.id.register_email);
                 EditText password=findViewById(R.id.register_password);
                 EditText cnfpassword=findViewById(R.id.register_cnfpassword);
-                final Pattern pattern=Pattern.compile("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$");
-                final Matcher matcher=pattern.matcher(email.getText().toString());
                 if(TextUtils.isEmpty(fname.getText().toString()) || TextUtils.isEmpty(lname.getText().toString())
                 || TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(password.getText().toString())
                 || TextUtils.isEmpty(cnfpassword.getText().toString())){
@@ -68,7 +66,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!matcher.matches()){
+                else if(!email.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please provide a valid email");
                     builder.setPositiveButton("Ok",null);

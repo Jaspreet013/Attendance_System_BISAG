@@ -36,14 +36,34 @@ public class HomeActivity extends AppCompatActivity {
         take_attendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this,SelectSubjectActivity.class));
+                if (!isNetworkAvailable()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setTitle("No Internet");
+                    builder.setMessage("Please check your internet connection");
+                    builder.setPositiveButton("Ok", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else {
+                    startActivity(new Intent(HomeActivity.this, SelectSubjectActivity.class));
+                }
             }
         });
         Button checkAttendance=findViewById(R.id.check_attendance);
         checkAttendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this,CheckSelectActivity.class));
+                if (!isNetworkAvailable()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setTitle("No Internet");
+                    builder.setMessage("Please check your internet connection");
+                    builder.setPositiveButton("Ok", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else {
+                    startActivity(new Intent(HomeActivity.this, CheckSelectActivity.class));
+                }
             }
         });
         Button logout=findViewById(R.id.logout),modify_events=findViewById(R.id.modify_subjects);

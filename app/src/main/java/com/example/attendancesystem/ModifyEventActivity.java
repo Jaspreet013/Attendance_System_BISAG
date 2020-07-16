@@ -2,7 +2,9 @@ package com.example.attendancesystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.BundleCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,6 +47,8 @@ public class ModifyEventActivity extends AppCompatActivity {
     private ArrayList<event> arrayList = new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
+    User current_user;
+    TextView total_events;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +57,12 @@ public class ModifyEventActivity extends AppCompatActivity {
         get_user = getSharedPreferences("User", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = get_user.getString("Current User", "");
-        final User current_user = gson.fromJson(json, User.class);
-        adapter = new MyBaseAdapter(ModifyEventActivity.this);
-        final TextView total_events=findViewById(R.id.total_events);
+        current_user = gson.fromJson(json, User.class);
         listView = findViewById(R.id.list_view);
+        total_events = findViewById(R.id.total_events);
+        adapter = new MyBaseAdapter(ModifyEventActivity.this);
         listView.setAdapter(adapter);
+        listView.setSmoothScrollbarEnabled(true);
         listView.setEmptyView(findViewById(R.id.modification_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -81,6 +87,12 @@ public class ModifyEventActivity extends AppCompatActivity {
             builder.show();
         } else {
             try {
+                final ProgressDialog waiting;
+                waiting = new ProgressDialog(ModifyEventActivity.this);
+                waiting.setMessage("Please Wait");
+                waiting.setCancelable(false);
+                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("events");
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -89,17 +101,14 @@ public class ModifyEventActivity extends AppCompatActivity {
                         try {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
-                                //Iterable<DataSnapshot> data = child.getChildren();
-                                //for (DataSnapshot Class : data) {
                                 event ev = child.getValue(event.class);
                                 if (ev.getCoordinator_email().equals(current_user.getEmail())) {
                                     arrayList.add(ev);
                                     adapter.notifyDataSetChanged();
-                                    //}
                                 }
                             }
-                            String str=total_events.getText().toString();
-                            total_events.setText(str+arrayList.size());
+                            total_events.setText(total_events.getText().toString() + arrayList.size());
+                            waiting.dismiss();
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }
@@ -114,8 +123,6 @@ public class ModifyEventActivity extends AppCompatActivity {
 
             }
         }
-        /*MyAdapter mpa=new MyAdapter(ModifyEventActivity.this,arrayList);
-        listView.setAdapter(mpa);*/
     }
 
     public class MyBaseAdapter extends BaseAdapter {

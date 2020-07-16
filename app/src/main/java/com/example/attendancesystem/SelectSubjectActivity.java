@@ -54,6 +54,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         listView.setAdapter(adapter);
+        listView.setSmoothScrollbarEnabled(true);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -71,6 +72,12 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
         else {
             try {
+                final ProgressDialog waiting;
+                waiting = new ProgressDialog(SelectSubjectActivity.this);
+                waiting.setMessage("Please Wait");
+                waiting.setCancelable(false);
+                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("events");
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,15 +86,13 @@ public class SelectSubjectActivity extends AppCompatActivity {
                         try {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
-                                //Iterable<DataSnapshot> data = child.getChildren();
-                                //for (DataSnapshot Class : data) {
                                 event ev = child.getValue(event.class);
                                 if (ev.getCoordinator_email().equals(current_user.getEmail())) {
                                     arrayList.add(ev);
                                     adapter.notifyDataSetChanged();
-                                    //}
                                 }
                             }
+                            waiting.dismiss();
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }
@@ -101,8 +106,6 @@ public class SelectSubjectActivity extends AppCompatActivity {
 
             }
         }
-        /*MyAdapter mpa=new MyAdapter(SelectSubjectActivity.this,arrayList);
-        listView.setAdapter(mpa);*/
     }
     public class MyBaseAdapter extends BaseAdapter {
         Context context;

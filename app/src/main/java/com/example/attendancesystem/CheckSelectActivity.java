@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(CheckSelectActivity.this);
         listView.setAdapter(adapter);
+        listView.setSmoothScrollbarEnabled(true);
         listView.setEmptyView(findViewById(R.id.check_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,6 +66,12 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
         else {
             try {
+                final ProgressDialog waiting;
+                waiting = new ProgressDialog(CheckSelectActivity.this);
+                waiting.setMessage("Please Wait");
+                waiting.setCancelable(false);
+                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("events");
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -72,15 +80,13 @@ public class CheckSelectActivity extends AppCompatActivity {
                         try {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
-                                //Iterable<DataSnapshot> data = child.getChildren();
-                                //for (DataSnapshot Class : data) {
                                 event ev = child.getValue(event.class);
                                 if (ev.getCoordinator_email().equals(current_user.getEmail())) {
                                     arrayList.add(ev);
                                     adapter.notifyDataSetChanged();
-                                    //}
                                 }
                             }
+                            waiting.dismiss();
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }

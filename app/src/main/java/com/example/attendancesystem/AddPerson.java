@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class AddPerson extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_person);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         fname=findViewById(R.id.register_fname);
         lname=findViewById(R.id.register_lname);
         email=findViewById(R.id.register_email);
@@ -49,7 +51,6 @@ public class AddPerson extends AppCompatActivity {
         Button submit=findViewById(R.id.register_submit);
         Button clear=findViewById(R.id.register_clear);
         preferences=getSharedPreferences("Events",MODE_PRIVATE);
-        SharedPreferences.Editor editor=preferences.edit();
         Gson gson = new Gson();
         String json = preferences.getString("Current event", "");
         current_event = gson.fromJson(json, event.class);
@@ -119,7 +120,7 @@ public class AddPerson extends AppCompatActivity {
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) &&
                                             person.getPerson_email().equals(email.getText().toString()) && person.getEvent_name().equals(current_event.getName().toUpperCase()) && person.getCoordinator_email().equals(current_event.getCoordinator_email())){
                                         set=false;
-                                        builder.setTitle("This user is already registered to this event");
+                                        builder.setTitle("This email is already registered to this event");
                                     }
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getPerson_ID().equals(id.getText().toString())){
                                         set=false;
@@ -130,14 +131,14 @@ public class AddPerson extends AppCompatActivity {
                                     String key = databaseReference.push().getKey();
                                     databaseReference.child(key).setValue(new Person(fname.getText().toString(), lname.getText().toString(), email.getText().toString(), id.getText().toString(), current_event.getName(), current_event.getOrganisation(), current_event.getCoordinator_email()));
                                     progressDialog.dismiss();
-                                    Toast.makeText(AddPerson.this, "User Added", Toast.LENGTH_SHORT).show();
+                                    builder.setTitle("User Added");
                                 }
                                 else{
                                     progressDialog.dismiss();
-                                    builder.setCancelable(false);
-                                    builder.setPositiveButton("Ok",null);
-                                    builder.show();
                                 }
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("Ok",null);
+                                builder.show();
                             }
 
                             @Override

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".AttendanceActivity">
     <RelativeLayout
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
         android:id="@+id/layout_welcome">
@@ -36,11 +36,11 @@
             android:orientation="vertical">
 
             <ListView
-                android:layout_height="480dp"
+                android:layout_height="450dp"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view3"
                 android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"/>
+                android:nestedScrollingEnabled="true" />
         </LinearLayout>
 
         <Button android:layout_width="350dp"

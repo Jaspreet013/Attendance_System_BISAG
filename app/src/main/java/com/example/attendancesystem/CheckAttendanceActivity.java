@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_attendance);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         get_event=getSharedPreferences("Events",MODE_PRIVATE);
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
@@ -50,6 +53,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view2);
         adapter=new MyBaseAdapter(CheckAttendanceActivity.this);
         listView.setAdapter(adapter);
+        listView.setSmoothScrollbarEnabled(true);
         if (!isNetworkAvailable()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
             builder.setTitle("No Internet");
@@ -59,6 +63,12 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             builder.show();
         }
         try {
+            final ProgressDialog waiting;
+            waiting = new ProgressDialog(CheckAttendanceActivity.this);
+            waiting.setMessage("Please Wait");
+            waiting.setCancelable(false);
+            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = database.getReference("Persons");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -67,26 +77,25 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                     try {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            //Iterable<DataSnapshot> data = child.getChildren();
-                            //for (DataSnapshot Class : data) {
                             Person person = child.getValue(Person.class);
                             if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
                                 adapter.notifyDataSetChanged();
                             }
-                            if(arrayList.size()==0) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
-                                builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
-                                builder.setTitle("No people are in this event");
-                                builder.setCancelable(false);
-                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
-                                builder.show();
-                            }
+                        }
+                        waiting.dismiss();
+                        if(arrayList.size()==0) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
+                            builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
+                            builder.setTitle("No people are in this event");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            builder.show();
                         }
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());
@@ -145,25 +154,6 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                     "Total Attendance taken : "+Long.toString(std.getAttendance_total()));
             attendance_percent.setText(
                     "Attendance (in Percent): "+Float.toString(percent)+"%");
-            /*std.increment_attendance_total();
-            TextView tv1=view.findViewById(R.id.disp_name);
-            tv1.setText(std.getFname()+" "+std.getLname());
-            TextView tv2=view.findViewById(R.id.disp_id);
-            tv2.setText(std.getOrganisation());
-            final CheckBox ispresent=view.findViewById(R.id.ispresent);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(ispresent.isChecked()){
-                        ispresent.setChecked(false);
-                        std.decrement_attendance();
-                    }
-                    else{
-                        ispresent.setChecked(true);
-                        std.increment_attendance();
-                    }
-                }
-            });*/
             return view;
         }
     }

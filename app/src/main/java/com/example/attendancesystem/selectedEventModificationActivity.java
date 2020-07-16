@@ -71,6 +71,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
+        listView.setSmoothScrollbarEnabled(true);
         listView.setEmptyView(findViewById(R.id.empty_message));
         current_event = gson.fromJson(json, event.class);
         Button add_person=findViewById(R.id.add_person_button);
@@ -86,6 +87,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         organisationview.setText(current_event.getOrganisation());
         ImageButton delete_button=findViewById(R.id.deleteButton);
         try {
+            final ProgressDialog waiting;
+            waiting = new ProgressDialog(selectedEventModificationActivity.this);
+            waiting.setMessage("Please Wait");
+            waiting.setCancelable(false);
+            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = database.getReference("Persons");
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,8 +101,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     try {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
-                            //Iterable<DataSnapshot> data = child.getChildren();
-                            //for (DataSnapshot Class : data) {
                             Person person = child.getValue(Person.class);
                             if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
@@ -104,6 +109,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         }
+                        waiting.dismiss();
                         TextView person_count=findViewById(R.id.display_total_people);
                         person_count.setText(Long.toString(count));
                     } catch (Exception e) {
@@ -195,34 +201,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                    /*if (!(input.getText().toString().equals(current_event.getName().toUpperCase()) || input.getText().toString().equals(""))) {
-                                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.exists()) {
-                                                    waiting.dismiss();
-                                                    Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
-
-                                                    finish();
-                                                } else {
-                                                    //event ev = dataSnapshot.getValue(event.class);
-                                                    databaseReference.getRef().removeValue();
-                                                    DatabaseReference dbreference = database.getReference("events/" + current_event.getOrganisation().toUpperCase() + "/" + current_event.getName().toUpperCase() + ", " + current_event.getCoordinator_email().replace(".", "").toUpperCase());
-                                                    dbreference.removeValue();
-                                                    current_event.setName(input.getText().toString().toUpperCase());
-                                                    databaseReference.setValue(current_event);
-                                                    waiting.dismiss();
-                                                    Toast.makeText(selectedEventModificationActivity.this, "Name changed successfully", Toast.LENGTH_SHORT).show();
-                                                    finish();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    }*/
                                 }
                             }
                         });
@@ -316,41 +294,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                    /*final ProgressDialog waiting;
-                                    databaseReference = database.getReference("events/" + input.getText().toString().toUpperCase() + "/" + current_event.getName().toUpperCase().toUpperCase() + ", " + current_event.getCoordinator_email().replace(".", "").toUpperCase());
-                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                                    waiting.setMessage("Please Wait");
-                                    waiting.setCancelable(false);
-                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                    waiting.show();
-                                    if (!(input.getText().toString().equals(current_event.getName().toUpperCase()) || input.getText().toString().equals(""))) {
-                                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.exists()) {
-                                                    waiting.dismiss();
-                                                    Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
-
-                                                    finish();
-                                                } else {
-                                                    //event ev = dataSnapshot.getValue(event.class);
-                                                    databaseReference.getRef().removeValue();
-                                                    DatabaseReference dbreference = database.getReference("events/" + current_event.getOrganisation().toUpperCase() + "/" + current_event.getName().toUpperCase() + ", " + current_event.getCoordinator_email().replace(".", "").toUpperCase());
-                                                    dbreference.removeValue();
-                                                    current_event.setOrganisation(input.getText().toString().toUpperCase());
-                                                    databaseReference.setValue(current_event);
-                                                    waiting.dismiss();
-                                                    Toast.makeText(selectedEventModificationActivity.this, "Orgnisation changed successfully", Toast.LENGTH_SHORT).show();
-                                                    finish();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    }*/
                                 }
                             }
                         });
@@ -436,8 +379,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                 final ArrayList<String> key=new ArrayList<>();
                                 for (DataSnapshot child : children) {
-                                    //Iterable<DataSnapshot> data = child.getChildren();
-                                    //for (DataSnapshot Class : data) {
                                     Person person = child.getValue(Person.class);
                                     if (person.getCoordinator_email().equals(current_event.getCoordinator_email()) && person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                         key.add(child.getKey());
@@ -537,7 +478,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     String json = gson.toJson(std);
                     pref.putString("Current Person", json);
                     pref.putString("Key",keys.get(position));
-                    pref.commit();
+                    pref.apply();
                     startActivity(new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class));
                 }
             });
