@@ -150,7 +150,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater.inflate(R.layout.event_list_view, null);
             final event std = arrayList.get(position);

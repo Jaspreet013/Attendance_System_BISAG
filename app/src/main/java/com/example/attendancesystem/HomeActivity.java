@@ -112,7 +112,6 @@ public class HomeActivity extends AppCompatActivity {
             SharedPreferences.Editor editor=get_user.edit();
             editor.remove("Current User");
             editor.apply();
-            editor.commit();
             finish();
             startActivity(new Intent(HomeActivity.this,MainActivity.class));
         }

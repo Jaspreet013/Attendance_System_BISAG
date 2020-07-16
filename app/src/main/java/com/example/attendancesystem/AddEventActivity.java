@@ -28,13 +28,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity {
     EditText event_name;
     EditText event_organisation;
     Button button;
     SharedPreferences preferences;
-    FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
+   // FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     @Override
@@ -97,9 +101,31 @@ public class AddEventActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.setPositiveButton("Ok", null);
                                     builder.show();
-                                    firebaseAuth.signOut();
+                                    //firebaseAuth.signOut();
                                 }
                                 else{
+                                    SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
+                                    Gson gson = new Gson();
+                                    String json = prefs.getString("users", null);
+                                    Type type = new TypeToken<ArrayList<Person>>() {}.getType();
+                                    ArrayList<Person> person=gson.fromJson(json, type);
+                                    Log.e("p","1");
+                                    if(person!=null){
+                                        Log.e("p","2");
+                                        for(Person temp:person) {
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons");
+                                            String key = dbreference.push().getKey();
+                                            temp.setAttendance(0);
+                                            temp.setAttendance_total(0);
+                                            temp.setEvent_name(event_name.getText().toString().toUpperCase());
+                                            temp.setOrganisation(event_organisation.getText().toString().toUpperCase());
+                                            dbreference.child(key).setValue(temp);
+                                        }
+                                        SharedPreferences.Editor edit=prefs.edit();
+                                        edit.remove("users");
+                                        edit.clear();
+                                        edit.apply();
+                                    }
                                     progressDialog.dismiss();
                                     String key=databaseReference.push().getKey();
                                     databaseReference.child(key).setValue(ev);
@@ -123,5 +149,15 @@ public class AddEventActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
+        SharedPreferences.Editor edit=prefs.edit();
+        edit.remove("users");
+        edit.clear();
+        edit.apply();
+        super.onBackPressed();
     }
 }

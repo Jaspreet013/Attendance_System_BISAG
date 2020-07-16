@@ -75,11 +75,42 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView.setEmptyView(findViewById(R.id.empty_message));
         current_event = gson.fromJson(json, event.class);
         Button add_person=findViewById(R.id.add_person_button);
+        Button create_event=findViewById(R.id.create_new_event);
         add_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(selectedEventModificationActivity.this,AddPerson.class));
                 finish();
+            }
+        });
+        create_event.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isNetworkAvailable()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                    builder.setTitle("No Internet");
+                    builder.setMessage("Please check your internet connection");
+                    builder.setPositiveButton("Ok", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else if(arrayList.isEmpty()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                    builder.setTitle("There are no currently people in this event");
+                    builder.setPositiveButton("Ok", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else {
+                    SharedPreferences prefs = getSharedPreferences("All users", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(arrayList);
+                    editor.putString("users", json);
+                    editor.apply();
+                    startActivity(new Intent(selectedEventModificationActivity.this, AddEventActivity.class));
+                    finish();
+                }
             }
         });
         final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation);
