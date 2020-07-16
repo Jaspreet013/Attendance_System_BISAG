@@ -132,6 +132,10 @@ public class AddPerson extends AppCompatActivity {
                                     databaseReference.child(key).setValue(new Person(fname.getText().toString(), lname.getText().toString(), email.getText().toString(), id.getText().toString(), current_event.getName(), current_event.getOrganisation()));
                                     progressDialog.dismiss();
                                     builder.setTitle("Person Added");
+                                    fname.getText().clear();
+                                    lname.getText().clear();
+                                    email.getText().clear();
+                                    id.getText().clear();
                                 }
                                 else{
                                     progressDialog.dismiss();

@@ -109,12 +109,7 @@ public class AttendanceActivity extends AppCompatActivity {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(AttendanceActivity.this);
             waiting.setMessage("Please Wait");
-            waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
+            waiting.setCancelable(false);
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -214,7 +209,7 @@ public class AttendanceActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         arrayList.clear();
+        finish();
     }
 }

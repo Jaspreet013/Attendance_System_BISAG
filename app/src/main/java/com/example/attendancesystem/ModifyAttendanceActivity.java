@@ -106,4 +106,9 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

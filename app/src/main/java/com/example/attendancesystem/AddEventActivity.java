@@ -121,6 +121,7 @@ public class AddEventActivity extends AppCompatActivity {
                                         edit.clear();
                                         edit.apply();
                                     }
+                                    Toast.makeText(AddEventActivity.this,"Event Added",Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
                                     String key=databaseReference.push().getKey();
                                     databaseReference.child(key).setValue(ev);

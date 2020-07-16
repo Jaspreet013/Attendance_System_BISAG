@@ -75,12 +75,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 final ProgressDialog waiting;
                 waiting = new ProgressDialog(SelectSubjectActivity.this);
                 waiting.setMessage("Please Wait");
-                waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        finish();
-                    }
-                });
+                waiting.setCancelable(false);
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -162,5 +157,10 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
