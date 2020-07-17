@@ -124,12 +124,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(selectedEventModificationActivity.this);
             waiting.setMessage("Please Wait");
-            waiting.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
+            waiting.setCancelable(false);
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
