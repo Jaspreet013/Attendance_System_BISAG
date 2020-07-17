@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -67,36 +68,51 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Long.parseLong(Attendance.getText().toString())>Long.parseLong(Total_Attendance.getText().toString())){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                    builder.setTitle("Attendance cannot be more than Total Attendance");
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Ok",null);
-                    builder.show();
-                }
-                else if(!isNetworkAvailable()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
-                }
-                else if(Long.parseLong(Attendance.getText().toString())!=current_person.getAttendance() || Long.parseLong(Total_Attendance.getText().toString())!=current_person.getAttendance_total()){
-                    ProgressDialog dialog=new ProgressDialog(ModifyAttendanceActivity.this);
-                    dialog.setMessage("Please Wait");
-                    dialog.setCancelable(false);
-                    dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    dialog.show();
-                    FirebaseDatabase database=FirebaseDatabase.getInstance();
-                    DatabaseReference databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
-                    current_person.setAttendance(Long.parseLong(Attendance.getText().toString()));
-                    current_person.setAttendance_total(Long.parseLong(Total_Attendance.getText().toString()));
-                    databaseReference.child(key).setValue(current_person);
-                    dialog.dismiss();
-                    Toast.makeText(ModifyAttendanceActivity.this,"Attendance data changed successfully",Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                builder.setTitle("Are you sure you want to update attendance?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(Long.parseLong(Attendance.getText().toString())>Long.parseLong(Total_Attendance.getText().toString())){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Attendance cannot be more than Total Attendance");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok",null);
+                            builder.show();
+                        }
+                        else if(!isNetworkAvailable()){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(Long.parseLong(Attendance.getText().toString())!=current_person.getAttendance() || Long.parseLong(Total_Attendance.getText().toString())!=current_person.getAttendance_total()) {
+                            ProgressDialog progressDialog = new ProgressDialog(ModifyAttendanceActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                            current_person.setAttendance(Long.parseLong(Attendance.getText().toString()));
+                            current_person.setAttendance_total(Long.parseLong(Total_Attendance.getText().toString()));
+                            databaseReference.child(key).setValue(current_person);
+                            progressDialog.dismiss();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Attendance data changed successfully",Toast.LENGTH_SHORT).show();
+                        }
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                builder.show();
             }
         });
     }
@@ -105,10 +121,5 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 }

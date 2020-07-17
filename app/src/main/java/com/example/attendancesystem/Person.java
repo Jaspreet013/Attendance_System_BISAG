@@ -3,6 +3,7 @@ package com.example.attendancesystem;
 public class Person {
         private String person_email,person_ID,fname,lname,event_name,organisation;
         private long attendance=0,attendance_total=0;
+        private Boolean ispresent=null;
         public Person(){}
         public Person(String fname,String lname,String person_email,String person_ID,String event_name,String organisation){
             this.fname=fname;
@@ -31,4 +32,7 @@ public class Person {
     public void setAttendance_total(long attendance_total) { this.attendance_total = attendance_total; }
     public void setOrganisation(String organisation) { this.organisation = organisation; }
     public String getOrganisation() { return organisation; }
+    public Boolean getIspresent() { return ispresent; }
+    public void setIspresent(Boolean ispresent) { this.ispresent = ispresent; }
+    public void setnull(){ this.ispresent=null; }
 }

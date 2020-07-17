@@ -40,7 +40,6 @@ import java.util.ArrayList;
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
-    ArrayList<Boolean> booleans=new ArrayList<>();
     ListView listView;
     SharedPreferences get_event,get_user;
     event current_event;
@@ -65,6 +64,7 @@ public class AttendanceActivity extends AppCompatActivity {
         adapter=new MyBaseAdapter(AttendanceActivity.this);
         listView=findViewById(R.id.list_view3);
         listView.setSmoothScrollbarEnabled(true);
+        listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         Button submit=findViewById(R.id.attendance_submit_button);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -85,19 +85,18 @@ public class AttendanceActivity extends AppCompatActivity {
                             waiting.show();
                             for(int i=0;i<arrayList.size();i++){
                                 arrayList.get(i).increment_attendance_total();
-                                if(booleans.get(i)){
+                                if(arrayList.get(i).getIspresent()){
+                                    arrayList.get(i).setnull();
                                     arrayList.get(i).increment_attendance();
                                 }
                             }
-                            Log.e("In f","3");
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                             for(int i=0;i<keys.size();i++){
-                                Log.e("In f","4");
                                 databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
                             }
-                            Log.e("In f","5");
                             waiting.dismiss();
+                            Toast.makeText(AttendanceActivity.this,"Attendance submitted successfully",Toast.LENGTH_SHORT).show();
                             finish();
                         } catch (Exception e) {
 
@@ -132,8 +131,8 @@ public class AttendanceActivity extends AppCompatActivity {
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
                             if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                                person.setIspresent(false);
                                 arrayList.add(person);
-                                booleans.add(false);
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
@@ -197,22 +196,35 @@ public class AttendanceActivity extends AppCompatActivity {
             TextView tv2 = view.findViewById(R.id.disp_id);
             tv2.setText(arrayList.get(position).getPerson_ID());
             final CheckBox ispresent = view.findViewById(R.id.ispresent);
-            if(booleans.get(position)){
+            if(arrayList.get(position).getIspresent()){
                 ispresent.setChecked(true);
             }
-            view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (booleans.get(position)) {
-                            ispresent.setChecked(false);
-                            booleans.set(position,false);
-                        }
-                        else {
-                            ispresent.setChecked(true);
-                            booleans.set(position,true);
-                        }
+            ispresent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (arrayList.get(position).getIspresent()) {
+                        ispresent.setChecked(false);
+                        arrayList.get(position).setIspresent(false);
                     }
-                });
+                    else {
+                        ispresent.setChecked(true);
+                        arrayList.get(position).setIspresent(true);
+                    }
+                }
+            });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (arrayList.get(position).getIspresent()) {
+                        ispresent.setChecked(false);
+                        arrayList.get(position).setIspresent(false);
+                    }
+                    else {
+                        ispresent.setChecked(true);
+                        arrayList.get(position).setIspresent(true);
+                    }
+                }
+            });
             return view;
         }
     }
@@ -221,5 +233,21 @@ public class AttendanceActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(AttendanceActivity.this);
+        builder.setMessage("The Attendance will not be saved");
+        builder.setTitle("Are you sure you want to go back?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel",null);
+        builder.show();
     }
 }
