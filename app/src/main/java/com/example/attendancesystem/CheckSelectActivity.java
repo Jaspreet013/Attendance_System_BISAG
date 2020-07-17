@@ -136,13 +136,28 @@ public class CheckSelectActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    get_event=getSharedPreferences("Events",MODE_PRIVATE);
-                    SharedPreferences.Editor prefsEditor = get_event.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(std);
-                    prefsEditor.putString("Current event", json);
-                    prefsEditor.apply();
-                    startActivity(new Intent(CheckSelectActivity.this,CheckAttendanceActivity.class));
+                    if (!isNetworkAvailable()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CheckSelectActivity.this);
+                        builder.setTitle("No Internet");
+                        builder.setMessage("Please check your internet connection");
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        builder.setCancelable(false);
+                        builder.show();
+                    }
+                    else {
+                        get_event = getSharedPreferences("Events", MODE_PRIVATE);
+                        SharedPreferences.Editor prefsEditor = get_event.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(std);
+                        prefsEditor.putString("Current event", json);
+                        prefsEditor.apply();
+                        startActivity(new Intent(CheckSelectActivity.this, CheckAttendanceActivity.class));
+                    }
                 }
             });
             return view;

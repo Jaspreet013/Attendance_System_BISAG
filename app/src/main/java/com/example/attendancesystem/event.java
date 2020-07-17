@@ -1,9 +1,5 @@
 package com.example.attendancesystem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class event {
     private String name,organisation;
     public event(){}

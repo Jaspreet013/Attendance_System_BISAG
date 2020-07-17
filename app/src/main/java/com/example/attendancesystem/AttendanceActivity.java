@@ -1,15 +1,8 @@
 package com.example.attendancesystem;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -22,19 +15,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
 public class AttendanceActivity extends AppCompatActivity {
@@ -76,30 +67,40 @@ public class AttendanceActivity extends AppCompatActivity {
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            final ProgressDialog waiting;
-                            waiting = new ProgressDialog(AttendanceActivity.this);
-                            waiting.setMessage("Please Wait");
-                            waiting.setCancelable(false);
-                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            waiting.show();
-                            for(int i=0;i<arrayList.size();i++){
-                                arrayList.get(i).increment_attendance_total();
-                                if(arrayList.get(i).getIspresent()){
-                                    arrayList.get(i).setnull();
-                                    arrayList.get(i).increment_attendance();
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection and try again");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else {
+                            try {
+                                final ProgressDialog waiting;
+                                waiting = new ProgressDialog(AttendanceActivity.this);
+                                waiting.setMessage("Please Wait");
+                                waiting.setCancelable(false);
+                                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                waiting.show();
+                                for (int i = 0; i < arrayList.size(); i++) {
+                                    arrayList.get(i).increment_attendance_total();
+                                    if (arrayList.get(i).getIspresent()) {
+                                        arrayList.get(i).setnull();
+                                        arrayList.get(i).increment_attendance();
+                                    }
                                 }
-                            }
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
-                            for(int i=0;i<keys.size();i++){
-                                databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
-                            }
-                            waiting.dismiss();
-                            Toast.makeText(AttendanceActivity.this,"Attendance submitted successfully",Toast.LENGTH_SHORT).show();
-                            finish();
-                        } catch (Exception e) {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                for (int i = 0; i < keys.size(); i++) {
+                                    databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
+                                }
+                                waiting.dismiss();
+                                Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } catch (Exception e) {
 
+                            }
                         }
                     }
                 });

@@ -1,10 +1,4 @@
 package com.example.attendancesystem;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,29 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.database.ChildEventListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
-
 public class selectedEventModificationActivity extends AppCompatActivity {
     SharedPreferences preferences,get_user;
     String id="";
@@ -127,34 +115,46 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             waiting.setCancelable(false);
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    try {
-                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                        for (DataSnapshot child : children) {
-                            Person person = child.getValue(Person.class);
-                            if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
-                                arrayList.add(person);
-                                keys.add(child.getKey());
-                                count++;
-                                adapter.notifyDataSetChanged();
+            if (!isNetworkAvailable()) {
+                waiting.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                builder.setTitle("No Internet");
+                builder.setMessage("Please check your internet connection");
+                builder.setPositiveButton("Ok", null);
+                builder.setCancelable(false);
+                builder.show();
+            }
+            else {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                            for (DataSnapshot child : children) {
+                                Person person = child.getValue(Person.class);
+                                if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                                    arrayList.add(person);
+                                    keys.add(child.getKey());
+                                    count++;
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
+                            waiting.dismiss();
+                            TextView person_count = findViewById(R.id.display_total_people);
+                            person_count.setText(Long.toString(count));
+                        } catch (Exception e) {
+                            Log.e("Exception : ", e.getMessage());
                         }
-                        waiting.dismiss();
-                        TextView person_count=findViewById(R.id.display_total_people);
-                        person_count.setText(Long.toString(count));
-                    } catch (Exception e) {
-                        Log.e("Exception : ", e.getMessage());
                     }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } catch (Exception e) {
 
         }
@@ -440,36 +440,47 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     });
                     builder.show();
                 }
-                try {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            try {
-                                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                                final ArrayList<String> key=new ArrayList<>();
-                                for (DataSnapshot child : children) {
-                                    Person person = child.getValue(Person.class);
-                                    if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
-                                        key.add(child.getKey());
-                                        adapter.notifyDataSetChanged();
+                if (!isNetworkAvailable()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                    builder.setTitle("No Internet");
+                    builder.setMessage("Please check your internet connection");
+                    builder.setPositiveButton("Ok", null);
+                    builder.setCancelable(false);
+                    builder.show();
+                }
+                else {
+                    try {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                try {
+                                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                    final ArrayList<String> key = new ArrayList<>();
+                                    for (DataSnapshot child : children) {
+                                        Person person = child.getValue(Person.class);
+                                        if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                                            key.add(child.getKey());
+                                            adapter.notifyDataSetChanged();
+                                        }
                                     }
+                                    for (String del : key) {
+                                        databaseReference.child(del).removeValue();
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("Exception : ", e.getMessage());
                                 }
-                                for(String del:key){
-                                    databaseReference.child(del).removeValue();
-                                }
-                            } catch (Exception e) {
-                                Log.e("Exception : ", e.getMessage());
                             }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
-                } catch (Exception e) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                            }
+                        });
+                    } catch (Exception e) {
+
+                    }
                 }
             }
         });
@@ -517,27 +528,37 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            final ProgressDialog waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                            waiting.setMessage("Please Wait");
-                            waiting.setCancelable(false);
-                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            waiting.show();
-                            FirebaseDatabase database=FirebaseDatabase.getInstance();
-                            final DatabaseReference reference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
-                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                    reference.child(keys.get(position)).removeValue();
-                                    waiting.dismiss();
-                                    recreate();
-                                }
+                            if (!isNetworkAvailable()) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                                builder.setTitle("No Internet");
+                                builder.setMessage("Please check your internet connection");
+                                builder.setPositiveButton("Ok", null);
+                                builder.setCancelable(false);
+                                builder.show();
+                            }
+                            else {
+                                final ProgressDialog waiting = new ProgressDialog(selectedEventModificationActivity.this);
+                                waiting.setMessage("Please Wait");
+                                waiting.setCancelable(false);
+                                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                waiting.show();
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final DatabaseReference reference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                        reference.child(keys.get(position)).removeValue();
+                                        waiting.dismiss();
+                                        recreate();
+                                    }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
+                            }
                         }
                     });
                     builder.setCancelable(false);

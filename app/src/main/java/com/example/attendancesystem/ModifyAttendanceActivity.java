@@ -1,7 +1,4 @@
 package com.example.attendancesystem;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,13 +7,13 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -74,7 +71,14 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(Long.parseLong(Attendance.getText().toString())>Long.parseLong(Total_Attendance.getText().toString())){
+                        if(TextUtils.isEmpty(Attendance.getText().toString()) || TextUtils.isEmpty(Total_Attendance.getText().toString())){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Attendance or Total Attendance cannot be blank");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok",null);
+                            builder.show();
+                        }
+                        else if(Long.parseLong(Attendance.getText().toString())>Long.parseLong(Total_Attendance.getText().toString())){
                             AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Attendance cannot be more than Total Attendance");
                             builder.setCancelable(false);
@@ -102,8 +106,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             databaseReference.child(key).setValue(current_person);
                             progressDialog.dismiss();
                             Toast.makeText(ModifyAttendanceActivity.this,"Attendance data changed successfully",Toast.LENGTH_SHORT).show();
+                            finish();
                         }
-                        finish();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
