@@ -48,7 +48,6 @@ public class AddEventActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String temp = event_name.getText().toString().toLowerCase();
                 if(!isNetworkAvailable()){
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddEventActivity.this);
                     builder.setTitle("No Internet");

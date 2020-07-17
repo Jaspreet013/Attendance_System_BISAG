@@ -47,6 +47,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
+        listView.setVerticalScrollBarEnabled(false);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

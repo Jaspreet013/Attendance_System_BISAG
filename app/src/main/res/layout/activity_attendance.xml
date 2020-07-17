@@ -56,6 +56,6 @@
             android:background="@drawable/rounded_button"
             android:layout_below="@+id/layout1"
             android:textSize="20sp"
-            android:text="Submit Attendance" />
+            android:text="Save Attendance" />
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

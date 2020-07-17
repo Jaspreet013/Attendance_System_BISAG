@@ -53,6 +53,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         adapter=new MyBaseAdapter(CheckAttendanceActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
+        listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         if (!isNetworkAvailable()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);

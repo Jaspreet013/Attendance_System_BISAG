@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,13 +28,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_attendance);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         get_person = getSharedPreferences("Person",MODE_PRIVATE);
         Gson gson=new Gson();
         String json=get_person.getString("Current Person","");
         current_person=gson.fromJson(json,Person.class);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson1=new Gson();
-        TextView person_name=findViewById(R.id.message_person_name);
         String json1=get_user.getString("Current User","");
         final User current_user=gson1.fromJson(json1,User.class);
         key=get_person.getString("Key","");

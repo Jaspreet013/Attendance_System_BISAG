@@ -50,13 +50,8 @@ public class ModifyEventActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
+        listView.setVerticalScrollBarEnabled(false);
         listView.setEmptyView(findViewById(R.id.modification_empty_message));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("String is", "Hello Dude");
-            }
-        });
         Button add_event = findViewById(R.id.add_event_button);
         add_event.setOnClickListener(new View.OnClickListener() {
             @Override
