@@ -5,4 +5,5 @@
     <color name="colorAccent">#126880</color>
     <color name="buttonColor">#111185</color>
     <color name="pureBlueColor">#0000FF</color>
+    <color name="backgroundColor">#ECECEC</color>
 </resources>

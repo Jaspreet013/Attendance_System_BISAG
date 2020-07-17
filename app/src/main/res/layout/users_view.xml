@@ -5,8 +5,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="10dp"
-    android:paddingTop="10dp"
     android:weightSum="1">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,9 +16,8 @@
             android:id="@+id/disp_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:text=""
+            android:layout_marginTop="4dp"
+            android:text="dewdwe"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -32,10 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text=""
+            android:text="dwedwe"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/disp_name"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/disp_name"
             app:layout_constraintVertical_bias="0.368" />
 
@@ -44,8 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             android:backgroundTint="@color/cardview_dark_background"
             android:src="@android:drawable/ic_menu_delete"
             app:layout_constraintEnd_toEndOf="parent"

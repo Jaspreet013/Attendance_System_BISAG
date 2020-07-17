@@ -53,7 +53,6 @@ public class AttendanceActivity extends AppCompatActivity {
         current_event=gson.fromJson(json,event.class);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson1=new Gson();
-        TextView person_name=findViewById(R.id.message_person_name);
         String json1=get_user.getString("Current User","");
         final User current_user=gson1.fromJson(json1,User.class);
         TextView set_event_name=findViewById(R.id.message_event_name);
@@ -64,6 +63,7 @@ public class AttendanceActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
+        listView.setBackgroundResource(R.drawable.rounded_corners);
         Button submit=findViewById(R.id.attendance_submit_button);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

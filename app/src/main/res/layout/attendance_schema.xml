@@ -12,37 +12,32 @@
             android:id="@+id/check_name"
             android:text=""
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_marginLeft="15dp"/>
+            android:textStyle="bold" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/check_id"
-            android:layout_below="@id/check_name"
-            android:layout_marginLeft="15dp"/>
+            android:layout_below="@id/check_name" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/check_email"
-            android:layout_below="@id/check_id"
-            android:layout_marginLeft="15dp"/>
+            android:layout_below="@id/check_id" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/check_attendance"
-            android:layout_below="@id/check_email"
-            android:layout_marginLeft="15dp"/>
+            android:layout_below="@id/check_email" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/check_total_attendance"
-            android:layout_below="@id/check_attendance"
-            android:layout_marginLeft="15dp"/>
+            android:layout_below="@id/check_attendance" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/attendance_percent"
             android:layout_below="@id/check_total_attendance"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginBottom="5dp"/>
     </RelativeLayout>
 </LinearLayout>
