@@ -89,6 +89,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             }
                         }
                         waiting.dismiss();
+                        Log.e(Integer.toString(listView.getChildCount()),Integer.toString(arrayList.size()));
                         if(arrayList.size()==0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
                             builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");

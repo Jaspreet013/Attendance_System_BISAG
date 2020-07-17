@@ -2,7 +2,9 @@ package com.example.attendancesystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
+    ArrayList<Boolean> booleans=new ArrayList<>();
     ListView listView;
     SharedPreferences get_event,get_user;
     event current_event;
@@ -61,7 +64,6 @@ public class AttendanceActivity extends AppCompatActivity {
         set_organisation_name.setText(current_event.getOrganisation());
         adapter=new MyBaseAdapter(AttendanceActivity.this);
         listView=findViewById(R.id.list_view3);
-        listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         Button submit=findViewById(R.id.attendance_submit_button);
@@ -75,19 +77,27 @@ public class AttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
+                            final ProgressDialog waiting;
+                            waiting = new ProgressDialog(AttendanceActivity.this);
+                            waiting.setMessage("Please Wait");
+                            waiting.setCancelable(false);
+                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            waiting.show();
                             for(int i=0;i<arrayList.size();i++){
-                                View newView=listView.getChildAt(i);
                                 arrayList.get(i).increment_attendance_total();
-                                CheckBox cb=newView.findViewById(R.id.ispresent);
-                                if(cb.isChecked()){
+                                if(booleans.get(i)){
                                     arrayList.get(i).increment_attendance();
                                 }
                             }
+                            Log.e("In f","3");
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                             for(int i=0;i<keys.size();i++){
+                                Log.e("In f","4");
                                 databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
                             }
+                            Log.e("In f","5");
+                            waiting.dismiss();
                             finish();
                         } catch (Exception e) {
 
@@ -123,11 +133,13 @@ public class AttendanceActivity extends AppCompatActivity {
                             Person person = child.getValue(Person.class);
                             if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                 arrayList.add(person);
+                                booleans.add(false);
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
                         waiting.dismiss();
+                        listView.setAdapter(adapter);
                         if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
                             builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
@@ -176,24 +188,28 @@ public class AttendanceActivity extends AppCompatActivity {
         public long getItemId(int position) {
             return position;
         }
-
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
-            View view = inflater.inflate(R.layout.person_attendance, null);
+            View view = inflater.inflate(R.layout.person_attendance,null);
             TextView tv1 = view.findViewById(R.id.disp_name);
             tv1.setText(arrayList.get(position).getFname() + " " + arrayList.get(position).getLname());
             TextView tv2 = view.findViewById(R.id.disp_id);
             tv2.setText(arrayList.get(position).getPerson_ID());
             final CheckBox ispresent = view.findViewById(R.id.ispresent);
+            if(booleans.get(position)){
+                ispresent.setChecked(true);
+            }
             view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (ispresent.isChecked()) {
+                        if (booleans.get(position)) {
                             ispresent.setChecked(false);
+                            booleans.set(position,false);
                         }
                         else {
                             ispresent.setChecked(true);
+                            booleans.set(position,true);
                         }
                     }
                 });
@@ -205,11 +221,5 @@ public class AttendanceActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onBackPressed() {
-        arrayList.clear();
-        finish();
     }
 }
