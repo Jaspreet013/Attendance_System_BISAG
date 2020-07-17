@@ -186,9 +186,9 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
-                                else if(input.getText().toString().length()>25){
+                                else if(input.getText().toString().length()>22){
                                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                    builder.setTitle("Length cannot be more than 25");
+                                    builder.setTitle("Length cannot be more than 22");
                                     builder.setPositiveButton("Ok", null);
                                     builder.setCancelable(false);
                                     builder.show();
@@ -298,9 +298,9 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
-                                else if(input.getText().toString().length()>25){
+                                else if(input.getText().toString().length()>22){
                                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                    builder.setTitle("Length cannot be more than 25");
+                                    builder.setTitle("Length cannot be more than 22");
                                     builder.setPositiveButton("Ok", null);
                                     builder.setCancelable(false);
                                     builder.show();
