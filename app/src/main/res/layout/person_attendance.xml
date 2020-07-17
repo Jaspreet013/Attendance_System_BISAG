@@ -35,16 +35,15 @@
 
         <CheckBox
             android:id="@+id/ispresent"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="@color/cardview_dark_background"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
             android:src="@android:drawable/ic_menu_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.4" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
