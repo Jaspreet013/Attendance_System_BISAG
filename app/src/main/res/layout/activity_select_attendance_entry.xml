@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ModifyEventActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/select_subject_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Entry"
+            android:textStyle="bold"
+            android:textSize="45sp"/>
+
+        <LinearLayout
+            android:layout_below="@id/select_subject_text"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/layout4"
+            android:orientation="vertical">
+
+            <ListView
+                android:padding="15dp"
+                android:layout_height="600dp"
+                android:layout_width="match_parent"
+                android:id="@+id/list_view3"
+                android:layout_gravity="center_horizontal"
+                android:nestedScrollingEnabled="true" />
+            <TextView
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="280dp"
+                android:layout_marginBottom="280dp"
+                android:id="@+id/select_empty_message"
+                android:textSize="20sp"
+                android:text="Your Entries will be displayed here once you take attendances"
+                android:textAlignment="center"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>

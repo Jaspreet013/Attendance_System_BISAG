@@ -4,34 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ModifyAttendanceActivity">
+    tools:context=".AttendanceInfoActivity">
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
-            android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:text="Fname"
-            android:textAlignment="center"
-            android:id="@+id/disp_user_fname"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="45dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/disp_user_fname"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:text="Lname"
+            android:text="Name"
             android:textAlignment="center"
-            android:id="@+id/disp_user_lname"/>
+            android:id="@+id/disp_user_name"/>
 
         <TextView
             android:layout_marginLeft="15dp"
@@ -40,7 +28,8 @@
             android:text="Person ID : "
             android:textSize="20sp"
             android:id="@+id/disp_user_id"
-            android:layout_below="@id/disp_user_fname"/>
+            android:layout_below="@id/disp_user_name"/>
+
         <TextView
             android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
@@ -50,8 +39,35 @@
             android:textSize="20sp"
             android:layout_below="@+id/disp_user_id"/>
 
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/disp_user_attendance"
+            android:text="Attendance : "
+            android:textSize="20sp"
+            android:layout_below="@+id/disp_user_email"/>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/disp_user_total_attendance"
+            android:text="Total Attendance : "
+            android:textSize="20sp"
+            android:layout_below="@+id/disp_user_attendance"/>
+
+        <TextView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/disp_user_percent_attendance"
+            android:text="Attendance (in %) : "
+            android:textSize="20sp"
+            android:layout_below="@+id/disp_user_total_attendance"/>
+
         <LinearLayout
-            android:layout_below="@id/disp_user_email"
+            android:layout_below="@id/disp_user_percent_attendance"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
@@ -62,27 +78,12 @@
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="450dp"
+                android:layout_height="500dp"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view"
                 android:layout_gravity="center_horizontal"
                 android:nestedScrollingEnabled="true"/>
 
         </LinearLayout>
-
-        <Button
-            android:shadowColor="#FFFFFF"
-            android:layout_marginTop="5dp"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/update_attendance"
-            android:layout_width="350dp"
-            android:layout_height="60dp"
-            android:text="Update Attendance"
-            android:textSize="20sp"
-            android:textColor="#FFFFFF"
-            android:layout_below="@id/layout1"
-            android:background="@drawable/rounded_button"/>
-
     </RelativeLayout>
-
 </androidx.core.widget.NestedScrollView>

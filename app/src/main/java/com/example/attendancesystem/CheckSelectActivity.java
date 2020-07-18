@@ -157,7 +157,7 @@ public class CheckSelectActivity extends AppCompatActivity {
                         String json = gson.toJson(std);
                         prefsEditor.putString("Current event", json);
                         prefsEditor.apply();
-                        startActivity(new Intent(CheckSelectActivity.this, CheckAttendanceActivity.class));
+                        startActivity(new Intent(CheckSelectActivity.this, SelectAttendanceEntryActivity.class));
                     }
                 }
             });

@@ -1,7 +1,11 @@
 package com.example.attendancesystem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class event {
     private String name,organisation;
+    public HashMap<String,Long> dates = new HashMap<>();
     public event(){}
     public event(String name,String organisation)
     {

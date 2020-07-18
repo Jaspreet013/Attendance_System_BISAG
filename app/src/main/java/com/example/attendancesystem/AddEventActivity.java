@@ -104,6 +104,7 @@ public class AddEventActivity extends AppCompatActivity {
                                             String key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);
+                                            temp.dates.clear();
                                             temp.setEvent_name(event_name.getText().toString().toUpperCase());
                                             temp.setOrganisation(event_organisation.getText().toString().toUpperCase());
                                             dbreference.child(key).setValue(temp);

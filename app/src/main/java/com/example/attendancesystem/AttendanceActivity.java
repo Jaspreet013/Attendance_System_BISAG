@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -26,11 +25,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
+    String key;
     ListView listView;
     SharedPreferences get_event,get_user;
     event current_event;
@@ -47,6 +49,7 @@ public class AttendanceActivity extends AppCompatActivity {
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson1=new Gson();
         String json1=get_user.getString("Current User","");
+        key=get_event.getString("Key","");
         final User current_user=gson1.fromJson(json1,User.class);
         TextView set_event_name=findViewById(R.id.message_event_name);
         TextView set_organisation_name=findViewById(R.id.message_organisation_name);
@@ -83,21 +86,40 @@ public class AttendanceActivity extends AppCompatActivity {
                                 waiting.setCancelable(false);
                                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 waiting.show();
-                                for (int i = 0; i < arrayList.size(); i++) {
-                                    arrayList.get(i).increment_attendance_total();
-                                    if (arrayList.get(i).getIspresent()) {
-                                        arrayList.get(i).setnull();
-                                        arrayList.get(i).increment_attendance();
-                                    }
-                                }
+                                Date date=new Date();
+                                SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+                                current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
+                                databaseReference.child(key).setValue(current_event);
+                                //Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
+                                for (int i = 0; i<arrayList.size(); i++) {
+                                    if (arrayList.get(i).getIspresent()==true) {
+                                        arrayList.get(i).dates.put(datef.format(date),"Present");
+                                    }
+                                    else{
+                                        arrayList.get(i).dates.put(datef.format(date),"Absent");
+                                    }
+                                    arrayList.get(i).setAttendance(getPresentCount(i));
+                                    arrayList.get(i).setnull();
+                                    arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
+                                }
+                                DatabaseReference dbreference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
                                 for (int i = 0; i < keys.size(); i++) {
-                                    databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
+                                    dbreference.child(keys.get(i)).setValue(arrayList.get(i));
                                 }
                                 waiting.dismiss();
-                                Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
-                                finish();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
+                                builder.setTitle("Attendance saved successfully");
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                builder.setCancelable(false);
+                                builder.show();
+                                //Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
 
                             }
@@ -166,6 +188,15 @@ public class AttendanceActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+    }
+    public long getPresentCount(int i){
+        long count=0;
+        for(String str:arrayList.get(i).dates.keySet()){
+            if(arrayList.get(i).dates.get(str).equals("Present")){
+                count+=1;
+            }
+        }
+        return count;
     }
     public class MyBaseAdapter extends BaseAdapter {
         Context context;

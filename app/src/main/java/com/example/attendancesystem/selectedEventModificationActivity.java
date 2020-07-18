@@ -31,10 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Set;
+
 public class selectedEventModificationActivity extends AppCompatActivity {
     SharedPreferences preferences,get_user;
     String id="";
-    String key;
+    String key,event_key;
     private ListView listView;
     User current_user;
     ArrayList<String> keys=new ArrayList<>();
@@ -54,6 +56,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         input = new EditText(selectedEventModificationActivity.this);
         Gson gson = new Gson();
         String json = preferences.getString("Current event", "");
+        event_key=preferences.getString("Key","");
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson1=new Gson();
         String json1=get_user.getString("Current User","");
@@ -429,7 +432,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     }
                                 });
                                 databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                /*databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         try {
@@ -455,8 +458,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
-                                });
-
+                                });*/
+                                for (String del : keys) {
+                                    databaseReference.child(del).removeValue();
+                                }
+                                Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
+                                finish();
                             } catch (Exception e) {
 
                             }
@@ -524,15 +531,50 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 waiting.setCancelable(false);
                                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 waiting.show();
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference reference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                        //Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                        final Set<String> events=arrayList.get(position).dates.keySet();
                                         reference.child(keys.get(position)).removeValue();
+                                        arrayList.remove(position);
+                                        final DatabaseReference dbreference=database.getReference("events/"+current_user.getEmail().replace(".",""));
+                                        dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                event ev=dataSnapshot.child(event_key).getValue(event.class);
+                                                for(String str:events){
+                                                    long l=ev.dates.get(str);
+                                                    Log.e("Key",str);
+                                                    l--;
+                                                    if(l==0){
+                                                        ev.dates.remove(str);
+                                                    }
+                                                    else {
+                                                        ev.dates.replace(str, l);
+                                                    }
+                                                }
+                                                SharedPreferences get_event = getSharedPreferences("Events", MODE_PRIVATE);
+                                                SharedPreferences.Editor prefsEditor = get_event.edit();
+                                                Gson gson = new Gson();
+                                                String json = gson.toJson(ev);
+                                                prefsEditor.putString("Current event", json);
+                                                prefsEditor.putString("Key",event_key);
+                                                prefsEditor.commit();
+                                                dbreference.child(event_key).setValue(ev);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
                                         waiting.dismiss();
-                                        recreate();
+                                        TextView person_count = findViewById(R.id.display_total_people);
+                                        person_count.setText(Integer.toString(arrayList.size()));
+                                        adapter.notifyDataSetChanged();
                                     }
 
                                     @Override
@@ -558,6 +600,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     pref.putString("Key",keys.get(position));
                     pref.apply();
                     startActivity(new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class));
+                    finish();
                 }
             });
             return view;

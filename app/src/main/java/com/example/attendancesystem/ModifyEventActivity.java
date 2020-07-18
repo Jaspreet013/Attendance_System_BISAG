@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -31,6 +30,7 @@ public class ModifyEventActivity extends AppCompatActivity {
     private ListView listView;
     SharedPreferences get_user;
     private ArrayList<event> arrayList = new ArrayList<>();
+    ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
     User current_user;
@@ -85,6 +85,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 event ev = child.getValue(event.class);
                                 arrayList.add(ev);
+                                keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                             total_events.setText(total_events.getText().toString() + arrayList.size());
@@ -146,6 +147,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     String json = gson.toJson(std);
                     prefsEditor.putString("Current event", json);
+                    prefsEditor.putString("Key",keys.get(position));
                     prefsEditor.commit();
                     startActivity(new Intent(ModifyEventActivity.this, selectedEventModificationActivity.class));
                     finish();

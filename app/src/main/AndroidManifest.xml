@@ -13,7 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity"
+        <activity android:name=".SelectAttendanceEntryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AttendanceInfoActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,7 +63,7 @@
         <activity
             android:name=".MainActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
