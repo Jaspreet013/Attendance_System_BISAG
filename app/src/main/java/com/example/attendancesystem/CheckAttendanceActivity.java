@@ -2,6 +2,7 @@ package com.example.attendancesystem;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -14,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -25,14 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
     SharedPreferences get_event,get_user;
     event current_event;
+    User current_user;
     ListView listView;
     ArrayList<Person> arrayList=new ArrayList<>();
+    ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
-    String key;
+    String key,event_key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +49,12 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
         key=get_event.getString("Key","");
+        event_key=get_event.getString("Event key","");
         current_event=gson.fromJson(json,event.class);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson1=new Gson();
         String json1=get_user.getString("Current User","");
-        User current_user=gson1.fromJson(json1,User.class);
+        current_user=gson1.fromJson(json1,User.class);
         TextView set_event_name=findViewById(R.id.check_event_name);
         TextView set_organisation_name=findViewById(R.id.check_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -57,6 +65,41 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
+        ImageButton delete=findViewById(R.id.deleteButton);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
+                builder.setTitle("Are you sure you want to delete this entry from this event?");
+                builder.setMessage("Deleted data will not be recovered");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try{
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference databaseReference=database.getReference("events/"+current_user.getEmail().replace(".",""));
+                            current_event.dates.remove(key);
+                            databaseReference.child(event_key).setValue(current_event);
+                            databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            for(int i=0;i<arrayList.size();i++){
+                                arrayList.get(i).dates.remove(key);
+                                arrayList.get(i).setAttendance(getPresentCount(i));
+                                arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
+                                databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
+                            }
+                            Toast.makeText(CheckAttendanceActivity.this, "Entry deleted successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        catch (Exception e){
+
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel",null);
+                builder.setCancelable(false);
+                builder.show();
+            }
+        });
         if (!isNetworkAvailable()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
             builder.setTitle("No Internet");
@@ -83,23 +126,11 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             Person person = child.getValue(Person.class);
                             if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.dates.containsKey(key)) {
                                 arrayList.add(person);
+                                keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
                         waiting.dismiss();
-                        /*if(arrayList.size()==0) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
-                            builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
-                            builder.setTitle("No people are in this event");
-                            builder.setCancelable(false);
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            });
-                            builder.show();
-                        }*/
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());
                     }
@@ -208,5 +239,14 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    public long getPresentCount (int i) {
+        long count = 0;
+        for (String str : arrayList.get(i).dates.keySet()) {
+            if (arrayList.get(i).dates.get(str).equals("Present")) {
+                count += 1;
+            }
+        }
+        return count;
     }
 }

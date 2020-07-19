@@ -311,6 +311,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 alertDialog.setTitle("Rename Email");
                 final EditText input = new EditText(ModifyAttendanceActivity.this);
                 input.setText(current_person.getPerson_email());
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                         ConstraintLayout.LayoutParams.MATCH_PARENT,
                         ConstraintLayout.LayoutParams.MATCH_PARENT);

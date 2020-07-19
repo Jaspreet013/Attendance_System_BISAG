@@ -35,6 +35,7 @@ public class CheckSelectActivity extends AppCompatActivity {
     private ListView listView;
     SharedPreferences get_user;
     private ArrayList<event> arrayList=new ArrayList<>();
+    ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
     @Override
@@ -85,6 +86,7 @@ public class CheckSelectActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 event ev = child.getValue(event.class);
                                 arrayList.add(ev);
+                                keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                             waiting.dismiss();
@@ -126,7 +128,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.event_list_view, null);
             final event std=arrayList.get(position);
@@ -156,8 +158,10 @@ public class CheckSelectActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         String json = gson.toJson(std);
                         prefsEditor.putString("Current event", json);
+                        prefsEditor.putString("Event key",keys.get(position));
                         prefsEditor.apply();
                         startActivity(new Intent(CheckSelectActivity.this, SelectAttendanceEntryActivity.class));
+                        finish();
                     }
                 }
             });

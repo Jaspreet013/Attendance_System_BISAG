@@ -149,6 +149,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                     editor.putString("Key",arrayList.get(position));
                     editor.apply();
                     startActivity(new Intent(SelectAttendanceEntryActivity.this,CheckAttendanceActivity.class));
+                    finish();
                 }
             });
             /*final Person std=arrayList.get(position);
