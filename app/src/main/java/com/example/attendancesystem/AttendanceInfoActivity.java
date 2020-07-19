@@ -2,6 +2,7 @@ package com.example.attendancesystem;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,9 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             String date[]=arraylist.get(position).split("-",5);
             tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
             tv2.setText(person.dates.get(arraylist.get(position)));
+            if(person.dates.get(arraylist.get(position)).equals("Absent")){
+                tv2.setTextColor(Color.parseColor("#FF0000"));
+            }
             return view;
         }
     }
