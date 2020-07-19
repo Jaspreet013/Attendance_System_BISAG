@@ -116,10 +116,21 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.show();
                         }
                         else if(!input.getText().toString().equals(current_person.getFname())){
+                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
                             current_person.setFname(input.getText().toString());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString());
+                            progressDialog.dismiss();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Lname length cannot be more than 15");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
                         }
                     }
                 });
@@ -169,10 +180,21 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.show();
                         }
                         else if(!input.getText().toString().equals(current_person.getLname())){
+                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
                             current_person.setLname(input.getText().toString());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString());
+                            progressDialog.dismiss();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Person Lname changed successfully");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
                         }
                     }
                 });
