@@ -8,19 +8,30 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,20 +71,304 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setAdapter(adapter);
+        listView.setEmptyView(findViewById(R.id.modification_empty_message));
         for (String i : current_person.dates.keySet()) {
             arrayList.add(i);
         }
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
-        TextView userfname = findViewById(R.id.disp_user_fname);
-        TextView userlname = findViewById(R.id.disp_user_lname);
-        TextView id = findViewById(R.id.disp_user_id);
-        TextView email = findViewById(R.id.disp_user_email);
+        final TextView userfname = findViewById(R.id.disp_user_fname);
+        final TextView userlname = findViewById(R.id.disp_user_lname);
+        final TextView id = findViewById(R.id.disp_user_id);
+        final TextView email = findViewById(R.id.disp_user_email);
         userfname.setText(current_person.getFname());
         userlname.setText(current_person.getLname());
         id.setText(id.getText().toString() + current_person.getPerson_ID());
         email.setText(email.getText().toString() + current_person.getPerson_email());
+        userfname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                alertDialog.setTitle("Rename Fname");
+                final EditText input = new EditText(ModifyAttendanceActivity.this);
+                input.setText(current_person.getFname());
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ConstraintLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(input.getText().toString().length()>15){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Fname length cannot be more than 15");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!input.getText().toString().equals(current_person.getFname())){
+                            current_person.setFname(input.getText().toString());
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            databaseReference.child(key).setValue(current_person);
+                            userfname.setText(input.getText().toString());
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = alertDialog.create();
+                dialog.show();
+                input.selectAll();
+                input.requestFocus();
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
+        userlname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                alertDialog.setTitle("Rename Lname");
+                final EditText input = new EditText(ModifyAttendanceActivity.this);
+                input.setText(current_person.getLname());
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ConstraintLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(input.getText().toString().length()>15){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Lname length cannot be more than 15");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!input.getText().toString().equals(current_person.getLname())){
+                            current_person.setLname(input.getText().toString());
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            databaseReference.child(key).setValue(current_person);
+                            userlname.setText(input.getText().toString());
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = alertDialog.create();
+                dialog.show();
+                input.selectAll();
+                input.requestFocus();
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
+        id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                alertDialog.setTitle("Rename ID");
+                final EditText input = new EditText(ModifyAttendanceActivity.this);
+                input.setText(current_person.getPerson_ID());
+                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ConstraintLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(input.getText().toString().length()>20){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("ID length cannot be more than 15");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!input.getText().toString().equals(current_person.getPerson_ID())){
+                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
+                            try {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Iterable<DataSnapshot> children=dataSnapshot.getChildren();
+                                        boolean set=true;
+                                        AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                                        for(DataSnapshot child:children){
+                                            Person person=child.getValue(Person.class);
+                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(input.getText().toString()) && !person.getPerson_email().equals(current_person.getPerson_email())){
+                                                set=false;
+                                                builder.setTitle("This ID is already registered to this event");
+                                            }
+                                        }
+                                        if(set) {
+                                            current_person.setPerson_ID(input.getText().toString());
+                                            databaseReference.child(key).setValue(current_person);
+                                            progressDialog.dismiss();
+                                            builder.setTitle("ID Changed Successfully");
+                                            id.setText(input.getText().toString());
+                                        }
+                                        else{
+                                            progressDialog.dismiss();
+                                        }
+                                        builder.setCancelable(false);
+                                        builder.setPositiveButton("Ok",null);
+                                        builder.show();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                Log.e("Super exception",ex.getMessage());
+                            }
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = alertDialog.create();
+                dialog.show();
+                input.selectAll();
+                input.requestFocus();
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                alertDialog.setTitle("Rename Email");
+                final EditText input = new EditText(ModifyAttendanceActivity.this);
+                input.setText(current_person.getPerson_email());
+                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ConstraintLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!input.getText().toString().equals(current_person.getPerson_ID())){
+                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
+                            try {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Iterable<DataSnapshot> children=dataSnapshot.getChildren();
+                                        boolean set=true;
+                                        AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                                        for(DataSnapshot child:children){
+                                            Person person=child.getValue(Person.class);
+                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && !person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString())){
+                                                set=false;
+                                                builder.setTitle("This Email is already registered to this event");
+                                            }
+                                        }
+                                        if(set) {
+                                            current_person.setPerson_email(input.getText().toString());
+                                            databaseReference.child(key).setValue(current_person);
+                                            progressDialog.dismiss();
+                                            builder.setTitle("Email Changed Successfully");
+                                            email.setText(input.getText().toString());
+                                        }
+                                        else{
+                                            progressDialog.dismiss();
+                                        }
+                                        builder.setCancelable(false);
+                                        builder.setPositiveButton("Ok",null);
+                                        builder.show();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            } catch (Exception ex) {
+                                Log.e("Super exception",ex.getMessage());
+                            }
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog dialog = alertDialog.create();
+                dialog.show();
+                input.selectAll();
+                input.requestFocus();
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+        });
         Button submit = findViewById(R.id.update_attendance);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +386,16 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
-                        } else {
+                        }
+                        else if(arrayList.isEmpty()){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setMessage("There is currently no attendance entry available for modification of this person");
+                            builder.setTitle("No Entry");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else {
                             current_person.setAttendance(getPresentCount());
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/" + current_user.getEmail().replace(".", ""));
                             databaseReference.child(key).setValue(current_person);
