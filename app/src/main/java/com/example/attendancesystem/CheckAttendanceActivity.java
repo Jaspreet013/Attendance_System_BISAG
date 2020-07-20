@@ -28,12 +28,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
     SharedPreferences get_event,get_user;
     event current_event;
+    long present=0,absent=0,total=0;
     User current_user;
     ListView listView;
     ArrayList<Person> arrayList=new ArrayList<>();
@@ -130,6 +134,21 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         }
+                        for(Person person:arrayList){
+                            if(person.dates.get(key).equals("Present")){
+                                present++;
+                            }
+                            else{
+                                absent++;
+                            }
+                            total++;
+                        }
+                        TextView presence=findViewById(R.id.present_count);
+                        presence.setText(presence.getText().toString()+present);
+                        TextView absence=findViewById(R.id.absent_count);
+                        absence.setText(absence.getText().toString()+absent);
+                        TextView text=findViewById(R.id.count);
+                        text.setText(text.getText().toString()+total);
                         waiting.dismiss();
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());

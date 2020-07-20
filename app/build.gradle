@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:17.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.itextpdf:itextg:5.5.10'
 }

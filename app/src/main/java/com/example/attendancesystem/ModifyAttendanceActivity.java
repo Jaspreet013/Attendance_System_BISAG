@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -115,6 +115,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
+                        else if(!(input.getText().toString().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString())){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Please provide a proper fname");
+                            builder.setPositiveButton("Ok",null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
                         else if(!input.getText().toString().equals(current_person.getFname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
@@ -179,6 +186,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
+                        else if(!(input.getText().toString().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString())){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Please provide a proper lname");
+                            builder.setPositiveButton("Ok",null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
                         else if(!input.getText().toString().equals(current_person.getLname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
@@ -239,6 +253,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("ID length cannot be more than 15");
                             builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(TextUtils.isEmpty(input.getText().toString())){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("ID cannot be left blank");
+                            builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
@@ -325,6 +346,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setTitle("No Internet");
                             builder.setMessage("Please check your internet connection");
                             builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!input.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                            builder.setTitle("Please provide a valid email");
+                            builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
@@ -463,7 +491,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
             final TextView tv2=view.findViewById(R.id.dispstatus);
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
-            final ImageButton delete=view.findViewById(R.id.ModificationDeleteButton);
+            //final ImageButton delete=view.findViewById(R.id.ModificationDeleteButton);
             if(current_person.dates.get(arrayList.get(position)).equals("Present")){
                 ispresent.setChecked(true);
                 tv2.setText("Present");
@@ -500,7 +528,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     }
                 }
             });
-            delete.setOnClickListener(new View.OnClickListener() {
+            /*delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
@@ -547,8 +575,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
-                            });*/
-                            //dbreference.child(event_key).setValue(ev);
+                            });
+                            dbreference.child(event_key).setValue(ev);
                             waiting.dismiss();
                             Toast.makeText(ModifyAttendanceActivity.this,"Attendance Record successfully removed for specified person",Toast.LENGTH_SHORT).show();
                             arrayList.remove(position);
@@ -559,7 +587,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-            });
+            });*/
             return view;
         }
     }

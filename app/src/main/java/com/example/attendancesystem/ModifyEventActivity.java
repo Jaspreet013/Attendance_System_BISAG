@@ -67,7 +67,8 @@ public class ModifyEventActivity extends AppCompatActivity {
             builder.setPositiveButton("Ok", null);
             builder.setCancelable(false);
             builder.show();
-        } else {
+        }
+        else {
             try {
                 final ProgressDialog waiting;
                 waiting = new ProgressDialog(ModifyEventActivity.this);

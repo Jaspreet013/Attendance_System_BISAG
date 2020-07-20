@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -185,6 +186,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
+                                else if (TextUtils.isEmpty(input.getText().toString())) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                                    builder.setTitle("Event Name cannot be set as empty");
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.setCancelable(false);
+                                    builder.show();
+                                }
                                 else if(input.getText().toString().length()>22){
                                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                                     builder.setTitle("Length cannot be more than 22");
@@ -292,6 +300,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                             builder.setTitle("No Internet");
                             builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if (TextUtils.isEmpty(input.getText().toString())) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
+                            builder.setTitle("Organisation cannot be set as empty");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
