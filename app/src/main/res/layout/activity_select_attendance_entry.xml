@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ModifyEventActivity">
+    tools:context=".ModifyEventActivity"
+    android:id="@+id/main_layout">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -50,7 +51,9 @@
         <Button
             android:textSize="20sp"
             android:id="@+id/download_pdf"
-            android:layout_width="350dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="15dp"
             android:text="Download Pdf"

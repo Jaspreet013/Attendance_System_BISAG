@@ -53,7 +53,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setEmptyView(findViewById(R.id.check_empty_message));
+        listView.setEmptyView(findViewById(R.id.select_empty_message));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

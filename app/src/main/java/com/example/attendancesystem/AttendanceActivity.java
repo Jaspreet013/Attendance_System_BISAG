@@ -164,7 +164,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         listView.setAdapter(adapter);
                         if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setMessage("Please go to modify events -> (click on this event) -> add new person to add people");
+                            builder.setMessage("Please go to manage events -> (click on this event) -> add new person to add people");
                             builder.setTitle("No people are in this event");
                             builder.setCancelable(false);
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

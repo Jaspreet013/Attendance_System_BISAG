@@ -94,12 +94,15 @@
                 android:layout_marginBottom="155dp"
                 android:id="@+id/empty_message"
                 android:textSize="20sp"
-                android:text="Added users will display here, you can click above on event name or organisation to change it"
+                android:text="Added people will display here, you can click above on event name or organisation to change it"
                 android:textAlignment="center"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
 
-        <Button android:layout_width="350dp"
+        <Button
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
             android:layout_height="60dp"
@@ -110,7 +113,10 @@
             android:textSize="20sp"
             android:text="Add New Person" />
 
-        <Button android:layout_width="350dp"
+        <Button
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
             android:layout_height="90dp"

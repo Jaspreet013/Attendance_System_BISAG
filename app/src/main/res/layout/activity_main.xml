@@ -22,7 +22,9 @@
             app:boxBackgroundMode="outline"
             android:layout_below="@+id/welcome_text"
             android:layout_marginTop="60dp"
-            android:layout_width="350dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:id="@+id/border"
             android:layout_centerHorizontal="true"
@@ -45,7 +47,9 @@
             app:boxBackgroundMode="outline"
             android:layout_below="@+id/border"
             android:layout_marginTop="15dp"
-            android:layout_width="350dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:id="@+id/border1"
             android:layout_centerHorizontal="true"
@@ -73,12 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:textColor="@color/pureBlueColor"
-            android:text="Register Here for new user"
-            android:id="@+id/new_user"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="Forgotten Password? Click Here"
+            android:id="@+id/forgot_password"
             android:layout_below="@+id/border1"/>
 
         <Button
@@ -86,12 +86,25 @@
             android:layout_marginTop="25dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/login_submit"
-            android:layout_width="350dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Login"
             android:textSize="20sp"
             android:textColor="#FFFFFF"
-            android:layout_below="@id/new_user"
+            android:layout_below="@id/forgot_password"
             android:background="@drawable/rounded_button"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register Here for new user"
+            android:id="@+id/new_user"
+            android:layout_centerHorizontal="true"
+            android:textSize="15sp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/login_submit"
+            android:textColor="@color/pureBlueColor"/>
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

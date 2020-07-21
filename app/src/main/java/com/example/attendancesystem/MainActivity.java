@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog waiting;
     FirebaseAuth firebaseAuth;
     EditText email,password;
-    TextView new_user;
+    TextView new_user,forgot_password;
     Button login;
     User final_user;
     SharedPreferences get_user;
@@ -44,10 +44,17 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
             login = findViewById(R.id.login_submit);
             new_user = findViewById(R.id.new_user);
+            forgot_password=findViewById(R.id.forgot_password);
             new_user.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(MainActivity.this, RegistrationActivity.class));
+                }
+            });
+            forgot_password.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this,ForgotPasswordActivity.class));
                 }
             });
             firebaseAuth = FirebaseAuth.getInstance();
@@ -73,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
                         builder.setPositiveButton("Ok", null);
                         builder.setCancelable(false);
                         builder.show();
-                    } else {
+                    }
+                    else {
                         waiting.setMessage("Please Wait");
                         waiting.setCancelable(false);
                         waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -82,39 +90,60 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    try {
-                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/"+firebaseAuth.getCurrentUser().getUid());
-                                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                try {
-                                                    User user = dataSnapshot.getValue(User.class);
-                                                    final_user = user;
-                                                    get_user=getSharedPreferences("User",MODE_PRIVATE);
-                                                    SharedPreferences.Editor prefsEditor = get_user.edit();
-                                                    Gson gson = new Gson();
-                                                    String json = gson.toJson(final_user);
-                                                    prefsEditor.putString("Current User", json);
-                                                    prefsEditor.apply();
-                                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                                    firebaseAuth.signOut();
-                                                    waiting.dismiss();
-                                                } catch (Exception e) {
-                                                    Log.e("Exception is", e.toString());
+                                    if(firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                        try {
+                                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + firebaseAuth.getCurrentUser().getUid());
+                                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    try {
+                                                        User user = dataSnapshot.getValue(User.class);
+                                                        final_user = user;
+                                                        get_user = getSharedPreferences("User", MODE_PRIVATE);
+                                                        SharedPreferences.Editor prefsEditor = get_user.edit();
+                                                        Gson gson = new Gson();
+                                                        String json = gson.toJson(final_user);
+                                                        prefsEditor.putString("Current User", json);
+                                                        prefsEditor.putString("Key",dataSnapshot.getKey());
+                                                        prefsEditor.apply();
+                                                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                                        firebaseAuth.signOut();
+                                                        waiting.dismiss();
+                                                    }
+                                                    catch (Exception e) {
+                                                        Log.e("Exception is", e.toString());
+                                                    }
                                                 }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-                                                Log.e("Error : ", databaseError.getMessage());
-                                            }
-                                        });
-
-                                    } catch (Exception e) {
-                                        Log.e("Exception is", e.toString());
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+                                                    Log.e("Error : ", databaseError.getMessage());
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            Log.e("Exception is", e.toString());
+                                        }
                                     }
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
+                                    else{
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                        builder.setTitle("Your email is not verified");
+                                        builder.setPositiveButton("Ok", null);
+                                        builder.setCancelable(false);
+                                        builder.show();
+                                        waiting.dismiss();
+                                    }
+                                }
+                                else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setTitle("Error");
+                                    if(task.getException().getMessage().equals("The password is invalid or the user does not have a password.")){
+                                        builder.setMessage("Wrong Password");
+                                    }
+                                    else {
+                                        builder.setMessage(task.getException().getMessage());
+                                    }
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.setCancelable(false);
+                                    builder.show();
                                     waiting.dismiss();
                                 }
                             }

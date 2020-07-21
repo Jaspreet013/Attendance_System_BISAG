@@ -1,5 +1,6 @@
 package com.example.attendancesystem;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,14 +9,27 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 public class HomeActivity extends AppCompatActivity {
     SharedPreferences get_user;
+    String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,9 +39,80 @@ public class HomeActivity extends AppCompatActivity {
         Gson gson=new Gson();
         TextView person_name=findViewById(R.id.message_person_name);
         String json=get_user.getString("Current User","");
-        User current_user=gson.fromJson(json,User.class);
+        final User current_user=gson.fromJson(json,User.class);
+        key=get_user.getString("Key",null);
         person_name.setText(current_user.getFname()+" "+current_user.getLname());
         Button take_attendance=findViewById(R.id.take_attendance);
+        TextView change_name=findViewById(R.id.change_name);
+        change_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialog=new AlertDialog.Builder(HomeActivity.this);
+                alertDialog.setTitle("Change your name");
+                final EditText fname = new EditText(HomeActivity.this);
+                final EditText lname = new EditText(HomeActivity.this);
+                fname.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                fname.setHint("Enter First Name");
+                fname.setText(current_user.getFname());
+                fname.setSelectAllOnFocus(true);
+                lname.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+                lname.setHint("Enter Last Name");
+                lname.setText(current_user.getLname());
+                lname.setSelectAllOnFocus(true);
+                LinearLayout ll=new LinearLayout(HomeActivity.this);
+                ll.setOrientation(LinearLayout.VERTICAL);
+                ll.addView(fname);
+                ll.addView(lname);
+                alertDialog.setView(ll);
+                alertDialog.setCancelable(false);
+                alertDialog.setPositiveButton("Update",  new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (!isNetworkAvailable()) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("No Internet");
+                            builder.setMessage("Please check your internet connection");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(TextUtils.isEmpty(fname.getText().toString()) || TextUtils.isEmpty(lname.getText().toString())){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("Name fields cannot be left blank");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(fname.getText().toString().length()>15 || lname.getText().toString().length()>15){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("Limit of length of fname is 15 and lname is also 15");
+                            builder.setPositiveButton("Ok", null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else {
+                            try {
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users/"+key);
+                                current_user.setFname(fname.getText().toString());
+                                current_user.setLname(lname.getText().toString());
+                                databaseReference.setValue(current_user);
+                                SharedPreferences.Editor editor=get_user.edit();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(current_user);
+                                editor.putString("Current User", json);
+                                editor.apply();
+                                TextView disp=findViewById(R.id.message_person_name);
+                                disp.setText(fname.getText().toString()+" "+lname.getText().toString());
+                            }
+                            catch (Exception e) {
+                                Log.e("Exception is", e.toString());
+                            }
+                        }
+                    }
+                });
+                AlertDialog alert = alertDialog.create();
+                alert.show();
+            }
+        });
         take_attendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +193,7 @@ public class HomeActivity extends AppCompatActivity {
             editor.remove("Current User");
             editor.apply();
             finish();
+            FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(HomeActivity.this,MainActivity.class));
         }
     }
