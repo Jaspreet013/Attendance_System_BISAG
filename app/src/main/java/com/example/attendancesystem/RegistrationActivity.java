@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,10 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -101,41 +102,37 @@ public class RegistrationActivity extends AppCompatActivity {
                         firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
-                                if(!task.isSuccessful()){
-                                    //Toast.makeText(MainActivity.this,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                                }
-                                else{
+                                if(task.isSuccessful()){
                                     firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             progressDialog.dismiss();
-                                            if(!task.isSuccessful()){
+                                            if (!task.isSuccessful()) {
                                                 firebaseAuth.signOut();
-                                                AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                                 builder.setTitle("Error");
                                                 builder.setMessage(task.getException().getMessage());
-                                                builder.setPositiveButton("Ok",null);
+                                                builder.setPositiveButton("Ok", null);
                                                 builder.setCancelable(false);
                                                 builder.show();
-                                            }
-                                            else{
+                                            } else {
                                                 try {
                                                     FirebaseUser user = firebaseAuth.getCurrentUser();
                                                     databaseReference = FirebaseDatabase.getInstance().getReference("users");
                                                     databaseReference.child(user.getUid()).setValue(new_user);
-                                                }catch (Exception e){
-                                                    Log.e("Exception is",e.toString());
+                                                } catch (Exception e) {
+                                                    Log.e("Exception is", e.toString());
                                                 }
                                                 firebaseAuth.signOut();
                                                 progressDialog.dismiss();
-                                                AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                                 builder.setTitle("Verify your email");
                                                 builder.setMessage("Please check your email for verification and after that you will be able to login");
                                                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         finish();
-                                                        startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
+                                                        startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
                                                     }
                                                 });
                                                 builder.setCancelable(false);
@@ -145,29 +142,6 @@ public class RegistrationActivity extends AppCompatActivity {
                                     });
 
                                 }
-                                /*if (task.isSuccessful()) {
-                                    try {
-                                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                                        databaseReference = FirebaseDatabase.getInstance().getReference("users");
-                                        databaseReference.child(user.getUid()).setValue(new_user);
-                                    }catch (Exception e){
-                                        Log.e("Exception is",e.toString());
-                                    }
-                                    firebaseAuth.signOut();
-                                    progressDialog.dismiss();
-                                    Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
-                                } else {
-                                    firebaseAuth.signOut();
-                                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                                    builder.setTitle("Cannot Register");
-                                    builder.setPositiveButton("Ok",null);
-                                    builder.setCancelable(false);
-                                    builder.show();
-                                    Log.e("Exception is", task.getException().toString());
-                                    progressDialog.dismiss();
-                                }*/
                             }
                         });
                     }catch(Exception e){

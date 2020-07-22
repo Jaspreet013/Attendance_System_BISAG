@@ -528,66 +528,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     }
                 }
             });
-            /*delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                    builder.setTitle("Delete Entry");
-                    builder.setMessage("Are you sure to delete this entry for this user?");
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ProgressDialog waiting=new ProgressDialog(ModifyAttendanceActivity.this);
-                            waiting.setMessage("Please Wait");
-                            waiting.setCancelable(false);
-                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            waiting.show();
-                            current_person.dates.remove(arrayList.get(position));
-                            current_person.setAttendance(getPresentCount());
-                            current_person.setAttendance_total(current_person.dates.size());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
-                            databaseReference.child(key).setValue(current_person);
-                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
-                            long l=current_event.dates.get(arrayList.get(position));
-                            l--;
-                            if(l==0){
-                                current_event.dates.remove(arrayList.get(position));
-                            }
-                            else{
-                                current_event.dates.replace(arrayList.get(position),l);
-                            }
-                            dbreference.child(event_key).setValue(current_event);
-                            /*dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    event ev=dataSnapshot.child(event_key).getValue(event.class);
-                                    Log.e(arrayList.get(position),event_key);
-                                    long l=ev.dates.get(arrayList.get(position));
-                                    l--;
-                                    if(l==0){
-                                        ev.dates.remove(arrayList.get(position));
-                                    }
-                                    else{
-                                        ev.dates.replace(arrayList.get(position),l);
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            dbreference.child(event_key).setValue(ev);
-                            waiting.dismiss();
-                            Toast.makeText(ModifyAttendanceActivity.this,"Attendance Record successfully removed for specified person",Toast.LENGTH_SHORT).show();
-                            arrayList.remove(position);
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel",null);
-                    builder.setCancelable(false);
-                    builder.show();
-                }
-            });*/
             return view;
         }
     }

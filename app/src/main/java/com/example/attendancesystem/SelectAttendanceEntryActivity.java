@@ -445,7 +445,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0");
         builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         builder.setContentText(file.getName()+" has been successfully downloaded");
-        builder.setContentTitle("Download Successful");
+        builder.setContentTitle("Download Complete");
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setAutoCancel(true);
         builder.setContentIntent(pendingIntent);

@@ -527,7 +527,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                     builder.setTitle("Are you sure to delete this User?");
-                    builder.setMessage("All the information regarding this user will be deleted");
+                    builder.setMessage("All the information regarding this user for this event will be deleted from records");
                     builder.setNegativeButton("Cancel",null);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -551,7 +551,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        //Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                         final Set<String> events=arrayList.get(position).dates.keySet();
                                         reference.child(keys.get(position)).removeValue();
                                         arrayList.remove(position);

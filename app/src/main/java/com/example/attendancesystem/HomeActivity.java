@@ -1,6 +1,6 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,16 +13,13 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -64,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
                 ll.addView(fname);
                 ll.addView(lname);
                 alertDialog.setView(ll);
-                alertDialog.setCancelable(false);
+                alertDialog.setNegativeButton("Cancel",null);
                 alertDialog.setPositiveButton("Update",  new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (!isNetworkAvailable()) {
@@ -89,7 +86,14 @@ public class HomeActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else {
+                        else if(!(fname.getText().toString().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().matches("^[a-zA-Z]*$"))){
+                            AlertDialog.Builder builder=new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle("Please provide a proper name");
+                            builder.setPositiveButton("Ok",null);
+                            builder.setCancelable(false);
+                            builder.show();
+                        }
+                        else if(!fname.getText().toString().equals(current_user.getFname()) || !lname.getText().toString().equals(current_user.getLname())){
                             try {
                                 DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users/"+key);
                                 current_user.setFname(fname.getText().toString());
@@ -110,6 +114,9 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
                 AlertDialog alert = alertDialog.create();
+                fname.requestFocus();
+                alert.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 alert.show();
             }
         });

@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,17 +23,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
     SharedPreferences get_event,get_user;
@@ -210,46 +208,6 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                     startActivity(new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class));
                 }
             });
-            /*final Person std=arrayList.get(position);
-            float percent;
-            TextView check_name=view.findViewById(R.id.check_name);
-            TextView check_id=view.findViewById(R.id.check_id);
-            TextView check_email=view.findViewById(R.id.check_email);
-            TextView check_attendance=view.findViewById(R.id.check_attendance);
-            TextView check_total_attendance=view.findViewById(R.id.check_total_attendance);
-            TextView attendance_percent=view.findViewById(R.id.attendance_percent);
-            if(std.getAttendance()==0){
-                percent=(float)0.00;
-            }
-            else {
-                percent = ((float) std.getAttendance() / (float) std.getAttendance_total()) * 100;
-            }
-            check_name.setText(std.getFname()+" "+std.getLname());
-            check_id.setText(std.getPerson_ID());
-            check_email.setText(std.getPerson_email());
-            check_attendance.setText(
-                    "Attendance Present(no): "+Long.toString(std.getAttendance()));
-            check_total_attendance.setText(
-                    "Total Attendance taken : "+Long.toString(std.getAttendance_total()));
-            attendance_percent.setText(
-                    "Attendance (in Percent): "+String.format("%.2f",percent)+"%");
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(std.getAttendance_total()==0){
-                        Toast.makeText(CheckAttendanceActivity.this,"No attendance is taken for this user",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        SharedPreferences sharedPreferences = getSharedPreferences("Person", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(std);
-                        editor.putString("Current Person", json);
-                        editor.apply();
-                        startActivity(new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class));
-                    }
-                }
-            });*/
             return view;
         }
     }

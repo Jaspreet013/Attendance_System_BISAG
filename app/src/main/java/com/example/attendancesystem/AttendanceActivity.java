@@ -92,7 +92,6 @@ public class AttendanceActivity extends AppCompatActivity {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
                                 databaseReference.child(key).setValue(current_event);
-                                //Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
                                 for (int i = 0; i<arrayList.size(); i++) {
                                     if (arrayList.get(i).getIspresent()==true) {
                                         arrayList.get(i).dates.put(datef.format(date),"Present");
@@ -119,7 +118,6 @@ public class AttendanceActivity extends AppCompatActivity {
                                 });
                                 builder.setCancelable(false);
                                 builder.show();
-                                //Toast.makeText(AttendanceActivity.this, "Attendance submitted successfully", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
 
                             }
@@ -270,7 +268,7 @@ public class AttendanceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder=new AlertDialog.Builder(AttendanceActivity.this);
-        builder.setMessage("The Attendance will not be saved");
+        builder.setMessage("The Attendance Entry will not be saved");
         builder.setTitle("Are you sure you want to go back?");
         builder.setCancelable(false);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
