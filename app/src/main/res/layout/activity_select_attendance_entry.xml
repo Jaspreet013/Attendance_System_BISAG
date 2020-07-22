@@ -9,11 +9,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="45dp">
+        android:paddingBottom="15dp">
         <TextView
             android:id="@+id/select_subject_text"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select Entry"
@@ -26,23 +26,22 @@
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="450dp"
             android:id="@+id/layout4"
             android:orientation="vertical">
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="500dp"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view3"
                 android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true" />
+                android:nestedScrollingEnabled="true"
+                android:visibility="gone"/>
             <TextView
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="225dp"
-                android:layout_marginBottom="225dp"
+                android:layout_marginTop="180dp"
                 android:id="@+id/select_empty_message"
                 android:textSize="20sp"
                 android:text="Your Entries will be displayed here once you take attendance"

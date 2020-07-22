@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
         android:id="@+id/layout_welcome"
-        android:paddingBottom="55dp">
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/check_event_name"
@@ -78,7 +78,7 @@
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="450dp"
+                android:layout_height="350dp"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view2"
                 android:layout_gravity="center_horizontal"

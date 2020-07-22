@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/select_subject_text"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select an Event"
@@ -25,19 +25,19 @@
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="500dp"
             android:id="@+id/layout4"
             android:orientation="vertical">
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="600dp"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view3"
                 android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true" />
+                android:nestedScrollingEnabled="true"
+                android:visibility="gone"/>
             <TextView
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/select_empty_message"

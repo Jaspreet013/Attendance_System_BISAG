@@ -76,23 +76,23 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="280dp"
             android:id="@+id/layout2"
             android:orientation="vertical">
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="380dp"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view1"
                 android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"/>
+                android:nestedScrollingEnabled="true"
+                android:visibility="gone"/>
+
             <TextView
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="155dp"
-                android:layout_marginBottom="155dp"
+                android:layout_marginTop="100dp"
                 android:id="@+id/empty_message"
                 android:textSize="20sp"
                 android:text="Added people will display here, you can click above on event name or organisation to change it"
@@ -119,6 +119,7 @@
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_marginTop="15dp"
+            android:padding="5dp"
             android:layout_centerHorizontal="true"
             android:layout_height="90dp"
             android:id="@+id/create_new_event"

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
         android:id="@+id/layout_welcome"
-        android:paddingBottom="35dp">
+        android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/message_event_name"
@@ -35,13 +35,13 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/layout1"
             android:orientation="vertical">
 
             <ListView
                 android:padding="15dp"
-                android:layout_height="480dp"
+                android:layout_height="350dp"
                 android:layout_width="match_parent"
                 android:id="@+id/list_view3"
                 android:layout_gravity="center_horizontal"
