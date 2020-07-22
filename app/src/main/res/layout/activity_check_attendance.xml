@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
-        android:id="@+id/layout_welcome">
+        android:id="@+id/layout_welcome"
+        android:paddingBottom="55dp">
 
         <TextView
             android:id="@+id/check_event_name"

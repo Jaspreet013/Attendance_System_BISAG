@@ -7,7 +7,8 @@
     tools:context=".CheckAttendanceActivity">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="15dp">
         <TextView
             android:id="@+id/select_subject_text"
             android:layout_centerHorizontal="true"

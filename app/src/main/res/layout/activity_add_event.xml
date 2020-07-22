@@ -7,7 +7,8 @@
     tools:context=".AddEventActivity">
     <RelativeLayout
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:paddingBottom="55dp">
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"

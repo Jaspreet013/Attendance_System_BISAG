@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".selectedEventModificationActivity">
     <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="25dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_marginTop="15dp"

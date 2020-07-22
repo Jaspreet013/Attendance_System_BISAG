@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_centerHorizontal="true"
-        android:id="@+id/layout_welcome">
+        android:id="@+id/layout_welcome"
+        android:paddingBottom="35dp">
 
         <TextView
             android:id="@+id/message_event_name"

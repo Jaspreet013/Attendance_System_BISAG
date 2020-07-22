@@ -8,7 +8,8 @@
     android:id="@+id/main_layout">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="45dp">
         <TextView
             android:id="@+id/select_subject_text"
             android:layout_centerHorizontal="true"
