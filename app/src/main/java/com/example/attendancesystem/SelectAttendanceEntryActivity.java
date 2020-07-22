@@ -296,7 +296,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 java.text.SimpleDateFormat sdf=new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
                 path = Environment.getExternalStorageDirectory().getPath()+"/Download/Attendance_"+sdf.format(date)+".pdf";
                 docWriter = PdfWriter.getInstance(doc , new FileOutputStream(path));
-                if(selected_keys.size()<=30) {
+                if(selected_keys.size()<=27) {
                     doc.setPageSize(PageSize.A3.rotate());
                 }
                 else{
