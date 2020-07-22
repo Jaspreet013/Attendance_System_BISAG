@@ -72,32 +72,32 @@ public class HomeActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(TextUtils.isEmpty(fname.getText().toString()) || TextUtils.isEmpty(lname.getText().toString())){
+                        else if(TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim())){
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle("Name fields cannot be left blank");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(fname.getText().toString().length()>15 || lname.getText().toString().length()>15){
+                        else if(fname.getText().toString().trim().length()>15 || lname.getText().toString().trim().length()>15){
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle("Limit of length of fname is 15 and lname is also 15");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!(fname.getText().toString().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().matches("^[a-zA-Z]*$"))){
+                        else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
                             AlertDialog.Builder builder=new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle("Please provide a proper name");
                             builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!fname.getText().toString().equals(current_user.getFname()) || !lname.getText().toString().equals(current_user.getLname())){
+                        else if(!fname.getText().toString().trim().equals(current_user.getFname()) || !lname.getText().toString().trim().equals(current_user.getLname())){
                             try {
                                 DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users/"+key);
-                                current_user.setFname(fname.getText().toString());
-                                current_user.setLname(lname.getText().toString());
+                                current_user.setFname(fname.getText().toString().trim());
+                                current_user.setLname(lname.getText().toString().trim());
                                 databaseReference.setValue(current_user);
                                 SharedPreferences.Editor editor=get_user.edit();
                                 Gson gson = new Gson();
@@ -105,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
                                 editor.putString("Current User", json);
                                 editor.apply();
                                 TextView disp=findViewById(R.id.message_person_name);
-                                disp.setText(fname.getText().toString()+" "+lname.getText().toString());
+                                disp.setText(fname.getText().toString().trim()+" "+lname.getText().toString().trim());
                             }
                             catch (Exception e) {
                                 Log.e("Exception is", e.toString());

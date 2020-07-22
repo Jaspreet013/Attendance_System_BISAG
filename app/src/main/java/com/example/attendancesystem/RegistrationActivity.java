@@ -142,6 +142,16 @@ public class RegistrationActivity extends AppCompatActivity {
                                     });
 
                                 }
+                                else{
+                                    progressDialog.dismiss();
+                                    firebaseAuth.signOut();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
+                                    builder.setTitle("Error");
+                                    builder.setMessage(task.getException().getMessage());
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.setCancelable(false);
+                                    builder.show();
+                                }
                             }
                         });
                     }catch(Exception e){
