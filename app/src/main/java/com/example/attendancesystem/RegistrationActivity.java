@@ -47,9 +47,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 EditText email=findViewById(R.id.register_email);
                 EditText password=findViewById(R.id.register_password);
                 EditText cnfpassword=findViewById(R.id.register_cnfpassword);
-                if(TextUtils.isEmpty(fname.getText().toString()) || TextUtils.isEmpty(lname.getText().toString())
-                || TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(password.getText().toString())
-                || TextUtils.isEmpty(cnfpassword.getText().toString())){
+                if(TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim())
+                || TextUtils.isEmpty(email.getText().toString().trim()) || TextUtils.isEmpty(password.getText().toString().trim())
+                || TextUtils.isEmpty(cnfpassword.getText().toString().trim())){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please fill up all the values");
                     builder.setPositiveButton("Ok",null);
@@ -70,14 +70,14 @@ public class RegistrationActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!password.getText().toString().equals(cnfpassword.getText().toString())){
+                else if(!password.getText().toString().trim().equals(cnfpassword.getText().toString().trim())){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please confirm password properly");
                     builder.setPositiveButton("Ok",null);
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(password.getText().toString().length()<8){
+                else if(password.getText().toString().trim().length()<8){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Password length should be in between 8 to 12 characters");
                     builder.setPositiveButton("Ok",null);
@@ -99,7 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     progressDialog.show();
                     try{
                         final User new_user=new User(fname.getText().toString().trim(),lname.getText().toString().trim(),email.getText().toString().trim());
-                        firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+                        firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
                                 if(task.isSuccessful()){
