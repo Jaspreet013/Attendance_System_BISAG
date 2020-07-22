@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -132,7 +131,6 @@ public class RegistrationActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         finish();
-                                                        startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
                                                     }
                                                 });
                                                 builder.setCancelable(false);
@@ -182,11 +180,5 @@ public class RegistrationActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
     }
 }

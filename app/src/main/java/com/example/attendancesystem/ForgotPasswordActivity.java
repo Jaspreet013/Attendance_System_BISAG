@@ -39,7 +39,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(TextUtils.isEmpty(email.getText().toString()) || !email.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                else if(TextUtils.isEmpty(email.getText().toString().trim()) || !email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
                     builder.setTitle("Please provide a valid email");
                     builder.setPositiveButton("Ok", null);
@@ -53,7 +53,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     waiting.show();
                     FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
-                    firebaseAuth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    firebaseAuth.sendPasswordResetEmail(email.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             waiting.dismiss();
@@ -65,7 +65,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         finish();
-                                        startActivity(new Intent(ForgotPasswordActivity.this,MainActivity.class));
                                     }
                                 });
                                 builder.setCancelable(false);
@@ -101,11 +100,5 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(ForgotPasswordActivity.this,MainActivity.class));
     }
 }

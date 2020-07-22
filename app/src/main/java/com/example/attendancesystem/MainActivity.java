@@ -106,9 +106,10 @@ public class MainActivity extends AppCompatActivity {
                                                         prefsEditor.putString("Current User", json);
                                                         prefsEditor.putString("Key",dataSnapshot.getKey());
                                                         prefsEditor.apply();
+                                                        waiting.dismiss();
+                                                        finish();
                                                         startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                                         firebaseAuth.signOut();
-                                                        waiting.dismiss();
                                                     }
                                                     catch (Exception e) {
                                                         Log.e("Exception is", e.toString());
