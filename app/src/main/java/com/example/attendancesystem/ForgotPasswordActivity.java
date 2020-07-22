@@ -102,4 +102,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(ForgotPasswordActivity.this,MainActivity.class));
+    }
 }
