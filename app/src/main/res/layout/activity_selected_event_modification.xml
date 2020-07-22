@@ -10,7 +10,6 @@
         android:paddingBottom="25dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_marginTop="15dp"
             android:id="@+id/Layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -76,7 +75,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="295dp"
             android:id="@+id/layout2"
             android:orientation="vertical">
 
