@@ -56,14 +56,14 @@ public class RegistrationActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!(fname.getText().toString().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().matches("^[a-zA-Z]*$"))){
+                else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please provide a proper name");
                     builder.setPositiveButton("Ok",null);
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!email.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                else if(!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
                     AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
                     builder.setTitle("Please provide a valid email");
                     builder.setPositiveButton("Ok",null);
@@ -98,7 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     progressDialog.show();
                     try{
-                        final User new_user=new User(fname.getText().toString(),lname.getText().toString(),email.getText().toString());
+                        final User new_user=new User(fname.getText().toString().trim(),lname.getText().toString().trim(),email.getText().toString().trim());
                         firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {

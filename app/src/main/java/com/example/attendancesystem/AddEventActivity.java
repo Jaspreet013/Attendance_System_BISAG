@@ -56,7 +56,7 @@ public class AddEventActivity extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(TextUtils.isEmpty(event_organisation.getText().toString()) || TextUtils.isEmpty(event_name.getText().toString())){
+                else if(TextUtils.isEmpty(event_organisation.getText().toString().trim()) || TextUtils.isEmpty(event_name.getText().toString().trim())){
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddEventActivity.this);
                     builder.setTitle("Please fill up all details properly");
                     builder.setPositiveButton("Ok", null);
@@ -76,7 +76,7 @@ public class AddEventActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                 boolean set=true;
-                                event ev=new event(event_name.getText().toString().toUpperCase(),event_organisation.getText().toString().toUpperCase());
+                                event ev=new event(event_name.getText().toString().trim().toUpperCase(),event_organisation.getText().toString().trim().toUpperCase());
                                 for(DataSnapshot child:children){
                                     event eve=child.getValue(event.class);
                                     if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())){
@@ -105,8 +105,8 @@ public class AddEventActivity extends AppCompatActivity {
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);
                                             temp.dates.clear();
-                                            temp.setEvent_name(event_name.getText().toString().toUpperCase());
-                                            temp.setOrganisation(event_organisation.getText().toString().toUpperCase());
+                                            temp.setEvent_name(event_name.getText().toString().trim().toUpperCase());
+                                            temp.setOrganisation(event_organisation.getText().toString().trim().toUpperCase());
                                             dbreference.child(key).setValue(temp);
                                         }
                                         SharedPreferences.Editor edit=prefs.edit();

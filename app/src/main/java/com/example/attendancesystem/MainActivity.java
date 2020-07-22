@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
                     password = findViewById(R.id.login_password);
                     new_user = findViewById(R.id.new_user);
                     waiting = new ProgressDialog(MainActivity.this);
-                    if (TextUtils.isEmpty(email.getText().toString())) {
+                    if (TextUtils.isEmpty(email.getText().toString().trim())) {
                         Toast.makeText(MainActivity.this, "Email cannot be left blank", Toast.LENGTH_SHORT).show();
-                    } else if (TextUtils.isEmpty(password.getText().toString())) {
+                    } else if (TextUtils.isEmpty(password.getText().toString().trim())) {
                         Toast.makeText(MainActivity.this, "Password cannot be left Blank", Toast.LENGTH_SHORT).show();
-                    } else if (!email.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")) {
+                    } else if (!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")) {
                         Toast.makeText(MainActivity.this, "Please Enter a valid email", Toast.LENGTH_SHORT).show();
                     } else if (password.getText().toString().length() < 8) {
                         Toast.makeText(MainActivity.this, "Please Enter proper password", Toast.LENGTH_SHORT).show();

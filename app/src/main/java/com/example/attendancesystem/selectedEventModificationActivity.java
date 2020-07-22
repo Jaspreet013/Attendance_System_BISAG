@@ -186,14 +186,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
-                                else if (TextUtils.isEmpty(input.getText().toString())) {
+                                else if (TextUtils.isEmpty(input.getText().toString().trim())) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                                     builder.setTitle("Event Name cannot be set as empty");
                                     builder.setPositiveButton("Ok", null);
                                     builder.setCancelable(false);
                                     builder.show();
                                 }
-                                else if(input.getText().toString().length()>22){
+                                else if(input.getText().toString().trim().length()>22){
                                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                                     builder.setTitle("Length cannot be more than 22");
                                     builder.setPositiveButton("Ok", null);
@@ -216,7 +216,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             event eve=new event();
                                             for(DataSnapshot child:children){
                                                 event ev=child.getValue(event.class);
-                                                if(input.getText().toString().toUpperCase().equals(ev.getName().toUpperCase()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation().toUpperCase())){
+                                                if(input.getText().toString().trim().toUpperCase().equals(ev.getName().toUpperCase()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation().toUpperCase())){
                                                     set=false;
                                                     key="";
                                                     break;
@@ -227,7 +227,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                 }
                                             }
                                             if(set){
-                                                eve.setName(input.getText().toString().toUpperCase());
+                                                eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
                                                 databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -237,7 +237,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                         for(DataSnapshot child:children){
                                                             Person person=child.getValue(Person.class);
                                                             if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
-                                                                person.setEvent_name(input.getText().toString().toUpperCase());
+                                                                person.setEvent_name(input.getText().toString().trim().toUpperCase());
                                                                 String key=child.getKey();
                                                                 databaseReference.child(key).setValue(person);
                                                             }
@@ -304,14 +304,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if (TextUtils.isEmpty(input.getText().toString())) {
+                        else if (TextUtils.isEmpty(input.getText().toString().trim())) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                             builder.setTitle("Organisation cannot be set as empty");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(input.getText().toString().length()>22){
+                        else if(input.getText().toString().trim().length()>22){
                             AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                             builder.setTitle("Length cannot be more than 22");
                             builder.setPositiveButton("Ok", null);
@@ -334,7 +334,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     event eve=new event();
                                     for(DataSnapshot child:children){
                                         event ev=child.getValue(event.class);
-                                        if(input.getText().toString().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().toUpperCase().equals(ev.getName().toUpperCase())){
+                                        if(input.getText().toString().trim().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().toUpperCase().equals(ev.getName().toUpperCase())){
                                             set=false;
                                             key="";
                                             break;
@@ -345,7 +345,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         }
                                     }
                                     if(set){
-                                        eve.setOrganisation(input.getText().toString().toUpperCase());
+                                        eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
                                         databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -355,7 +355,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                 for(DataSnapshot child:children){
                                                     Person person=child.getValue(Person.class);
                                                     if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
-                                                        person.setOrganisation(input.getText().toString().toUpperCase());
+                                                        person.setOrganisation(input.getText().toString().trim().toUpperCase());
                                                         String key=child.getKey();
                                                         databaseReference.child(key).setValue(person);
                                                     }
@@ -386,10 +386,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 });
                 alertDialog.setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
                 AlertDialog dialog = alertDialog.create();
                 dialog.show();
                 input.selectAll();
@@ -447,33 +447,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     }
                                 });
                                 databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
-                                /*databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        try {
-                                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                                            final ArrayList<String> key = new ArrayList<>();
-                                            for (DataSnapshot child : children) {
-                                                Person person = child.getValue(Person.class);
-                                                if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
-                                                    key.add(child.getKey());
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            }
-                                            for (String del : key) {
-                                                databaseReference.child(del).removeValue();
-                                            }
-                                            Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        } catch (Exception e) {
-                                            Log.e("Exception : ", e.getMessage());
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });*/
                                 for (String del : keys) {
                                     databaseReference.child(del).removeValue();
                                 }
@@ -504,7 +477,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
         @Override
         public Person getItem(int position) {
-                return arrayList.get(position);
+            return arrayList.get(position);
         }
 
         @Override

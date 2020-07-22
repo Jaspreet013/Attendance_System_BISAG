@@ -72,22 +72,22 @@ public class AddPerson extends AppCompatActivity {
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if (TextUtils.isEmpty(fname.getText().toString()) || TextUtils.isEmpty(lname.getText().toString()) ||
-                        TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(id.getText().toString())) {
+                else if (TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim()) ||
+                        TextUtils.isEmpty(email.getText().toString().trim()) || TextUtils.isEmpty(id.getText().toString().trim())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddPerson.this);
                     builder.setTitle("Please fill up all details properly");
                     builder.setPositiveButton("Ok", null);
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!(fname.getText().toString().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().matches("^[a-zA-Z]*$"))){
+                else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
                     AlertDialog.Builder builder=new AlertDialog.Builder(AddPerson.this);
                     builder.setTitle("Please provide a proper name");
                     builder.setPositiveButton("Ok",null);
                     builder.setCancelable(false);
                     builder.show();
                 }
-                else if(!email.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                else if(!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
                     AlertDialog.Builder builder=new AlertDialog.Builder(AddPerson.this);
                     builder.setTitle("Please provide a valid email");
                     builder.setPositiveButton("Ok",null);
@@ -111,18 +111,18 @@ public class AddPerson extends AppCompatActivity {
                                 for(DataSnapshot child:children){
                                     Person person=child.getValue(Person.class);
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) &&
-                                            person.getPerson_email().equals(email.getText().toString()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
+                                            person.getPerson_email().equals(email.getText().toString().trim()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
                                         set=false;
                                         builder.setTitle("This email is already registered to this event");
                                     }
-                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString())){
+                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString().trim())){
                                         set=false;
                                         builder.setTitle("This ID is already registered to this event");
                                     }
                                 }
                                 if(set) {
                                     String key = databaseReference.push().getKey();
-                                    databaseReference.child(key).setValue(new Person(fname.getText().toString(), lname.getText().toString(), email.getText().toString(), id.getText().toString(), current_event.getName(), current_event.getOrganisation()));
+                                    databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim(), current_event.getName().trim(), current_event.getOrganisation().trim()));
                                     progressDialog.dismiss();
                                     builder.setTitle("Person Added");
                                     fname.getText().clear();
@@ -144,7 +144,7 @@ public class AddPerson extends AppCompatActivity {
                             }
                         });
                     } catch (Exception ex) {
-                        Log.e("Super exception",ex.getMessage());
+                        Log.e("Exception",ex.getMessage());
                     }
                 }
             }

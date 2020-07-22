@@ -108,30 +108,30 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(input.getText().toString().length()>15){
+                        else if(input.getText().toString().trim().length()>15){
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Fname length cannot be more than 15");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!(input.getText().toString().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString())){
+                        else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
                             AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Please provide a proper fname");
                             builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!input.getText().toString().equals(current_person.getFname())){
+                        else if(!input.getText().toString().trim().equals(current_person.getFname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
                             progressDialog.setCancelable(false);
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
-                            current_person.setFname(input.getText().toString());
+                            current_person.setFname(input.getText().toString().trim());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
                             databaseReference.child(key).setValue(current_person);
-                            userfname.setText(input.getText().toString());
+                            userfname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Lname length cannot be more than 15");
@@ -179,30 +179,30 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(input.getText().toString().length()>15){
+                        else if(input.getText().toString().trim().length()>15){
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Lname length cannot be more than 15");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!(input.getText().toString().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString())){
+                        else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
                             AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Please provide a proper lname");
                             builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!input.getText().toString().equals(current_person.getLname())){
+                        else if(!input.getText().toString().trim().equals(current_person.getLname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
                             progressDialog.setCancelable(false);
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
-                            current_person.setLname(input.getText().toString());
+                            current_person.setLname(input.getText().toString().trim());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
                             databaseReference.child(key).setValue(current_person);
-                            userlname.setText(input.getText().toString());
+                            userlname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Person Lname changed successfully");
@@ -249,21 +249,21 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(input.getText().toString().length()>20){
+                        else if(input.getText().toString().trim().length()>20){
                             AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("ID length cannot be more than 15");
                             builder.setPositiveButton("Ok", null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(TextUtils.isEmpty(input.getText().toString())){
+                        else if(TextUtils.isEmpty(input.getText().toString().trim())){
                             AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("ID cannot be left blank");
                             builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!input.getText().toString().equals(current_person.getPerson_ID())){
+                        else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
                             progressDialog.setCancelable(false);
@@ -280,13 +280,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                         AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                                         for(DataSnapshot child:children){
                                             Person person=child.getValue(Person.class);
-                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(input.getText().toString()) && !person.getPerson_email().equals(current_person.getPerson_email())){
+                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(input.getText().toString().trim()) && !person.getPerson_email().equals(current_person.getPerson_email())){
                                                 set=false;
                                                 builder.setTitle("This ID is already registered to this event");
                                             }
                                         }
                                         if(set) {
-                                            current_person.setPerson_ID(input.getText().toString());
+                                            current_person.setPerson_ID(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
                                             progressDialog.dismiss();
                                             builder.setTitle("ID Changed Successfully");
@@ -306,7 +306,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                     }
                                 });
                             } catch (Exception ex) {
-                                Log.e("Super exception",ex.getMessage());
+                                Log.e("Exception",ex.getMessage());
                             }
                         }
                     }
@@ -349,14 +349,14 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!input.getText().toString().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                        else if(!input.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
                             AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                             builder.setTitle("Please provide a valid email");
                             builder.setPositiveButton("Ok",null);
                             builder.setCancelable(false);
                             builder.show();
                         }
-                        else if(!input.getText().toString().equals(current_person.getPerson_ID())){
+                        else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
                             progressDialog.setMessage("Please Wait");
                             progressDialog.setCancelable(false);
@@ -373,17 +373,17 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                         AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                                         for(DataSnapshot child:children){
                                             Person person=child.getValue(Person.class);
-                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && !person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString())){
+                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && !person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString().trim())){
                                                 set=false;
                                                 builder.setTitle("This Email is already registered to this event");
                                             }
                                         }
                                         if(set) {
-                                            current_person.setPerson_email(input.getText().toString());
+                                            current_person.setPerson_email(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
                                             progressDialog.dismiss();
                                             builder.setTitle("Email Changed Successfully");
-                                            email.setText(input.getText().toString());
+                                            email.setText(input.getText().toString().trim());
                                         }
                                         else{
                                             progressDialog.dismiss();
@@ -491,7 +491,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
             final TextView tv2=view.findViewById(R.id.dispstatus);
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
-            //final ImageButton delete=view.findViewById(R.id.ModificationDeleteButton);
             if(current_person.dates.get(arrayList.get(position)).equals("Present")){
                 ispresent.setChecked(true);
                 tv2.setText("Present");
