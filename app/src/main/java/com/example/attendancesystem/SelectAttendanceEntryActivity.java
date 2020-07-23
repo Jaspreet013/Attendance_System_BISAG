@@ -203,6 +203,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                                         end_year = year;
                                     }
                                 }
+                                if(end_month==2 && (end_day==30 || end_day==29)){
+                                    if(end_year%4==0){
+                                        end_day=29;
+                                    }
+                                    else{
+                                        end_day=28;
+                                    }
+                                }
                                 File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
                                 AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
                                 dialog.setCancelable(false);
