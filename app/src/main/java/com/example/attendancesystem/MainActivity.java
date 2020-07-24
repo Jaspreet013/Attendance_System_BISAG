@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Password cannot be left Blank", Toast.LENGTH_SHORT).show();
                     } else if (!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")) {
                         Toast.makeText(MainActivity.this, "Please Enter a valid email", Toast.LENGTH_SHORT).show();
-                    } else if (password.getText().toString().length() < 8) {
+                    } else if (password.getText().toString().trim().length() < 8) {
                         Toast.makeText(MainActivity.this, "Please Enter proper password", Toast.LENGTH_SHORT).show();
                     } else if (!isNetworkAvailable()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);

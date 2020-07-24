@@ -228,7 +228,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                             }
                         }
                     }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
-                    picker.setMessage("You can only generate pdf for one month duration at a time, select the date for start (For example:- Attendance from 13/07/2000 to 12/08/2000)");
+                    picker.setMessage("Select your start of month");
                 if (getApplicationContext().checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
                     picker.show();
                 }
@@ -324,8 +324,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 paragraph1.setAlignment(Element.ALIGN_LEFT);
                 Paragraph paragraph=new Paragraph(ev.getName().toUpperCase()+", "+ev.getOrganisation().toUpperCase(),f);
                 paragraph.setAlignment(Element.ALIGN_CENTER);
-                //specify column widths
-                float columnWidths[]=new float[selected_keys.size()+3];// = {1.5f, 2f, 5f, 2f};
+                float columnWidths[]=new float[selected_keys.size()+3];
                 columnWidths[0]=0.5f;
                 columnWidths[1]=3f;
                 columnWidths[2]=2f;
@@ -395,12 +394,10 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             }
             catch (DocumentException dex)
             {
-                Log.e("1",dex.getMessage());
                 dex.printStackTrace();
             }
             catch (Exception ex)
             {
-                Log.e("2",ex.getMessage());
                 ex.printStackTrace();
             }
             finally
@@ -446,8 +443,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0");
         builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
-        builder.setContentText(file.getName()+" has been successfully downloaded");
-        builder.setContentTitle("Download Complete");
+        builder.setContentText("Download Complete");
+        builder.setContentTitle(file.getName());
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setAutoCancel(true);
         builder.setContentIntent(pendingIntent);

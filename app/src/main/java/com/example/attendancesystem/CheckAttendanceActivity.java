@@ -123,13 +123,18 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {
+                        long count=0;
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
                             if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.dates.containsKey(key)) {
                                 arrayList.add(person);
+                                count++;
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
+                            }
+                            if(count==current_event.dates.get(key)){
+                                break;
                             }
                         }
                         for(Person person:arrayList){
