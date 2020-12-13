@@ -453,8 +453,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("Are you sure to delete this User?");
-                    builder.setMessage("All the information regarding this user for this event will be deleted from records");
+                    builder.setTitle("Are you sure to delete this person?");
+                    builder.setMessage("All the information regarding this person for this event will be deleted from records");
                     builder.setNegativeButton("Cancel",null);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -498,7 +498,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                 String json = gson.toJson(ev);
                                                 prefsEditor.putString("Current event", json);
                                                 prefsEditor.putString("Key",event_key);
-                                                prefsEditor.commit();
+                                                prefsEditor.apply();
                                                 dbreference.child(event_key).setValue(ev);
                                             }
 
@@ -511,6 +511,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         TextView person_count = findViewById(R.id.disp_total_people);
                                         person_count.setText("Total no. of People : "+arrayList.size());
                                         adapter.notifyDataSetChanged();
+                                        if(arrayList.isEmpty()) {
+                                            create_event.setEnabled(false);
+                                            create_event.setBackgroundResource(R.drawable.disabled_button);
+                                        }
                                     }
 
                                     @Override
