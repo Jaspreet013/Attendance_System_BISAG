@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +30,7 @@ public class AddEventActivity extends AppCompatActivity {
     EditText event_name;
     EditText event_organisation;
     Button button;
+    String key;
     SharedPreferences preferences;
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
@@ -42,26 +43,15 @@ public class AddEventActivity extends AppCompatActivity {
         event_organisation=findViewById(R.id.event_organisation);
         button=findViewById(R.id.event_submit);
         preferences=getSharedPreferences("User",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=preferences.getString("Current User","");
-        final User current_user=gson.fromJson(json,User.class);
+        key=preferences.getString("Key","");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isNetworkAvailable()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEventActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
                 else if(TextUtils.isEmpty(event_organisation.getText().toString().trim()) || TextUtils.isEmpty(event_name.getText().toString().trim())){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEventActivity.this);
-                    builder.setTitle("Please fill up all details properly");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddEventActivity.this,"Please fill all details properly",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     try {
@@ -70,7 +60,7 @@ public class AddEventActivity extends AppCompatActivity {
                         progressDialog.setCancelable(false);
                         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.show();
-                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
+                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+key);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -85,12 +75,7 @@ public class AddEventActivity extends AppCompatActivity {
                                 }
                                 if(!set){
                                     progressDialog.dismiss();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEventActivity.this);
-                                    builder.setTitle("Event Already Exists");
-                                    builder.setMessage("Your another event with same name and organisation already exists");
-                                    builder.setCancelable(false);
-                                    builder.setPositiveButton("Ok", null);
-                                    builder.show();
+                                    Toast.makeText(AddEventActivity.this,"Your another event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
                                 }
                                 else{
                                     SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
@@ -100,7 +85,7 @@ public class AddEventActivity extends AppCompatActivity {
                                     ArrayList<Person> person=gson.fromJson(json, type);
                                     if(person!=null){
                                         for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+key);
                                             String key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);

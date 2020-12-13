@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -19,6 +20,7 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/welcome_text"
             android:layout_marginTop="25dp"/>
+
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_below="@+id/welcome_text"
@@ -108,4 +110,5 @@
             android:layout_below="@id/login_submit"
             android:textColor="@color/pureBlueColor"/>
     </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+
+</ScrollView>

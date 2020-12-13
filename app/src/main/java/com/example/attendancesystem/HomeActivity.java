@@ -18,8 +18,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -27,6 +30,7 @@ import com.google.gson.Gson;
 public class HomeActivity extends AppCompatActivity {
     SharedPreferences get_user;
     String key;
+    FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson=new Gson();
+        firebaseAuth=FirebaseAuth.getInstance();
         TextView person_name=findViewById(R.id.message_person_name);
         String json=get_user.getString("Current User","");
         final User current_user=gson.fromJson(json,User.class);
@@ -65,33 +70,17 @@ public class HomeActivity extends AppCompatActivity {
                 alertDialog.setPositiveButton("Update",  new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(HomeActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
                         else if(TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim())){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                            builder.setTitle("Name fields cannot be left blank");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(HomeActivity.this,"Name fields cannot be left blank",Toast.LENGTH_SHORT).show();
                         }
                         else if(fname.getText().toString().trim().length()>15 || lname.getText().toString().trim().length()>15){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                            builder.setTitle("Limit of length of fname is 15 and lname is also 15");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(HomeActivity.this,"Limit of length of fname is 15 and lname is also 15",Toast.LENGTH_SHORT).show();
                         }
                         else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
-                            AlertDialog.Builder builder=new AlertDialog.Builder(HomeActivity.this);
-                            builder.setTitle("Please provide a proper name");
-                            builder.setPositiveButton("Ok",null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(HomeActivity.this,"Please provide a proper name",Toast.LENGTH_SHORT).show();
+
                         }
                         else if(!fname.getText().toString().trim().equals(current_user.getFname()) || !lname.getText().toString().trim().equals(current_user.getLname())){
                             try {
@@ -141,12 +130,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isNetworkAvailable()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(HomeActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                 }
                 else {
                     startActivity(new Intent(HomeActivity.this, CheckSelectActivity.class));
@@ -158,12 +143,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isNetworkAvailable()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(HomeActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                 }
                 else{
                     startActivity(new Intent(HomeActivity.this,ModifyEventActivity.class));
@@ -180,6 +161,7 @@ public class HomeActivity extends AppCompatActivity {
                 builder.setPositiveButton("Ok",new HomeActivity.Logout());
                 builder.setNegativeButton("Cancel",null);
                 builder.show();
+                firebaseAuth.signOut();
             }
         });
     }
@@ -198,6 +180,7 @@ public class HomeActivity extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which) {
             SharedPreferences.Editor editor=get_user.edit();
             editor.remove("Current User");
+            editor.remove("Key");
             editor.apply();
             finish();
             FirebaseAuth.getInstance().signOut();

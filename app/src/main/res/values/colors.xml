@@ -3,7 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#126880</color>
-    <color name="buttonColor">#111185</color>
+    <color name="fadedcolorAccent">#30869E</color>
     <color name="pureBlueColor">#0000FF</color>
     <color name="backgroundColor">#ECECEC</color>
 </resources>

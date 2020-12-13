@@ -1,106 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_centerHorizontal="true"
+    android:orientation="vertical"
+    android:weightSum="10"
     android:layout_height="match_parent"
     tools:context=".ModifyAttendanceActivity">
-    <RelativeLayout
-        android:layout_height="match_parent"
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_weight="0.025"
+        android:layout_width="match_parent">
+
+    <TextView
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="Fname"
+        android:textAlignment="center"
+        android:textColor="#1515FF"
+        android:id="@+id/disp_user_fname"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="Lname"
+        android:textColor="#1515FF"
+        android:textAlignment="center"
+        android:id="@+id/disp_user_lname"
+        android:layout_toEndOf="@id/disp_user_fname"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_weight="0.025"
+        android:id="@+id/disp_user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="Person ID : "
+        android:textColor="#1515FF"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_weight="0.025"
+        android:id="@+id/disp_user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/disp_user_id"
+        android:layout_marginStart="15dp"
+        android:text="Email : "
+        android:textColor="#1515FF"
+        android:textSize="20sp" />
+
+    <ListView
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_weight="9.25"
+        android:layout_below="@id/disp_user_email"
+        android:padding="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_height="5dp"
         android:layout_width="match_parent"
-        android:paddingBottom="15dp">
+        android:id="@+id/list_view"
+        android:layout_gravity="center_horizontal"
+        android:nestedScrollingEnabled="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:text="Fname"
-            android:textAlignment="center"
-            android:textColor="#1515FF"
-            android:id="@+id/disp_user_fname"/>
+    <TextView
+        android:id="@+id/empty_entry"
+        android:visibility="gone"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        android:layout_weight="9.25"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There is no entry for this person, entries will be displayed once you take attendance"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/disp_user_fname"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:text="Lname"
-            android:textColor="#1515FF"
-            android:textAlignment="center"
-            android:id="@+id/disp_user_lname"/>
+    <Button
+        android:shadowColor="#FFFFFF"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/update_attendance"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_weight="0.25"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="Update Attendance"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button"
+        app:autoSizeMaxTextSize="25sp"
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"/>
 
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Person ID : "
-            android:textSize="20sp"
-            android:textColor="#1515FF"
-            android:id="@+id/disp_user_id"
-            android:layout_below="@id/disp_user_fname"/>
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/disp_user_email"
-            android:text="Email : "
-            android:textSize="20sp"
-            android:textColor="#1515FF"
-            android:layout_below="@+id/disp_user_id"/>
-
-        <LinearLayout
-            android:layout_below="@id/disp_user_email"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="450dp"
-            android:id="@+id/layout1"
-            android:orientation="vertical">
-
-            <ListView
-                android:padding="15dp"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:id="@+id/list_view"
-                android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"
-                android:visibility="gone"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/modification_empty_message"
-                android:textSize="20sp"
-                android:layout_marginTop="180dp"
-                android:text="This Person's entry will display here once you take attendance, you can click on person's details above to change any of them"
-                android:textAlignment="center"
-                android:layout_gravity="center_vertical" />
-
-        </LinearLayout>
-
-        <Button
-            android:shadowColor="#FFFFFF"
-            android:layout_marginTop="5dp"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/update_attendance"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Update Attendance"
-            android:textSize="20sp"
-            android:textColor="#FFFFFF"
-            android:layout_below="@id/layout1"
-            android:background="@drawable/rounded_button"/>
-
-    </RelativeLayout>
-
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>

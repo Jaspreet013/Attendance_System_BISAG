@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -32,11 +35,14 @@ import java.util.Date;
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
-    String key;
+    String key,Key;
     ListView listView;
     SharedPreferences get_event,get_user;
+    SharedPreferences.Editor edit;
     event current_event;
     MyBaseAdapter adapter;
+    TextView selectall,total;
+    int count=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +53,13 @@ public class AttendanceActivity extends AppCompatActivity {
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
-        Gson gson1=new Gson();
-        String json1=get_user.getString("Current User","");
         key=get_event.getString("Key","");
-        final User current_user=gson1.fromJson(json1,User.class);
+        edit=get_event.edit();
+        edit.remove("Key");
+        edit.apply();
+        edit.remove("Current event");
+        edit.apply();
+        Key=get_user.getString("Key","");
         TextView set_event_name=findViewById(R.id.message_event_name);
         TextView set_organisation_name=findViewById(R.id.message_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -61,22 +70,41 @@ public class AttendanceActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         Button submit=findViewById(R.id.attendance_submit_button);
+        selectall=findViewById(R.id.select_all);
+        total=findViewById(R.id.total_people);
+        selectall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i;
+                if(selectall.getText().equals("Select All")) {
+                    for (i = 0; i < arrayList.size(); i++) {
+                        arrayList.get(i).setIspresent(true);
+                    }
+                    selectall.setText("Clear All");
+                    count=arrayList.size();
+                    adapter.notifyDataSetChanged();
+                }
+                else{
+                    for (i = 0; i < arrayList.size(); i++) {
+                        arrayList.get(i).setIspresent(false);
+                    }
+                    selectall.setText("Select All");
+                    count=0;
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this);
-                alertDialog.setTitle("Submit Attendance?");
+                alertDialog.setTitle("Save this Entry?");
                 alertDialog.setNegativeButton("Cancel",null);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection and try again");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(AttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
                         else {
                             try {
@@ -90,7 +118,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
                                 current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+current_user.getEmail().replace(".",""));
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+Key);
                                 databaseReference.child(key).setValue(current_event);
                                 for (int i = 0; i<arrayList.size(); i++) {
                                     if (arrayList.get(i).getIspresent()==true) {
@@ -103,21 +131,13 @@ public class AttendanceActivity extends AppCompatActivity {
                                     arrayList.get(i).setnull();
                                     arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
                                 }
-                                DatabaseReference dbreference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                DatabaseReference dbreference = database.getReference("Persons/"+Key);
                                 for (int i = 0; i < keys.size(); i++) {
                                     dbreference.child(keys.get(i)).setValue(arrayList.get(i));
                                 }
                                 waiting.dismiss();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                                builder.setTitle("Attendance saved successfully");
-                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                });
-                                builder.setCancelable(false);
-                                builder.show();
+                                Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
+                                finish();
                             } catch (Exception e) {
 
                             }
@@ -128,12 +148,8 @@ public class AttendanceActivity extends AppCompatActivity {
             }
         });
         if (!isNetworkAvailable()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-            builder.setTitle("No Internet");
-            builder.setMessage("Please check your internet connection");
-            builder.setPositiveButton("Ok", null);
-            builder.setCancelable(false);
-            builder.show();
+            Toast.makeText(AttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+            finish();
         }
         try {
             final ProgressDialog waiting;
@@ -143,7 +159,7 @@ public class AttendanceActivity extends AppCompatActivity {
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+            final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -158,6 +174,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                         }
+                        total.setText(total.getText()+Integer.toString(arrayList.size()));
                         waiting.dismiss();
                         listView.setAdapter(adapter);
                         if(arrayList.isEmpty()) {
@@ -187,11 +204,11 @@ public class AttendanceActivity extends AppCompatActivity {
 
         }
     }
-    public long getPresentCount(int i){
-        long count=0;
-        for(String str:arrayList.get(i).dates.keySet()){
-            if(arrayList.get(i).dates.get(str).equals("Present")){
-                count+=1;
+    public long getPresentCount(int i) {
+        long count = 0;
+        for (String str : arrayList.get(i).dates.keySet()) {
+            if (arrayList.get(i).dates.get(str).equals("Present")) {
+                count += 1;
             }
         }
         return count;
@@ -229,16 +246,25 @@ public class AttendanceActivity extends AppCompatActivity {
             if(arrayList.get(position).getIspresent()){
                 ispresent.setChecked(true);
             }
+            if(count==arrayList.size()){
+                selectall.setText("Clear All");
+            }
             ispresent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (arrayList.get(position).getIspresent()) {
                         ispresent.setChecked(false);
                         arrayList.get(position).setIspresent(false);
+                        count--;
+                        selectall.setText("Select All");
                     }
                     else {
                         ispresent.setChecked(true);
                         arrayList.get(position).setIspresent(true);
+                        count++;
+                        if(count==arrayList.size()){
+                            selectall.setText("Clear All");
+                        }
                     }
                 }
             });
@@ -248,10 +274,16 @@ public class AttendanceActivity extends AppCompatActivity {
                     if (arrayList.get(position).getIspresent()) {
                         ispresent.setChecked(false);
                         arrayList.get(position).setIspresent(false);
+                        count--;
+                        selectall.setText("Select All");
                     }
                     else {
                         ispresent.setChecked(true);
                         arrayList.get(position).setIspresent(true);
+                        count++;
+                        if(count==arrayList.size()){
+                            selectall.setText("Clear All");
+                        }
                     }
                 }
             });
@@ -268,8 +300,8 @@ public class AttendanceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder=new AlertDialog.Builder(AttendanceActivity.this);
-        builder.setMessage("The Attendance Entry will not be saved");
-        builder.setTitle("Are you sure you want to go back?");
+        builder.setMessage("Entry will not be saved");
+        builder.setTitle("Are you sure to go back?");
         builder.setCancelable(false);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override

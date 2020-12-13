@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -24,14 +25,10 @@ import com.google.gson.Gson;
 
 public class AddPerson extends AppCompatActivity {
     event current_event;
-    EditText fname;
-    EditText lname;
-    EditText email;
-    EditText id;
-    User current_user;
+    EditText fname,lname,email,id;
+    String key;
     boolean set=true;
-    SharedPreferences preferences;
-    SharedPreferences get_user;
+    SharedPreferences preferences,get_user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +44,8 @@ public class AddPerson extends AppCompatActivity {
         Gson gson = new Gson();
         String json = preferences.getString("Current event", "");
         current_event = gson.fromJson(json, event.class);
-        Gson gson1=new Gson();
         get_user=getSharedPreferences("User",MODE_PRIVATE);
-        String json1=get_user.getString("Current User","");
-        current_user=gson1.fromJson(json1,User.class);
+        key=get_user.getString("Key","");
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,34 +60,17 @@ public class AddPerson extends AppCompatActivity {
             public void onClick(View v) {
                 set=true;
                 if (!isNetworkAvailable()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddPerson.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddPerson.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
                 else if (TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim()) ||
                         TextUtils.isEmpty(email.getText().toString().trim()) || TextUtils.isEmpty(id.getText().toString().trim())) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AddPerson.this);
-                    builder.setTitle("Please fill up all details properly");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddPerson.this,"Please fill up all details properly",Toast.LENGTH_SHORT).show();
                 }
                 else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(AddPerson.this);
-                    builder.setTitle("Please provide a proper name");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddPerson.this,"Please provide a proper name",Toast.LENGTH_SHORT).show();
                 }
                 else if(!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(AddPerson.this);
-                    builder.setTitle("Please provide a valid email");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(AddPerson.this,"Please provide a valid email",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     final ProgressDialog progressDialog=new ProgressDialog(AddPerson.this);
@@ -102,40 +80,35 @@ public class AddPerson extends AppCompatActivity {
                     progressDialog.show();
                     try {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                        final DatabaseReference databaseReference = database.getReference("Persons/"+key);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                AlertDialog.Builder builder=new AlertDialog.Builder(AddPerson.this);
                                 for(DataSnapshot child:children){
                                     Person person=child.getValue(Person.class);
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) &&
                                             person.getPerson_email().equals(email.getText().toString().trim()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
                                         set=false;
-                                        builder.setTitle("This email is already registered to this event");
+                                        progressDialog.dismiss();
+                                        Toast.makeText(AddPerson.this,"This email is already registered to this event",Toast.LENGTH_SHORT).show();
                                     }
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString().trim())){
                                         set=false;
-                                        builder.setTitle("This ID is already registered to this event");
+                                        progressDialog.dismiss();
+                                        Toast.makeText(AddPerson.this,"This ID is already registered to this event",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 if(set) {
                                     String key = databaseReference.push().getKey();
                                     databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim(), current_event.getName().trim(), current_event.getOrganisation().trim()));
                                     progressDialog.dismiss();
-                                    builder.setTitle("Person Added");
+                                    Toast.makeText(AddPerson.this, "Person successfully added to the event", Toast.LENGTH_SHORT).show();
                                     fname.getText().clear();
                                     lname.getText().clear();
                                     email.getText().clear();
                                     id.getText().clear();
                                 }
-                                else{
-                                    progressDialog.dismiss();
-                                }
-                                builder.setCancelable(false);
-                                builder.setPositiveButton("Ok",null);
-                                builder.show();
                             }
 
                             @Override

@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -74,12 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     } else if (password.getText().toString().trim().length() < 8) {
                         Toast.makeText(MainActivity.this, "Please Enter proper password", Toast.LENGTH_SHORT).show();
                     } else if (!isNetworkAvailable()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("No Internet");
-                        builder.setMessage("Please check your internet connection");
-                        builder.setPositiveButton("Ok", null);
-                        builder.setCancelable(false);
-                        builder.show();
+                        Toast.makeText(MainActivity.this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
                     }
                     else {
                         waiting.setMessage("Please Wait");
@@ -109,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                                                         waiting.dismiss();
                                                         finish();
                                                         startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                                        firebaseAuth.signOut();
                                                     }
                                                     catch (Exception e) {
                                                         Log.e("Exception is", e.toString());
@@ -126,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     else{
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                        builder.setTitle("Your email is not verified");
+                                        builder.setTitle("Your email is not verified, please check your mail");
                                         builder.setPositiveButton("Ok", null);
                                         builder.setCancelable(false);
                                         builder.show();

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,47 +50,22 @@ public class RegistrationActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(fname.getText().toString().trim()) || TextUtils.isEmpty(lname.getText().toString().trim())
                 || TextUtils.isEmpty(email.getText().toString().trim()) || TextUtils.isEmpty(password.getText().toString().trim())
                 || TextUtils.isEmpty(cnfpassword.getText().toString().trim())){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("Please fill up all the values");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Please fill up all the values",Toast.LENGTH_SHORT).show();
                 }
                 else if(!(fname.getText().toString().trim().matches("^[a-zA-Z]*$")) || !(lname.getText().toString().trim().matches("^[a-zA-Z]*$"))){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("Please provide a proper name");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Please provide a proper name",Toast.LENGTH_SHORT).show();
                 }
                 else if(!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("Please provide a valid email");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Please provide a valid E-mail",Toast.LENGTH_SHORT).show();
                 }
                 else if(!password.getText().toString().trim().equals(cnfpassword.getText().toString().trim())){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("Please confirm password properly");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Please confirm E-mail properly",Toast.LENGTH_SHORT).show();
                 }
                 else if(password.getText().toString().trim().length()<8){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("Password length should be in between 8 to 12 characters");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Password length should be in between 8 to 12 characters",Toast.LENGTH_SHORT).show();
                 }
                 else if(!isNetworkAvailable()){
-                    AlertDialog.Builder builder=new AlertDialog.Builder(RegistrationActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok",null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(RegistrationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     progressDialog.setMessage("Please Wait");
@@ -114,7 +90,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                                 builder.setPositiveButton("Ok", null);
                                                 builder.setCancelable(false);
                                                 builder.show();
-                                            } else {
+                                            }
+                                            else {
                                                 try {
                                                     FirebaseUser user = firebaseAuth.getCurrentUser();
                                                     databaseReference = FirebaseDatabase.getInstance().getReference("users");

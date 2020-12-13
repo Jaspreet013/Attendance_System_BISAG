@@ -41,9 +41,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
     String key;
     ListView listView;
     MyBaseAdapter adapter;
-    User current_user;
     event current_event;
-    String event_key;
+    String event_key,Key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +53,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         String json = get_person.getString("Current Person", "");
         current_person = gson.fromJson(json, Person.class);
         get_user = getSharedPreferences("User", MODE_PRIVATE);
-        Gson gson1=new Gson();
-        String json1=get_user.getString("Current User", "");
-        current_user=gson1.fromJson(json1, User.class);
+        Key=get_user.getString("Key","");
         key = get_person.getString("Key", "");
         SharedPreferences preferences = getSharedPreferences("Events", MODE_PRIVATE);
         Gson gson2 = new Gson();
@@ -69,7 +66,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setAdapter(adapter);
-        listView.setEmptyView(findViewById(R.id.modification_empty_message));
+        listView.setEmptyView(findViewById(R.id.empty_entry));
         for (String i : current_person.dates.keySet()) {
             arrayList.add(i);
         }
@@ -101,26 +98,14 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                         }
                         else if(input.getText().toString().trim().length()>15){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Fname length cannot be more than 15");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Fname length cannot be more than 15",Toast.LENGTH_SHORT).show();
                         }
                         else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
-                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Please provide a proper fname");
-                            builder.setPositiveButton("Ok",null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper fname",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getFname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
@@ -129,15 +114,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setFname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+Key);
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Lname length cannot be more than 15");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Person fname changed successfully",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -172,26 +153,13 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
                         else if(input.getText().toString().trim().length()>15){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Lname length cannot be more than 15");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Lname length cannot be more than 15",Toast.LENGTH_SHORT).show();
                         }
                         else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
-                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Please provide a proper lname");
-                            builder.setPositiveButton("Ok",null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper lname",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getLname())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
@@ -200,15 +168,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setLname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+current_user.getEmail().replace(".",""));
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+Key);
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Person Lname changed successfully");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Person lname changed successfully",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -242,26 +206,14 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                         }
                         else if(input.getText().toString().trim().length()>20){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("ID length cannot be more than 15");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"ID length cannot be more than 15",Toast.LENGTH_SHORT).show();
                         }
                         else if(TextUtils.isEmpty(input.getText().toString().trim())){
-                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("ID cannot be left blank");
-                            builder.setPositiveButton("Ok",null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"ID cannot be left blank",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
@@ -271,33 +223,29 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                         boolean set=true;
-                                        AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                                         for(DataSnapshot child:children){
                                             Person person=child.getValue(Person.class);
                                             if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(input.getText().toString().trim()) && !person.getPerson_email().equals(current_person.getPerson_email())){
                                                 set=false;
-                                                builder.setTitle("This ID is already registered to this event");
+                                                Toast.makeText(ModifyAttendanceActivity.this,"This ID is already registered to this event",Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         if(set) {
                                             current_person.setPerson_ID(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
                                             progressDialog.dismiss();
-                                            builder.setTitle("ID Changed Successfully");
+                                            Toast.makeText(ModifyAttendanceActivity.this,"ID changed successfully",Toast.LENGTH_SHORT).show();
                                             id.setText(input.getText().toString());
                                         }
                                         else{
                                             progressDialog.dismiss();
                                         }
-                                        builder.setCancelable(false);
-                                        builder.setPositiveButton("Ok",null);
-                                        builder.show();
                                     }
 
                                     @Override
@@ -342,19 +290,12 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                         }
                         else if(!input.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                            AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("Please provide a valid email");
-                            builder.setPositiveButton("Ok",null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a valid email",Toast.LENGTH_SHORT).show();
+
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
@@ -364,33 +305,29 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                         boolean set=true;
-                                        AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
                                         for(DataSnapshot child:children){
                                             Person person=child.getValue(Person.class);
                                             if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && !person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString().trim())){
                                                 set=false;
-                                                builder.setTitle("This Email is already registered to this event");
+                                                Toast.makeText(ModifyAttendanceActivity.this,"This email is already registered to this event",Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         if(set) {
                                             current_person.setPerson_email(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
                                             progressDialog.dismiss();
-                                            builder.setTitle("Email Changed Successfully");
+                                            Toast.makeText(ModifyAttendanceActivity.this,"Email changed successfully",Toast.LENGTH_SHORT).show();
                                             email.setText(input.getText().toString().trim());
                                         }
                                         else{
                                             progressDialog.dismiss();
                                         }
-                                        builder.setCancelable(false);
-                                        builder.setPositiveButton("Ok",null);
-                                        builder.show();
                                     }
 
                                     @Override
@@ -419,6 +356,9 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             }
         });
         Button submit = findViewById(R.id.update_attendance);
+        if(arrayList.isEmpty()){
+            submit.setVisibility(View.GONE);
+        }
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -429,24 +369,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
-                        }
-                        else if(arrayList.isEmpty()){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                            builder.setMessage("There is currently no attendance entry available for modification of this person");
-                            builder.setTitle("No Entry");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
                         else {
                             current_person.setAttendance(getPresentCount());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/"+Key);
                             databaseReference.child(key).setValue(current_person);
                             Toast.makeText(ModifyAttendanceActivity.this, "Attendance Updated Successfully", Toast.LENGTH_SHORT).show();
                             finish();

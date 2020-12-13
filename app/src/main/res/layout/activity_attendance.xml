@@ -1,65 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".AttendanceActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AttendanceActivity">
-    <RelativeLayout
-        android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_centerHorizontal="true"
+    android:orientation="vertical"
+    android:weightSum="10.925">
+
+    <TextView
+        android:id="@+id/message_event_name"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/layout_welcome"
-        android:paddingBottom="10dp">
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        app:autoSizeTextType="uniform"
+        android:layout_weight="1.8"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeMaxTextSize="45sp"
+        app:autoSizeStepGranularity="1sp"/>
+
+    <TextView
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="5sp"
+        app:autoSizeMaxTextSize="30sp"
+        app:autoSizeStepGranularity="1sp"
+        android:textAlignment="center"
+        android:id="@+id/message_organisation_name"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6" />
+
+    <RelativeLayout
+        android:layout_marginTop="15dp"
+        android:layout_weight="0.125"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
 
         <TextView
-            android:id="@+id/message_event_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="45sp"/>
+            android:text="Total People : "
+            android:textSize="20dp"
+            android:id="@+id/total_people"
+            android:layout_marginStart="15dp"
+            android:layout_alignParentStart="true"/>
 
         <TextView
-            android:textAlignment="center"
-            android:id="@+id/message_organisation_name"
-            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/message_event_name"
-            android:textSize="30sp"/>
-        <LinearLayout
-            android:layout_below="@id/message_organisation_name"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout1"
-            android:orientation="vertical">
+            android:id="@+id/select_all"
+            android:text="Select All"
+            android:textColor="@color/colorAccent"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginEnd="30dp"
+            android:layout_alignParentEnd="true"/>
 
-            <ListView
-                android:padding="15dp"
-                android:layout_height="350dp"
-                android:layout_width="match_parent"
-                android:id="@+id/list_view3"
-                android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true" />
-        </LinearLayout>
-
-        <Button
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="60dp"
-            android:id="@+id/attendance_submit_button"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/rounded_button"
-            android:layout_below="@+id/layout1"
-            android:textSize="20sp"
-            android:text="Save Attendance" />
     </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+
+    <ListView
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:padding="15dp"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:layout_width="match_parent"
+        android:id="@+id/list_view3"
+        android:layout_gravity="center_horizontal"
+        android:nestedScrollingEnabled="true" />
+
+    <Button
+        android:id="@+id/attendance_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/rounded_button"
+        android:padding="10dp"
+        android:text="Save Attendance"
+        android:textColor="#FFFFFF"
+        app:autoSizeMaxTextSize="25sp"
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform" />
+
+</LinearLayout>

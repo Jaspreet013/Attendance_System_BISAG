@@ -1,90 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AttendanceInfoActivity">
-    <RelativeLayout
-        android:layout_height="match_parent"
+    tools:context=".AttendanceInfoActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_centerHorizontal="true"
+    android:orientation="vertical"
+    android:weightSum="60"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:text="Name"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:id="@+id/disp_user_name"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Person ID : "
+        android:textSize="20sp"
+        android:id="@+id/disp_user_id"
+        android:layout_weight="1"
+        android:layout_gravity="start"/>
+
+    <TextView
+        android:layout_gravity="start"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/disp_user_email"
+        android:text="Email : "
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/disp_user_attendance"
+        android:layout_weight="1"
+        android:text="Attendance : "
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/disp_user_total_attendance"
+        android:text="Total Entries Count : "
+        android:textSize="20sp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/disp_user_percent_attendance"
+        android:text="Attendance (in %) : "
+        android:textSize="20sp"
+        android:layout_weight="1"/>
+
+    <ListView
+        android:layout_weight="52"
+        android:padding="15dp"
+        android:layout_height="0dp"
         android:layout_width="match_parent"
-        android:paddingBottom="15dp">
+        android:id="@+id/list_view"
+        android:layout_gravity="center_horizontal"
+        android:nestedScrollingEnabled="true"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:text="Name"
-            android:textAlignment="center"
-            android:id="@+id/disp_user_name"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Person ID : "
-            android:textSize="20sp"
-            android:id="@+id/disp_user_id"
-            android:layout_below="@id/disp_user_name"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/disp_user_email"
-            android:text="Email : "
-            android:textSize="20sp"
-            android:layout_below="@+id/disp_user_id"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/disp_user_attendance"
-            android:text="Attendance : "
-            android:textSize="20sp"
-            android:layout_below="@+id/disp_user_email"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/disp_user_total_attendance"
-            android:text="Total Entries Count : "
-            android:textSize="20sp"
-            android:layout_below="@+id/disp_user_attendance"/>
-
-        <TextView
-            android:layout_marginLeft="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/disp_user_percent_attendance"
-            android:text="Attendance (in %) : "
-            android:textSize="20sp"
-            android:layout_below="@+id/disp_user_total_attendance"/>
-
-        <LinearLayout
-            android:layout_below="@id/disp_user_percent_attendance"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout1"
-            android:orientation="vertical">
-
-            <ListView
-                android:padding="15dp"
-                android:layout_height="400dp"
-                android:layout_width="match_parent"
-                android:id="@+id/list_view"
-                android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"/>
-
-        </LinearLayout>
-    </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>

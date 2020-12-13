@@ -1,132 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".selectedEventModificationActivity"
+    android:weightSum="20"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".selectedEventModificationActivity">
-    <RelativeLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="25dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="25dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/Layout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <TextView
+        android:layout_weight="0.125"
+        android:id="@+id/eventView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:text="event name"
+        android:textColor="#1515FF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.197" />
 
-            <TextView
-                android:id="@+id/eventView"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:textColor="#1515FF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/deleteButton"
-                app:layout_constraintHorizontal_bias="0.156"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.372" />
+    <TextView
+        android:layout_weight="0.125"
+        android:text="organisation name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_organisation"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:textColor="#5F5FFC"
+        app:layout_constraintStart_toStartOf="@+id/eventView"
+        app:layout_constraintTop_toBottomOf="@+id/eventView" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/event_organisation"
-                android:textSize="20sp"
-                android:textColor="#5F5FFC"
-                app:layout_constraintStart_toStartOf="@+id/eventView"
-                app:layout_constraintTop_toBottomOf="@+id/eventView" />
-
-            <ImageButton
-                android:id="@+id/deleteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:backgroundTint="@color/cardview_dark_background"
-                android:src="@android:drawable/ic_menu_delete"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_weight="0.25"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:weightSum="5"
+        android:id="@+id/Layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
+            android:layout_weight="4.95"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total no. of People : "
             android:textStyle="bold"
             android:textSize="20sp"
-            android:layout_marginLeft="20dp"
-            android:id="@+id/disp_total_people"
-            android:layout_below="@+id/Layout2" />
-        <TextView
+            android:id="@+id/disp_total_people" />
+
+        <ImageButton
+            android:layout_weight="0.05"
+            android:contentDescription="Delete entry here"
+            android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text=""
-            android:layout_toRightOf="@+id/disp_total_people"
-            android:id="@+id/display_total_people"
-            android:textSize="20sp"
-            android:layout_below="@+id/Layout2"/>
-        <LinearLayout
-            android:layout_below="@id/disp_total_people"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="295dp"
-            android:id="@+id/layout2"
-            android:orientation="vertical">
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:backgroundTint="@color/cardview_dark_background"
+            android:src="@android:drawable/ic_menu_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <ListView
-                android:padding="15dp"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:id="@+id/list_view1"
-                android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"
-                android:visibility="gone"/>
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
-                android:id="@+id/empty_message"
-                android:textSize="20sp"
-                android:text="Added people will display here, you can click above on event name or organisation to change it"
-                android:textAlignment="center"
-                android:layout_gravity="center_vertical" />
-        </LinearLayout>
+    <ListView
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:padding="15dp"
+        android:layout_weight="16"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:id="@+id/list_view1"
+        android:gravity="center_vertical"
+        android:nestedScrollingEnabled="true"
+        android:visibility="gone"/>
 
-        <Button
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="60dp"
-            android:id="@+id/add_person_button"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/rounded_button"
-            android:layout_below="@+id/layout2"
-            android:textSize="20sp"
-            android:text="Add New Person" />
+    <TextView
+        android:layout_weight="16"
+        android:padding="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/empty_message"
+        android:textSize="20sp"
+        android:text="Added people will display here, you can click above on event name or organisation to change it"
+        android:textAlignment="center"
+        android:gravity="center_vertical" />
 
-        <Button
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
-            android:padding="5dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="90dp"
-            android:id="@+id/create_new_event"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/rounded_button"
-            android:layout_below="@+id/add_person_button"
-            android:textSize="20sp"
-            android:text="Copy people and create new event" />
+    <Button
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_person_button"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button"
+        android:text="Add New Person"
+        app:autoSizeMaxTextSize="25sp"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"/>
 
-    </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+    <Button
+        android:layout_weight="2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:padding="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_new_event"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button"
+        android:text="Copy people and create new event"
+        app:autoSizeMaxTextSize="25sp"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"/>
+
+</LinearLayout>

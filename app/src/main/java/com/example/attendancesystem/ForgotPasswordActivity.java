@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,19 +33,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!isNetworkAvailable()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(ForgotPasswordActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
                 else if(TextUtils.isEmpty(email.getText().toString().trim()) || !email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
-                    builder.setTitle("Please provide a valid email");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(ForgotPasswordActivity.this,"Please provide a valid E-mail",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     final ProgressDialog waiting=new ProgressDialog(ForgotPasswordActivity.this);
@@ -60,7 +52,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
                                 builder.setTitle("Task Successful");
-                                builder.setMessage("Password reset email has been sent to you");
+                                builder.setMessage("Password reset email has been sent to you, please check your mail");
                                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

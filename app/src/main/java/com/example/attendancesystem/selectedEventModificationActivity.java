@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,12 +39,11 @@ import java.util.Set;
 public class selectedEventModificationActivity extends AppCompatActivity {
     SharedPreferences preferences,get_user;
     String id="";
-    String key,event_key;
+    String key,event_key,Key;
     private ListView listView;
-    User current_user;
     ArrayList<String> keys=new ArrayList<>();
     EditText input;
-    long count=0;
+    Button create_event,add_person;
     MyPeopleAdapter adapter;
     event current_event;
     ArrayList<Person> arrayList=new ArrayList<>();
@@ -59,9 +60,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         String json = preferences.getString("Current event", "");
         event_key=preferences.getString("Key","");
         get_user = getSharedPreferences("User",MODE_PRIVATE);
-        Gson gson1=new Gson();
-        String json1=get_user.getString("Current User","");
-        current_user=gson1.fromJson(json1,User.class);
+        Key=get_user.getString("Key","");
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
@@ -70,8 +69,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setEmptyView(findViewById(R.id.empty_message));
         current_event = gson.fromJson(json, event.class);
-        Button add_person=findViewById(R.id.add_person_button);
-        Button create_event=findViewById(R.id.create_new_event);
+        add_person=findViewById(R.id.add_person_button);
+        create_event=findViewById(R.id.create_new_event);
         add_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,19 +82,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!isNetworkAvailable()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
-                }
-                else if(arrayList.isEmpty()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("There are currently no people in this event");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                 }
                 else {
                     SharedPreferences prefs = getSharedPreferences("All users", MODE_PRIVATE);
@@ -121,17 +109,11 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             if (!isNetworkAvailable()) {
-                waiting.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                builder.setTitle("No Internet");
-                builder.setMessage("Please check your internet connection");
-                builder.setPositiveButton("Ok", null);
-                builder.setCancelable(false);
-                builder.show();
+                Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
             }
             else {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -142,13 +124,16 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
                                     arrayList.add(person);
                                     keys.add(child.getKey());
-                                    count++;
                                     adapter.notifyDataSetChanged();
                                 }
                             }
                             waiting.dismiss();
-                            TextView person_count = findViewById(R.id.display_total_people);
-                            person_count.setText(Long.toString(count));
+                            TextView person_count = findViewById(R.id.disp_total_people);
+                            person_count.setText("Total no. of People : "+arrayList.size());
+                            if(arrayList.isEmpty()) {
+                                create_event.setEnabled(false);
+                                create_event.setBackgroundResource(R.drawable.disabled_button);
+                            }
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }
@@ -179,26 +164,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (!isNetworkAvailable()) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                    builder.setTitle("No Internet");
-                                    builder.setMessage("Please check your internet connection");
-                                    builder.setPositiveButton("Ok", null);
-                                    builder.setCancelable(false);
-                                    builder.show();
+                                    Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                                 }
                                 else if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                    builder.setTitle("Event Name cannot be set as empty");
-                                    builder.setPositiveButton("Ok", null);
-                                    builder.setCancelable(false);
-                                    builder.show();
+                                    Toast.makeText(selectedEventModificationActivity.this,"Event Name cannot be set as empty",Toast.LENGTH_SHORT).show();
                                 }
                                 else if(input.getText().toString().trim().length()>22){
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                    builder.setTitle("Length cannot be more than 22");
-                                    builder.setPositiveButton("Ok", null);
-                                    builder.setCancelable(false);
-                                    builder.show();
+                                    Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                                 }
                                 else {
                                     final ProgressDialog waiting;
@@ -207,7 +179,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     waiting.setCancelable(false);
                                     waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                     waiting.show();
-                                    databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
+                                    databaseReference = database.getReference("events/"+Key);
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -229,7 +201,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
-                                                databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                                databaseReference=database.getReference("Persons/"+Key);
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -250,7 +222,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                     }
                                                 });
                                                 waiting.dismiss();
-                                                Toast.makeText(selectedEventModificationActivity.this,"Name Changed successfully",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(selectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
@@ -297,26 +269,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                            builder.setTitle("No Internet");
-                            builder.setMessage("Please check your internet connection");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
                         else if (TextUtils.isEmpty(input.getText().toString().trim())) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                            builder.setTitle("Organisation cannot be set as empty");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(selectedEventModificationActivity.this,"Organisation cannot be set as empty",Toast.LENGTH_SHORT).show();
                         }
                         else if(input.getText().toString().trim().length()>22){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                            builder.setTitle("Length cannot be more than 22");
-                            builder.setPositiveButton("Ok", null);
-                            builder.setCancelable(false);
-                            builder.show();
+                            Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                         }
                         else {
                             final ProgressDialog waiting;
@@ -325,7 +284,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             waiting.setCancelable(false);
                             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             waiting.show();
-                            databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
+                            databaseReference = database.getReference("events/"+Key);
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -347,7 +306,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     if(set){
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
-                                        databaseReference=database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                                        databaseReference=database.getReference("Persons/"+Key);
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -402,17 +361,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isNetworkAvailable()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("Delete event?");
-                    builder.setMessage("Are you sure you want to delete all data linked with this event");
+                    builder.setTitle("Delete event");
+                    builder.setMessage("Are you sure you want to delete all data linked with this event?");
                     builder.setNegativeButton("cancel",null);
                     final ProgressDialog waiting;
                     waiting = new ProgressDialog(selectedEventModificationActivity.this);
@@ -423,7 +377,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
+                            databaseReference = database.getReference("events/"+Key);
                             try {
                                 waiting.show();
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -446,7 +400,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                     }
                                 });
-                                databaseReference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                databaseReference = database.getReference("Persons/"+Key);
                                 for (String del : keys) {
                                     databaseReference.child(del).removeValue();
                                 }
@@ -506,12 +460,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (!isNetworkAvailable()) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                                builder.setTitle("No Internet");
-                                builder.setMessage("Please check your internet connection");
-                                builder.setPositiveButton("Ok", null);
-                                builder.setCancelable(false);
-                                builder.show();
+                                Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 final ProgressDialog waiting = new ProgressDialog(selectedEventModificationActivity.this);
@@ -520,14 +469,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 waiting.show();
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference reference = database.getReference("Persons/" + current_user.getEmail().replace(".", ""));
+                                final DatabaseReference reference = database.getReference("Persons/"+Key);
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         final Set<String> events=arrayList.get(position).dates.keySet();
                                         reference.child(keys.get(position)).removeValue();
                                         arrayList.remove(position);
-                                        final DatabaseReference dbreference=database.getReference("events/"+current_user.getEmail().replace(".",""));
+                                        final DatabaseReference dbreference=database.getReference("events/"+Key);
                                         dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -559,8 +508,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             }
                                         });
                                         waiting.dismiss();
-                                        TextView person_count = findViewById(R.id.display_total_people);
-                                        person_count.setText(Integer.toString(arrayList.size()));
+                                        TextView person_count = findViewById(R.id.disp_total_people);
+                                        person_count.setText("Total no. of People : "+arrayList.size());
                                         adapter.notifyDataSetChanged();
                                     }
 

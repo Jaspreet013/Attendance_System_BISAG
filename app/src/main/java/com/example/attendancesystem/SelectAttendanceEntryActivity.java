@@ -26,14 +26,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +49,6 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -63,10 +60,13 @@ import java.util.HashMap;
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
     SharedPreferences get_event,get_user;
     event current_event;
+    TextView textView;
     ListView listView;
     ArrayList<String> arrayList=new ArrayList<>();
     ArrayList<Person> persons=new ArrayList<>();
     MyBaseAdapter adapter;
+    DatePickerDialog picker;
+    String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +75,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builders.build());
         builders.detectFileUriExposure();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        textView=findViewById(R.id.select_subject_text);
         get_event=getSharedPreferences("Events",MODE_PRIVATE);
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
+        textView.setText("Total Entries : "+current_event.dates.size());
         get_user = getSharedPreferences("User",MODE_PRIVATE);
+        key=get_user.getString("Key","");
         Gson gson1=new Gson();
         String json1=get_user.getString("Current User","");
         final User current_user=gson1.fromJson(json1,User.class);
@@ -91,17 +94,12 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
         if (!isNetworkAvailable()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-            builder.setTitle("No Internet");
-            builder.setMessage("Please check your internet connection");
-            builder.setPositiveButton("Ok", null);
-            builder.setCancelable(false);
-            builder.show();
+            Toast.makeText(SelectAttendanceEntryActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
         else{
             try{
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/"+current_user.getEmail().replace(".",""));
+                final DatabaseReference databaseReference = database.getReference("Persons/"+key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -130,110 +128,110 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
         final Button download=findViewById(R.id.download_pdf);
+        if(arrayList.isEmpty()){
+            download.setVisibility(View.INVISIBLE);
+        }
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-                    final ArrayList<String> selected_keys = new ArrayList<>();
-                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-                    String date[] = format.format(new Date()).split("-", 3);
-                    if (date[1] == "1") {
-                        date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
-                        date[1] = "12";
-                    }
-                    final DatePickerDialog picker = new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            PrintReport report = new PrintReport();
-                            month += 1;
-                            for (String key : arrayList) {
-                                String str[] = key.split("-", 5);
-                                int d = Integer.parseInt(str[2]);
-                                int m = Integer.parseInt(str[1]);
-                                int y = Integer.parseInt(str[0]);
-                                if (month == 12) {
-                                    if (m == 1 && y == year + 1 && dayOfMonth > d) {
-                                        selected_keys.add(key);
-                                    } else if (m == 12 && year == y && dayOfMonth <= d) {
-                                        selected_keys.add(key);
-                                    }
-                                } else {
-                                    if (year == y && month == m && d >= dayOfMonth) {
-                                        selected_keys.add(key);
-                                    } else if (year == y && m == (month + 1) && d < dayOfMonth) {
-                                        selected_keys.add(key);
-                                    }
+                final ArrayList<String> selected_keys = new ArrayList<>();
+                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                String date[] = format.format(new Date()).split("-", 3);
+                if (date[1] == "1") {
+                    date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
+                    date[1] = "12";
+                }
+                picker=new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        PrintReport report = new PrintReport();
+                        month += 1;
+                        for (String key : arrayList) {
+                            String str[] = key.split("-", 5);
+                            int d = Integer.parseInt(str[2]);
+                            int m = Integer.parseInt(str[1]);
+                            int y = Integer.parseInt(str[0]);
+                            if (month == 12) {
+                                if (m == 1 && y == year + 1 && dayOfMonth > d) {
+                                    selected_keys.add(key);
+                                } else if (m == 12 && year == y && dayOfMonth <= d) {
+                                    selected_keys.add(key);
+                                }
+                            } else {
+                                if (year == y && month == m && d >= dayOfMonth) {
+                                    selected_keys.add(key);
+                                } else if (year == y && m == (month + 1) && d < dayOfMonth) {
+                                    selected_keys.add(key);
                                 }
                             }
-                            if (!selected_keys.isEmpty()) {
-                                int end_day = 0, end_month = 0, end_year = 0;
-                                if (dayOfMonth == 1) {
-                                    if (month >= 1 && month <= 7) {
-                                        end_month = month;
-                                        end_year = year;
-                                        if (month != 2) {
-                                            if (month % 2 == 1) {
-                                                end_day = 31;
-                                            } else {
-                                                end_day = 30;
-                                            }
-                                        } else {
-                                            if (year % 2 == 0) {
-                                                end_day = 29;
-                                            } else {
-                                                end_day = 28;
-                                            }
-                                        }
-                                    } else {
-                                        end_month = month;
-                                        end_year = year;
-                                        if (month % 2 == 0) {
+                        }
+                        if (!selected_keys.isEmpty()) {
+                            int end_day = 0, end_month = 0, end_year = 0;
+                            if (dayOfMonth == 1) {
+                                if (month >= 1 && month <= 7) {
+                                    end_month = month;
+                                    end_year = year;
+                                    if (month != 2) {
+                                        if (month % 2 == 1) {
                                             end_day = 31;
                                         } else {
                                             end_day = 30;
                                         }
+                                    } else {
+                                        if (year % 2 == 0) {
+                                            end_day = 29;
+                                        } else {
+                                            end_day = 28;
+                                        }
                                     }
                                 } else {
-                                    end_day = dayOfMonth - 1;
-                                    if (month == 12) {
-                                        end_month = 1;
-                                        end_year = year + 1;
+                                    end_month = month;
+                                    end_year = year;
+                                    if (month % 2 == 0) {
+                                        end_day = 31;
                                     } else {
-                                        end_month = month + 1;
-                                        end_year = year;
+                                        end_day = 30;
                                     }
                                 }
-                                if(end_month==2 && (end_day==30 || end_day==29)){
-                                    if(end_year%4==0){
-                                        end_day=29;
-                                    }
-                                    else{
-                                        end_day=28;
-                                    }
-                                }
-                                File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
-                                AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                                dialog.setCancelable(false);
-                                dialog.setTitle("File Saved Successfully");
-                                dialog.setMessage("File has been successfully saved in " + file.getPath());
-                                dialog.setPositiveButton("Ok", null);
-                                dialog.show();
-                                addNotification(file);
                             } else {
-                                AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                                dialog.setCancelable(false);
-                                dialog.setTitle("No Entry found during given duration");
-                                dialog.setPositiveButton("Ok", null);
-                                dialog.show();
+                                end_day = dayOfMonth - 1;
+                                if (month == 12) {
+                                    end_month = 1;
+                                    end_year = year + 1;
+                                } else {
+                                    end_month = month + 1;
+                                    end_year = year;
+                                }
                             }
+                            if(end_month==2 && (end_day==30 || end_day==29)){
+                                if(end_year%4==0){
+                                    end_day=29;
+                                }
+                                else{
+                                    end_day=28;
+                                }
+                            }
+                            File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                            dialog.setCancelable(false);
+                            dialog.setTitle("File Saved Successfully");
+                            dialog.setMessage("File has been successfully saved in " + file.getPath());
+                            dialog.setPositiveButton("Ok", null);
+                            dialog.show();
+                            addNotification(file.getName());
+                        } else {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                            dialog.setCancelable(false);
+                            dialog.setTitle("No Entry found during given duration");
+                            dialog.setPositiveButton("Ok", null);
+                            dialog.show();
                         }
-                    }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
-                    picker.setMessage("Select your start of month");
-                if (getApplicationContext().checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
+                    }
+                }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
+                picker.setMessage("Select your start of month");
+                if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
                     picker.show();
-                }
-                else {
-                    Snackbar.make(findViewById(R.id.main_layout), "Please try again after granting permission", Snackbar.LENGTH_LONG).show();
                 }
             }
         });
@@ -302,7 +300,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
                 Date date=new Date();
                 java.text.SimpleDateFormat sdf=new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                path = Environment.getExternalStorageDirectory().getPath()+"/Download/Attendance_"+sdf.format(date)+".pdf";
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/Attendance_"+sdf.format(date)+".pdf";
                 docWriter = PdfWriter.getInstance(doc , new FileOutputStream(path));
                 if(selected_keys.size()<=27) {
                     doc.setPageSize(PageSize.A3.rotate());
@@ -394,11 +392,11 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             }
             catch (DocumentException dex)
             {
-                dex.printStackTrace();
+                Log.e("Doc",dex.getMessage());
             }
             catch (Exception ex)
             {
-                ex.printStackTrace();
+                Log.e("Other",ex.getMessage());
             }
             finally
             {
@@ -433,14 +431,15 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             table.addCell(cell);
         }
     }
-    private void addNotification(File file) {
+    private void addNotification(String name) {
         createNotificationChannel();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        File file=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+name);
         intent.setDataAndType(Uri.fromFile(file), "application/pdf");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0");
         builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         builder.setContentText("Download Complete");
@@ -461,5 +460,15 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             NotificationManager notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            picker.show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+        }
+        return;
     }
 }

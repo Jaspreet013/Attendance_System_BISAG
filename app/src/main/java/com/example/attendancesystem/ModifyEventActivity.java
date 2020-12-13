@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -34,17 +34,15 @@ public class ModifyEventActivity extends AppCompatActivity {
     ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
-    User current_user;
     TextView total_events;
+    String Key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         get_user = getSharedPreferences("User", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = get_user.getString("Current User", "");
-        current_user = gson.fromJson(json, User.class);
+        Key=get_user.getString("Key","");
         listView = findViewById(R.id.list_view);
         total_events = findViewById(R.id.total_events);
         adapter = new MyBaseAdapter(ModifyEventActivity.this);
@@ -62,12 +60,8 @@ public class ModifyEventActivity extends AppCompatActivity {
             }
         });
         if (!isNetworkAvailable()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ModifyEventActivity.this);
-            builder.setTitle("No Internet");
-            builder.setMessage("Please check your internet connection");
-            builder.setPositiveButton("Ok", null);
-            builder.setCancelable(false);
-            builder.show();
+            Toast.makeText(ModifyEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
         }
         else {
             try {
@@ -78,7 +72,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
+                final DatabaseReference databaseReference = database.getReference("events/"+Key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

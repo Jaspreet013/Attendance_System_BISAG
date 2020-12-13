@@ -1,8 +1,7 @@
 package com.example.attendancesystem;
-import android.app.AlertDialog;
+
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -13,10 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -34,15 +34,14 @@ public class SelectSubjectActivity extends AppCompatActivity {
     private ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
+    String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_subject);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         get_user=getSharedPreferences("User",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=get_user.getString("Current User","");
-        final User current_user=gson.fromJson(json,User.class);
+        key=get_user.getString("Key","");
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         listView.setAdapter(adapter);
@@ -50,19 +49,8 @@ public class SelectSubjectActivity extends AppCompatActivity {
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("String is", "Hello Dude");
-            }
-        });
         if (!isNetworkAvailable()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SelectSubjectActivity.this);
-            builder.setTitle("No Internet");
-            builder.setMessage("Please check your internet connection");
-            builder.setPositiveButton("Ok", null);
-            builder.setCancelable(false);
-            builder.show();
+            Toast.makeText(SelectSubjectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
         else {
             try {
@@ -73,7 +61,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events/"+current_user.getEmail().replace(".",""));
+                final DatabaseReference databaseReference = database.getReference("events/"+key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -136,17 +124,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (!isNetworkAvailable()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SelectSubjectActivity.this);
-                        builder.setTitle("No Internet");
-                        builder.setMessage("Please check your internet connection");
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        });
-                        builder.setCancelable(false);
-                        builder.show();
+                        Toast.makeText(SelectSubjectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                     }
                     else {
                         get_event = getSharedPreferences("Events", MODE_PRIVATE);
