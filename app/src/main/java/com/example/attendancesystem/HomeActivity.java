@@ -113,12 +113,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isNetworkAvailable()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                    builder.setTitle("No Internet");
-                    builder.setMessage("Please check your internet connection");
-                    builder.setPositiveButton("Ok", null);
-                    builder.setCancelable(false);
-                    builder.show();
+                    Toast.makeText(HomeActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+
                 }
                 else {
                     startActivity(new Intent(HomeActivity.this, SelectSubjectActivity.class));
