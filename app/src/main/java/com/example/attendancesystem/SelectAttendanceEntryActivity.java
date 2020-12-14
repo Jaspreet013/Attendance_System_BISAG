@@ -7,6 +7,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,104 +136,124 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-                final ArrayList<String> selected_keys = new ArrayList<>();
-                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-                String date[] = format.format(new Date()).split("-", 3);
-                if (date[1] == "1") {
-                    date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
-                    date[1] = "12";
+                if(!(ActivityCompat.shouldShowRequestPermissionRationale(SelectAttendanceEntryActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) && !(SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                    alertDialogBuilder.setTitle("Permission needed");
+                    alertDialogBuilder.setMessage("Storage permission needed for storing pdf");
+                    alertDialogBuilder.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", SelectAttendanceEntryActivity.this.getPackageName(),
+                                    null);
+                            intent.setData(uri);
+                            SelectAttendanceEntryActivity.this.startActivity(intent);
+                        }
+                    });
+                    alertDialogBuilder.setNegativeButton("Cancel", null);
+                    AlertDialog dialog = alertDialogBuilder.create();
+                    dialog.show();
                 }
-                picker=new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        PrintReport report = new PrintReport();
-                        month += 1;
-                        for (String key : arrayList) {
-                            String str[] = key.split("-", 5);
-                            int d = Integer.parseInt(str[2]);
-                            int m = Integer.parseInt(str[1]);
-                            int y = Integer.parseInt(str[0]);
-                            if (month == 12) {
-                                if (m == 1 && y == year + 1 && dayOfMonth > d) {
-                                    selected_keys.add(key);
-                                } else if (m == 12 && year == y && dayOfMonth <= d) {
-                                    selected_keys.add(key);
-                                }
-                            } else {
-                                if (year == y && month == m && d >= dayOfMonth) {
-                                    selected_keys.add(key);
-                                } else if (year == y && m == (month + 1) && d < dayOfMonth) {
-                                    selected_keys.add(key);
+                else {
+                    ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
+                    final ArrayList<String> selected_keys = new ArrayList<>();
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    String date[] = format.format(new Date()).split("-", 3);
+                    if (date[1] == "1") {
+                        date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
+                        date[1] = "12";
+                    }
+                    picker = new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            PrintReport report = new PrintReport();
+                            month += 1;
+                            for (String key : arrayList) {
+                                String str[] = key.split("-", 5);
+                                int d = Integer.parseInt(str[2]);
+                                int m = Integer.parseInt(str[1]);
+                                int y = Integer.parseInt(str[0]);
+                                if (month == 12) {
+                                    if (m == 1 && y == year + 1 && dayOfMonth > d) {
+                                        selected_keys.add(key);
+                                    } else if (m == 12 && year == y && dayOfMonth <= d) {
+                                        selected_keys.add(key);
+                                    }
+                                } else {
+                                    if (year == y && month == m && d >= dayOfMonth) {
+                                        selected_keys.add(key);
+                                    } else if (year == y && m == (month + 1) && d < dayOfMonth) {
+                                        selected_keys.add(key);
+                                    }
                                 }
                             }
-                        }
-                        if (!selected_keys.isEmpty()) {
-                            int end_day = 0, end_month = 0, end_year = 0;
-                            if (dayOfMonth == 1) {
-                                if (month >= 1 && month <= 7) {
-                                    end_month = month;
-                                    end_year = year;
-                                    if (month != 2) {
-                                        if (month % 2 == 1) {
+                            if (!selected_keys.isEmpty()) {
+                                int end_day = 0, end_month = 0, end_year = 0;
+                                if (dayOfMonth == 1) {
+                                    if (month >= 1 && month <= 7) {
+                                        end_month = month;
+                                        end_year = year;
+                                        if (month != 2) {
+                                            if (month % 2 == 1) {
+                                                end_day = 31;
+                                            } else {
+                                                end_day = 30;
+                                            }
+                                        } else {
+                                            if (year % 2 == 0) {
+                                                end_day = 29;
+                                            } else {
+                                                end_day = 28;
+                                            }
+                                        }
+                                    } else {
+                                        end_month = month;
+                                        end_year = year;
+                                        if (month % 2 == 0) {
                                             end_day = 31;
                                         } else {
                                             end_day = 30;
                                         }
-                                    } else {
-                                        if (year % 2 == 0) {
-                                            end_day = 29;
-                                        } else {
-                                            end_day = 28;
-                                        }
                                     }
                                 } else {
-                                    end_month = month;
-                                    end_year = year;
-                                    if (month % 2 == 0) {
-                                        end_day = 31;
+                                    end_day = dayOfMonth - 1;
+                                    if (month == 12) {
+                                        end_month = 1;
+                                        end_year = year + 1;
                                     } else {
-                                        end_day = 30;
+                                        end_month = month + 1;
+                                        end_year = year;
                                     }
                                 }
+                                if (end_month == 2 && (end_day == 30 || end_day == 29)) {
+                                    if (end_year % 4 == 0) {
+                                        end_day = 29;
+                                    } else {
+                                        end_day = 28;
+                                    }
+                                }
+                                File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                dialog.setCancelable(false);
+                                dialog.setTitle("File Saved Successfully");
+                                dialog.setMessage("File has been successfully saved in " + file.getPath());
+                                dialog.setPositiveButton("Ok", null);
+                                dialog.show();
+                                addNotification(file.getName());
                             } else {
-                                end_day = dayOfMonth - 1;
-                                if (month == 12) {
-                                    end_month = 1;
-                                    end_year = year + 1;
-                                } else {
-                                    end_month = month + 1;
-                                    end_year = year;
-                                }
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                dialog.setCancelable(false);
+                                dialog.setTitle("No Entry found during given duration");
+                                dialog.setPositiveButton("Ok", null);
+                                dialog.show();
                             }
-                            if(end_month==2 && (end_day==30 || end_day==29)){
-                                if(end_year%4==0){
-                                    end_day=29;
-                                }
-                                else{
-                                    end_day=28;
-                                }
-                            }
-                            File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                            dialog.setCancelable(false);
-                            dialog.setTitle("File Saved Successfully");
-                            dialog.setMessage("File has been successfully saved in " + file.getPath());
-                            dialog.setPositiveButton("Ok", null);
-                            dialog.show();
-                            addNotification(file.getName());
-                        } else {
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                            dialog.setCancelable(false);
-                            dialog.setTitle("No Entry found during given duration");
-                            dialog.setPositiveButton("Ok", null);
-                            dialog.show();
                         }
+                    }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
+                    picker.setMessage("Select your start of month");
+                    if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        picker.show();
                     }
-                }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
-                picker.setMessage("Select your start of month");
-                if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED) {
-                    picker.show();
                 }
             }
         });
@@ -465,9 +487,6 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             picker.show();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
         }
         return;
     }
