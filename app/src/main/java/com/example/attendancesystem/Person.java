@@ -3,7 +3,7 @@ package com.example.attendancesystem;
 import java.util.HashMap;
 
 public class Person {
-    private String person_email, person_ID, fname, lname, event_name, organisation;
+    private String person_email, person_ID, fname, lname, event_name, organisation, enabled = "Yes";
     private long attendance = 0, attendance_total = 0;
     private Boolean ispresent = null;
     public HashMap<String, String> dates = new HashMap<>();
@@ -101,4 +101,8 @@ public class Person {
     public HashMap<String, String> getDates() {
         return dates;
     }
+
+    public void setEnabled(String enabled) { this.enabled = enabled; }
+
+    public String getEnabled() { return enabled; }
 }

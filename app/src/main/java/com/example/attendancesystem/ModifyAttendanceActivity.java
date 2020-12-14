@@ -19,8 +19,10 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -44,6 +46,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
     MyBaseAdapter adapter;
     event current_event;
     String event_key,Key;
+    Switch enable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         String json2 = preferences.getString("Current event", "");
         event_key=preferences.getString("Key","");
         current_event = gson2.fromJson(json2, event.class);
+        enable=findViewById(R.id.option);
+        enable.setChecked(current_person.getEnabled().equals("Yes"));
         adapter = new MyBaseAdapter(ModifyAttendanceActivity.this);
         listView = findViewById(R.id.list_view);
         listView.setSmoothScrollbarEnabled(true);
@@ -82,6 +87,67 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         userlname.setText(current_person.getLname());
         id.setText(id.getText().toString() + current_person.getPerson_ID());
         email.setText(email.getText().toString() + current_person.getPerson_email());
+        enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(ModifyAttendanceActivity.this, "Please check your internet connection and try again", Toast.LENGTH_SHORT).show();
+                    enable.setChecked(!isChecked);
+                }
+                else {
+                    if(!isChecked) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                        alertDialog.setTitle("Disable this person?");
+                        alertDialog.setMessage("This will prevent from including this person from future attendances but any previous records of the person will not be affected");
+                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                current_person.setEnabled("No");
+                                final ProgressDialog progressDialog = new ProgressDialog(ModifyAttendanceActivity.this);
+                                progressDialog.setMessage("Please Wait");
+                                progressDialog.setCancelable(false);
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.show();
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/" + Key);
+                                database.child(key).setValue(current_person);
+                                progressDialog.dismiss();
+                                Toast.makeText(ModifyAttendanceActivity.this, "This person has been disabled from future entries", Toast.LENGTH_SHORT).show();
+                                enable.setChecked(false);
+                            }
+                        });
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                enable.setChecked(true);
+                                dialog.cancel();
+                            }
+                        });
+                        AlertDialog dialog = alertDialog.create();
+                        dialog.show();
+                    }
+                    else {
+                        if (current_person.getEnabled().equals("No")) {
+                            if (!isNetworkAvailable()) {
+                                Toast.makeText(ModifyAttendanceActivity.this, "Please check your internet connection and try again", Toast.LENGTH_SHORT).show();
+                                enable.setChecked(false);
+                            } else {
+                                current_person.setEnabled("Yes");
+                                final ProgressDialog progressDialog = new ProgressDialog(ModifyAttendanceActivity.this);
+                                progressDialog.setMessage("Please Wait");
+                                progressDialog.setCancelable(false);
+                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progressDialog.show();
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/" + Key);
+                                database.child(key).setValue(current_person);
+                                progressDialog.dismiss();
+                                Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
+                                enable.setChecked(true);
+                            }
+                        }
+                    }
+                }
+            }
+        });
         userfname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,11 +190,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     }
                 });
                 alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
+                    new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
                 AlertDialog dialog = alertDialog.create();
                 dialog.show();
                 input.selectAll();
@@ -496,7 +562,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
-        builder.setMessage("Any changes you made will not be saved");
+        builder.setMessage("Any selections you edited in the entries will not be saved");
         builder.setTitle("Are you sure you want to go back?");
         builder.setCancelable(true);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

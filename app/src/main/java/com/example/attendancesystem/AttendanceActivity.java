@@ -172,7 +172,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
-                            if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
+                            if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.getEnabled().equals("Yes")) {
                                 person.setIspresent(false);
                                 arrayList.add(person);
                                 keys.add(child.getKey());
