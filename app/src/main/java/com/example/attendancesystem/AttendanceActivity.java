@@ -131,12 +131,17 @@ public class AttendanceActivity extends AppCompatActivity {
                                     arrayList.get(i).setnull();
                                     arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
                                 }
-                                DatabaseReference dbreference = database.getReference("Persons/"+Key);
-                                for (int i = 0; i < keys.size(); i++) {
-                                    dbreference.child(keys.get(i)).setValue(arrayList.get(i));
+                                if(!current_event.dates.containsKey(datef.format(date))){
+                                    Toast.makeText(AttendanceActivity.this,"Entry cannot be saved because you took attendance recently", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    DatabaseReference dbreference = database.getReference("Persons/" + Key);
+                                    for (int i = 0; i < keys.size(); i++) {
+                                        dbreference.child(keys.get(i)).setValue(arrayList.get(i));
+                                    }
+                                    Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
                                 }
                                 waiting.dismiss();
-                                Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
                                 finish();
                             } catch (Exception e) {
 
