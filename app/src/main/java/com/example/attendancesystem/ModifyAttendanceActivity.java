@@ -97,8 +97,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 else {
                     if(!isChecked) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                        alertDialog.setTitle("Disable this person?");
-                        alertDialog.setMessage("This will prevent from including this person from future attendances but any previous records of the person will not be affected");
+                        alertDialog.setTitle("Exclude this person from future entries?");
+                        alertDialog.setMessage("This will prevent from including this person from future entries but any previous records of the person will not be affected");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -111,7 +111,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/" + Key);
                                 database.child(key).setValue(current_person);
                                 progressDialog.dismiss();
-                                Toast.makeText(ModifyAttendanceActivity.this, "This person has been disabled from future entries", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(false);
                             }
                         });
