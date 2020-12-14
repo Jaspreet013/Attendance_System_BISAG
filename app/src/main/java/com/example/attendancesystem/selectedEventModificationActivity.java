@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 public class selectedEventModificationActivity extends AppCompatActivity {
@@ -86,14 +87,31 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                 }
                 else {
-                    SharedPreferences prefs = getSharedPreferences("All users", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(arrayList);
-                    editor.putString("users", json);
-                    editor.apply();
-                    startActivity(new Intent(selectedEventModificationActivity.this, AddEventActivity.class));
-                    finish();
+                    ArrayList<Integer> list=new ArrayList<>();
+                    for(int k=0;k<arrayList.size();k++){
+                        if(!arrayList.get(k).getEnabled().equals("Yes")) {
+                            list.add(k);
+                        }
+                    }
+                    Collections.sort(list);
+                    Collections.reverse(list);
+                    if(list.size()!=arrayList.size()){
+                        for(int k:list){
+                            arrayList.remove(k);
+                        }
+                        SharedPreferences prefs = getSharedPreferences("All users", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(arrayList);
+                        editor.putString("users", json);
+                        editor.apply();
+                        startActivity(new Intent(selectedEventModificationActivity.this, AddEventActivity.class));
+                        finish();
+                    }
+                    else{
+                        Toast.makeText(selectedEventModificationActivity.this,"All the people are excluded in this event",Toast.LENGTH_SHORT).show();
+
+                    }
                 }
             }
         });
