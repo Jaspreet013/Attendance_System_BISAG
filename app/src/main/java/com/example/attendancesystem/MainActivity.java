@@ -154,17 +154,15 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("Are you sure you want to exit?");
         builder.setTitle("Exit");
         builder.setCancelable(false);
-        builder.setPositiveButton("Ok",new MyListener());
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
         builder.setNegativeButton("Cancel",null);
         builder.show();
-    }
-    public class MyListener implements DialogInterface.OnClickListener{
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
-        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

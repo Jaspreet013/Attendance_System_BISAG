@@ -152,7 +152,18 @@ public class HomeActivity extends AppCompatActivity {
                 builder.setMessage("Are you sure you want to logout?");
                 builder.setTitle("Logout");
                 builder.setCancelable(false);
-                builder.setPositiveButton("Ok",new HomeActivity.Logout());
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences.Editor editor=get_user.edit();
+                        editor.remove("Current User");
+                        editor.remove("Key");
+                        editor.apply();
+                        finish();
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(HomeActivity.this,MainActivity.class));
+                    }
+                });
                 builder.setNegativeButton("Cancel",null);
                 builder.show();
                 firebaseAuth.signOut();
@@ -165,29 +176,15 @@ public class HomeActivity extends AppCompatActivity {
         builder.setMessage("Are you sure you want to exit?");
         builder.setTitle("Exit");
         builder.setCancelable(false);
-        builder.setPositiveButton("Ok",new HomeActivity.MyListener());
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
         builder.setNegativeButton("Cancel",null);
         builder.show();
-    }
-    public class Logout implements DialogInterface.OnClickListener{
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            SharedPreferences.Editor editor=get_user.edit();
-            editor.remove("Current User");
-            editor.remove("Key");
-            editor.apply();
-            finish();
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(HomeActivity.this,MainActivity.class));
-        }
-    }
-    public class MyListener implements DialogInterface.OnClickListener{
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(0);
-        }
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

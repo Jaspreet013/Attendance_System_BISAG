@@ -416,15 +416,12 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             final TextView tv1=view.findViewById(R.id.dispname);
             String str[]=arrayList.get(position).split("-",5);
             tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
-            final TextView tv2=view.findViewById(R.id.dispstatus);
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
             if(current_person.dates.get(arrayList.get(position)).equals("Present")){
                 ispresent.setChecked(true);
-                tv2.setText("Present");
             }
             else{
                 ispresent.setChecked(false);
-                tv2.setText("Absent");
             }
             ispresent.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -432,11 +429,9 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     if (current_person.dates.get(arrayList.get(position)).equals("Present")) {
                         ispresent.setChecked(false);
                         current_person.dates.replace(arrayList.get(position),"Absent");
-                        tv2.setText("Absent");
                     } else {
                         ispresent.setChecked(true);
                         current_person.dates.replace(arrayList.get(position),"Present");
-                        tv2.setText("Present");
                     }
                 }
             });
@@ -446,11 +441,9 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     if (ispresent.isChecked()) {
                         ispresent.setChecked(false);
                         current_person.dates.replace(arrayList.get(position),"Absent");
-                        tv2.setText("Absent");
                     } else {
                         ispresent.setChecked(true);
                         current_person.dates.replace(arrayList.get(position),"Present");
-                        tv2.setText("Present");
                     }
                 }
             });
@@ -471,5 +464,21 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             }
         }
         return count;
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);
+        builder.setMessage("Any changes you made will not be saved");
+        builder.setTitle("Are you sure you want to go back?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel",null);
+        builder.show();
     }
 }
