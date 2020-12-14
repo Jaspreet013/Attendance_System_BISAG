@@ -109,7 +109,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         finish();
                     }
                     else{
-                        Toast.makeText(selectedEventModificationActivity.this,"All the people are excluded in this event",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(selectedEventModificationActivity.this,"All the people are excluded from this event",Toast.LENGTH_SHORT).show();
 
                     }
                 }
