@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -415,7 +416,33 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             View view = inflater.inflate(R.layout.disp_modify_attendance, null);
             final TextView tv1=view.findViewById(R.id.dispname);
             String str[]=arrayList.get(position).split("-",5);
-            tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            String set="";
+            if (!DateFormat.is24HourFormat(ModifyAttendanceActivity.this))
+            {
+                if(Integer.parseInt(str[3])>12){
+                    if(Integer.parseInt(str[3])-12<10) {
+                        str[3]="0"+(Integer.parseInt(str[3])-12);
+                    }
+                    else{
+                        str[3]=Integer.toString(Integer.parseInt(str[3])-12);
+                    }
+                    set="PM";
+                }
+                else if(str[3].equals("00")){
+                    str[3]="12";
+                    set="AM";
+                }
+                else if(str[3].equals("12")){
+                    set="PM";
+                }
+                else{
+                    set="AM";
+                }
+                tv1.setText(str[2] + "/" + str[1] + "/" + str[0] + "  " + str[3] + ":" + str[4]+" "+set);
+            }
+            else {
+                tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            }
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
             if(current_person.dates.get(arrayList.get(position)).equals("Present")){
                 ispresent.setChecked(true);

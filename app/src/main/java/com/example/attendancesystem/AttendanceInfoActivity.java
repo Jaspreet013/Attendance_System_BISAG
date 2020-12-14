@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +91,33 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             TextView tv1=view.findViewById(R.id.dispname);
             TextView tv2=view.findViewById(R.id.disporganisation);
             String date[]=arraylist.get(position).split("-",5);
-            tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
+            String set="";
+            if (!DateFormat.is24HourFormat(AttendanceInfoActivity.this))
+            {
+                if(Integer.parseInt(date[3])>12){
+                    if(Integer.parseInt(date[3])-12<10) {
+                        date[3]="0"+(Integer.parseInt(date[3])-12);
+                    }
+                    else{
+                        date[3]=Integer.toString(Integer.parseInt(date[3])-12);
+                    }
+                    set="PM";
+                }
+                else if(date[3].equals("00")){
+                    date[3]="12";
+                    set="AM";
+                }
+                else if(date[3].equals("12")){
+                    set="PM";
+                }
+                else{
+                    set="AM";
+                }
+                tv1.setText(date[2] + "/" + date[1] + "/" + date[0] + "  " + date[3] + ":" + date[4]+" "+set);
+            }
+            else {
+                tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
+            }
             tv2.setText(person.dates.get(arraylist.get(position)));
             if(person.dates.get(arraylist.get(position)).equals("Absent")){
                 tv2.setTextColor(Color.parseColor("#FF0000"));

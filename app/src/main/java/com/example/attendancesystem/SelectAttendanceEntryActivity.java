@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -286,7 +287,33 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             View view=inflater.inflate(R.layout.event_list_view,null);
             TextView tv=view.findViewById(R.id.dispname);
             String str[]=arrayList.get(position).split("-",5);
-            tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            String set="";
+            if (!DateFormat.is24HourFormat(SelectAttendanceEntryActivity.this))
+            {
+                if(Integer.parseInt(str[3])>12){
+                    if(Integer.parseInt(str[3])-12<10) {
+                        str[3]="0"+(Integer.parseInt(str[3])-12);
+                    }
+                    else{
+                        str[3]=Integer.toString(Integer.parseInt(str[3])-12);
+                    }
+                    set="PM";
+                }
+                else if(str[3].equals("00")){
+                    str[3]="12";
+                    set="AM";
+                }
+                else if(str[3].equals("12")){
+                    set="PM";
+                }
+                else{
+                    set="AM";
+                }
+                tv.setText(str[2] + "/" + str[1] + "/" + str[0] + "  " + str[3] + ":" + str[4]+" "+set);
+            }
+            else {
+                tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            }
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText("Total People : "+current_event.dates.get(arrayList.get(position)));
             view.setOnClickListener(new View.OnClickListener() {
