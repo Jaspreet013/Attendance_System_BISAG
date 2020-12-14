@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/disp_user_total_attendance"
-        android:text="Total Entries Count : "
+        android:text="Entries Count : "
         android:textSize="20sp"
         android:layout_weight="1"/>
 
