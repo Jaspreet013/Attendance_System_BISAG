@@ -116,12 +116,12 @@ public class AttendanceActivity extends AppCompatActivity {
                                 waiting.show();
                                 Date date=new Date();
                                 SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-                                current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+Key);
+                                current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 databaseReference.child(key).setValue(current_event);
                                 for (int i = 0; i<arrayList.size(); i++) {
-                                    if (arrayList.get(i).getIspresent()==true) {
+                                    if (arrayList.get(i).getIspresent()) {
                                         arrayList.get(i).dates.put(datef.format(date),"Present");
                                     }
                                     else{
@@ -205,13 +205,13 @@ public class AttendanceActivity extends AppCompatActivity {
         }
     }
     public long getPresentCount(int i) {
-        long count = 0;
+        long pcount = 0;
         for (String str : arrayList.get(i).dates.keySet()) {
             if (arrayList.get(i).dates.get(str).equals("Present")) {
-                count += 1;
+               pcount += 1;
             }
         }
-        return count;
+        return pcount;
     }
     public class MyBaseAdapter extends BaseAdapter {
         Context context;
