@@ -156,7 +156,7 @@
             android:layout_marginEnd="15dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Submit"
+            android:text="Sign Up"
             android:textSize="20sp"
             android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"/>
