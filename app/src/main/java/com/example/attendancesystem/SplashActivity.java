@@ -6,16 +6,15 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SplashActivity extends AppCompatActivity {
-    SharedPreferences get_user;
-    private static int SPLASH_TIME_OUT=300;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-        get_user = getSharedPreferences("User",MODE_PRIVATE);
-        if(get_user.contains("Current User")){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run(){
@@ -23,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
                     finish();
                 }
-            },SPLASH_TIME_OUT);
+            },300);
         }
         else{
             new Handler().postDelayed(new Runnable(){
@@ -33,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
                     finish();
                 }
-            },SPLASH_TIME_OUT);
+            },300);
         }
     }
 }

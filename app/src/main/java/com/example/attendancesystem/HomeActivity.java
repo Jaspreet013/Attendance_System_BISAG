@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 public class HomeActivity extends AppCompatActivity {
     SharedPreferences get_user;
     String key;
-    FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +35,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         get_user = getSharedPreferences("User",MODE_PRIVATE);
         Gson gson=new Gson();
-        firebaseAuth=FirebaseAuth.getInstance();
         TextView person_name=findViewById(R.id.message_person_name);
         String json=get_user.getString("Current User","");
         final User current_user=gson.fromJson(json,User.class);
@@ -166,25 +164,8 @@ public class HomeActivity extends AppCompatActivity {
                 });
                 builder.setNegativeButton("Cancel",null);
                 builder.show();
-                firebaseAuth.signOut();
             }
         });
-    }
-    @Override
-    public void onBackPressed() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(HomeActivity.this);
-        builder.setMessage("Are you sure you want to exit?");
-        builder.setTitle("Exit");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("Cancel",null);
-        builder.show();
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

@@ -148,22 +148,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
     }
-    @Override
-    public void onBackPressed() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Are you sure you want to exit?");
-        builder.setTitle("Exit");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("Cancel",null);
-        builder.show();
-    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
