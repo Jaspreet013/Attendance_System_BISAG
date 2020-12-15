@@ -213,7 +213,7 @@ public class AttendanceActivity extends AppCompatActivity {
         long pcount = 0;
         for (String str : arrayList.get(i).dates.keySet()) {
             if (arrayList.get(i).dates.get(str).equals("Present")) {
-               pcount += 1;
+                pcount += 1;
             }
         }
         return pcount;

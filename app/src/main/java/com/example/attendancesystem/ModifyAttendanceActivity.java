@@ -1,4 +1,5 @@
 package com.example.attendancesystem;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -191,11 +192,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     }
                 });
                 alertDialog.setNegativeButton("Cancel",
-                    new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
                 AlertDialog dialog = alertDialog.create();
                 dialog.show();
                 input.selectAll();

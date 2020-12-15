@@ -237,7 +237,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                             dialog.show();
                         }
                     }
-                    }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
+                }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
                 picker.setMessage("Select your start of month");
                 if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     picker.show();
