@@ -35,6 +35,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,7 +63,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
-    SharedPreferences get_event,get_user;
+    SharedPreferences get_event;
     event current_event;
     TextView textView;
     ListView listView;
@@ -69,7 +71,6 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     ArrayList<Person> persons=new ArrayList<>();
     MyBaseAdapter adapter;
     DatePickerDialog picker;
-    String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,11 +85,6 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
-        get_user = getSharedPreferences("User",MODE_PRIVATE);
-        key=get_user.getString("Key","");
-        Gson gson1=new Gson();
-        String json1=get_user.getString("Current User","");
-        final User current_user=gson1.fromJson(json1,User.class);
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
@@ -102,7 +98,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         else{
             try{
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/"+key);
+                final DatabaseReference databaseReference = database.getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

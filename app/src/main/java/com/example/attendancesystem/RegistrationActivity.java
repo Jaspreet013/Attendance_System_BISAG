@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -42,8 +43,8 @@ public class RegistrationActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText fname=findViewById(R.id.register_fname);
-                EditText lname=findViewById(R.id.register_lname);
+                final EditText fname=findViewById(R.id.register_fname);
+                final EditText lname=findViewById(R.id.register_lname);
                 EditText email=findViewById(R.id.register_email);
                 EditText password=findViewById(R.id.register_password);
                 EditText cnfpassword=findViewById(R.id.register_cnfpassword);
@@ -73,7 +74,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     progressDialog.show();
                     try{
-                        final User new_user=new User(fname.getText().toString().trim(),lname.getText().toString().trim(),email.getText().toString().trim());
                         firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
@@ -93,9 +93,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             }
                                             else {
                                                 try {
-                                                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                                                    databaseReference = FirebaseDatabase.getInstance().getReference("users");
-                                                    databaseReference.child(user.getUid()).setValue(new_user);
+                                                    FirebaseAuth.getInstance().getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(fname.getText().toString().trim()+" "+lname.getText().toString().trim()).build());
                                                 } catch (Exception e) {
                                                     Log.e("Exception is", e.toString());
                                                 }

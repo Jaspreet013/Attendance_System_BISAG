@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,14 +34,14 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_event,get_user;
+    SharedPreferences get_event;
     event current_event;
     long present=0,absent=0,total=0;
     ListView listView;
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
-    String key,event_key,Key;
+    String key,event_key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +53,6 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         key=get_event.getString("Key","");
         event_key=get_event.getString("Event key","");
         current_event=gson.fromJson(json,event.class);
-        get_user = getSharedPreferences("User",MODE_PRIVATE);
-        Key=get_user.getString("Key","");
         TextView set_event_name=findViewById(R.id.check_event_name);
         TextView set_organisation_name=findViewById(R.id.check_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -80,10 +79,10 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             }
                             else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference = database.getReference("events/" + Key);
+                                DatabaseReference databaseReference = database.getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.remove(key);
                                 databaseReference.child(event_key).setValue(current_event);
-                                databaseReference = database.getReference("Persons/" + Key);
+                                databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 for (int i = 0; i < arrayList.size(); i++) {
                                     arrayList.get(i).dates.remove(key);
                                     arrayList.get(i).setAttendance(getPresentCount(i));
@@ -117,7 +116,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/" + Key);
+                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -126,20 +125,21 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 Person person = child.getValue(Person.class);
-                                if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.dates.containsKey(key)) {
+                                if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.dates.containsKey(key)) {
                                     arrayList.add(person);
                                     count++;
                                     keys.add(child.getKey());
                                     adapter.notifyDataSetChanged();
                                 }
-                                if (count == current_event.dates.get(key)) {
+                                if(count == current_event.dates.get(key)) {
                                     break;
                                 }
                             }
-                            for (Person person : arrayList) {
-                                if (person.dates.get(key).equals("Present")) {
+                            for(Person person : arrayList) {
+                                if(person.dates.get(key).equals("Present")) {
                                     present++;
-                                } else {
+                                }
+                                else {
                                     absent++;
                                 }
                                 total++;

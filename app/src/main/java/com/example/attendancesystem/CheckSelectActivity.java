@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,20 +32,16 @@ import java.util.ArrayList;
 
 public class CheckSelectActivity extends AppCompatActivity {
     private ListView listView;
-    SharedPreferences get_user;
     private ArrayList<event> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     TextView textView;
     SharedPreferences get_event;
-    String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_select);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_user=getSharedPreferences("User",MODE_PRIVATE);
-        key=get_user.getString("Key","");
         listView=findViewById(R.id.list_view3);
         textView=findViewById(R.id.select_subject_text);
         textView.setText("Total Events : 0");
@@ -72,7 +69,7 @@ public class CheckSelectActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events/"+key);
+                final DatabaseReference databaseReference = database.getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,8 +31,6 @@ public class AddEventActivity extends AppCompatActivity {
     EditText event_name;
     EditText event_organisation;
     Button button;
-    String key;
-    SharedPreferences preferences;
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     @Override
@@ -42,8 +41,6 @@ public class AddEventActivity extends AppCompatActivity {
         event_name=findViewById(R.id.event_name);
         event_organisation=findViewById(R.id.event_organisation);
         button=findViewById(R.id.event_submit);
-        preferences=getSharedPreferences("User",MODE_PRIVATE);
-        key=preferences.getString("Key","");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +57,7 @@ public class AddEventActivity extends AppCompatActivity {
                         progressDialog.setCancelable(false);
                         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.show();
-                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+key);
+                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -78,14 +75,14 @@ public class AddEventActivity extends AppCompatActivity {
                                     Toast.makeText(AddEventActivity.this,"Your another event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
                                 }
                                 else{
-                                    SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
+                                    SharedPreferences prefs = getSharedPreferences("All people",MODE_PRIVATE);
                                     Gson gson = new Gson();
-                                    String json = prefs.getString("users", null);
+                                    String json = prefs.getString("people", null);
                                     Type type = new TypeToken<ArrayList<Person>>() {}.getType();
                                     ArrayList<Person> person=gson.fromJson(json, type);
                                     if(person!=null){
                                         for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+key);
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                             String key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);
@@ -95,7 +92,7 @@ public class AddEventActivity extends AppCompatActivity {
                                             dbreference.child(key).setValue(temp);
                                         }
                                         SharedPreferences.Editor edit=prefs.edit();
-                                        edit.remove("users");
+                                        edit.remove("people");
                                         edit.clear();
                                         edit.apply();
                                     }
@@ -127,9 +124,9 @@ public class AddEventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        SharedPreferences prefs = getSharedPreferences("All users",MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("All people",MODE_PRIVATE);
         SharedPreferences.Editor edit=prefs.edit();
-        edit.remove("users");
+        edit.remove("people");
         edit.clear();
         edit.apply();
         super.onBackPressed();

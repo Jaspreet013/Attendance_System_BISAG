@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,9 +28,7 @@ import com.google.gson.Gson;
 public class AddPerson extends AppCompatActivity {
     event current_event;
     EditText fname,lname,email,id;
-    String key;
     boolean set=true;
-    SharedPreferences preferences,get_user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +40,10 @@ public class AddPerson extends AppCompatActivity {
         id=findViewById(R.id.register_id);
         Button submit=findViewById(R.id.register_submit);
         Button clear=findViewById(R.id.register_clear);
-        preferences=getSharedPreferences("Events",MODE_PRIVATE);
+        SharedPreferences preferences=getSharedPreferences("Events",MODE_PRIVATE);
         Gson gson = new Gson();
         String json = preferences.getString("Current event", "");
         current_event = gson.fromJson(json, event.class);
-        get_user=getSharedPreferences("User",MODE_PRIVATE);
-        key=get_user.getString("Key","");
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +78,7 @@ public class AddPerson extends AppCompatActivity {
                     progressDialog.show();
                     try {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = database.getReference("Persons/"+key);
+                        final DatabaseReference databaseReference = database.getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -3,9 +3,7 @@ package com.example.attendancesystem;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
     ProgressDialog waiting;
@@ -35,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
     EditText email,password;
     TextView new_user,forgot_password;
     Button login;
-    User final_user;
-    SharedPreferences get_user;
-    Gson gson;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,33 +82,9 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     if(firebaseAuth.getCurrentUser().isEmailVerified()) {
                                         try {
-                                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + firebaseAuth.getCurrentUser().getUid());
-                                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    try {
-                                                        User user = dataSnapshot.getValue(User.class);
-                                                        final_user = user;
-                                                        get_user = getSharedPreferences("User", MODE_PRIVATE);
-                                                        SharedPreferences.Editor prefsEditor = get_user.edit();
-                                                        Gson gson = new Gson();
-                                                        String json = gson.toJson(final_user);
-                                                        prefsEditor.putString("Current User", json);
-                                                        prefsEditor.putString("Key",dataSnapshot.getKey());
-                                                        prefsEditor.apply();
-                                                        waiting.dismiss();
-                                                        finish();
-                                                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                                    }
-                                                    catch (Exception e) {
-                                                        Log.e("Exception is", e.toString());
-                                                    }
-                                                }
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-                                                    Log.e("Error : ", databaseError.getMessage());
-                                                }
-                                            });
+                                            waiting.dismiss();
+                                            finish();
+                                            startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                         } catch (Exception e) {
                                             Log.e("Exception is", e.toString());
                                         }

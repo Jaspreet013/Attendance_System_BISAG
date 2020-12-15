@@ -28,6 +28,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,14 +40,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ModifyAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_person, get_user;
+    SharedPreferences get_person;
     ArrayList<String> arrayList = new ArrayList<>();
     Person current_person;
     String key;
     ListView listView;
     MyBaseAdapter adapter;
     event current_event;
-    String event_key,Key;
+    String event_key;
     Switch enable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +58,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = get_person.getString("Current Person", "");
         current_person = gson.fromJson(json, Person.class);
-        get_user = getSharedPreferences("User", MODE_PRIVATE);
-        Key=get_user.getString("Key","");
         key = get_person.getString("Key", "");
         SharedPreferences preferences = getSharedPreferences("Events", MODE_PRIVATE);
         Gson gson2 = new Gson();
@@ -99,6 +99,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                         alertDialog.setTitle("Exclude this person from future entries?");
                         alertDialog.setMessage("This will prevent from including this person from future entries but any previous records of the person will not be affected");
+                        alertDialog.setCancelable(false);
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -108,7 +109,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 progressDialog.setCancelable(false);
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.show();
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/" + Key);
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 database.child(key).setValue(current_person);
                                 progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
@@ -137,7 +138,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 progressDialog.setCancelable(false);
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.show();
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/" + Key);
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 database.child(key).setValue(current_person);
                                 progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
@@ -181,7 +182,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setFname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+Key);
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
@@ -235,7 +236,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setLname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+Key);
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
@@ -290,7 +291,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -372,7 +373,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
+                                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -440,7 +441,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else {
                             current_person.setAttendance(getPresentCount());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/"+Key);
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             Toast.makeText(ModifyAttendanceActivity.this, "Attendance Updated Successfully", Toast.LENGTH_SHORT).show();
                             finish();

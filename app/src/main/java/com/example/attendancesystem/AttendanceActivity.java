@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,9 +37,9 @@ import java.util.Date;
 public class AttendanceActivity extends AppCompatActivity {
     ArrayList<Person> arrayList=new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
-    String key,Key;
+    String key;
     ListView listView;
-    SharedPreferences get_event,get_user;
+    SharedPreferences get_event;
     SharedPreferences.Editor edit;
     event current_event;
     MyBaseAdapter adapter;
@@ -52,14 +54,12 @@ public class AttendanceActivity extends AppCompatActivity {
         Gson gson=new Gson();
         String json=get_event.getString("Current event","");
         current_event=gson.fromJson(json,event.class);
-        get_user = getSharedPreferences("User",MODE_PRIVATE);
         key=get_event.getString("Key","");
         edit=get_event.edit();
         edit.remove("Key");
         edit.apply();
         edit.remove("Current event");
         edit.apply();
-        Key=get_user.getString("Key","");
         TextView set_event_name=findViewById(R.id.message_event_name);
         TextView set_organisation_name=findViewById(R.id.message_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -117,7 +117,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 Date date=new Date();
                                 SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+Key);
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 databaseReference.child(key).setValue(current_event);
                                 for (int i = 0; i<arrayList.size(); i++) {
@@ -135,7 +135,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                     Toast.makeText(AttendanceActivity.this,"Entry cannot be saved because you took attendance recently", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
-                                    DatabaseReference dbreference = database.getReference("Persons/" + Key);
+                                    DatabaseReference dbreference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     for (int i = 0; i < keys.size(); i++) {
                                         dbreference.child(keys.get(i)).setValue(arrayList.get(i));
                                     }
@@ -164,7 +164,7 @@ public class AttendanceActivity extends AppCompatActivity {
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons/"+Key);
+            final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -184,7 +184,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         listView.setAdapter(adapter);
                         if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setMessage("Please go to manage events -> (click on this event) -> add new person to add people");
+                            builder.setMessage("Please go to manage events -> (click on this event) -> add new person to add people or include people if you have excluded them");
                             builder.setTitle("No people are in this event");
                             builder.setCancelable(false);
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

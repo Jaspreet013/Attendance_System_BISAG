@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,20 +31,16 @@ import java.util.ArrayList;
 
 public class ModifyEventActivity extends AppCompatActivity {
     private ListView listView;
-    SharedPreferences get_user;
     private ArrayList<event> arrayList = new ArrayList<>();
     ArrayList<String> keys=new ArrayList<>();
     MyBaseAdapter adapter;
     SharedPreferences get_event;
     TextView total_events;
-    String Key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_user = getSharedPreferences("User", MODE_PRIVATE);
-        Key=get_user.getString("Key","");
         listView = findViewById(R.id.list_view);
         total_events = findViewById(R.id.total_events);
         adapter = new MyBaseAdapter(ModifyEventActivity.this);
@@ -72,7 +70,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events/"+Key);
+                final DatabaseReference databaseReference = database.getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
