@@ -15,11 +15,12 @@
         android:layout_marginEnd="15dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
         app:autoSizeTextType="uniform"
-        android:layout_weight="1.8"
+        android:layout_weight="1"
+        android:text="Event"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeMaxTextSize="45sp"
         app:autoSizeStepGranularity="1sp"/>
@@ -32,11 +33,12 @@
         app:autoSizeMaxTextSize="30sp"
         app:autoSizeStepGranularity="1sp"
         android:textAlignment="center"
+        android:text="Organisation"
         android:id="@+id/message_organisation_name"
         android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6" />
+        android:layout_weight="0.8" />
 
     <RelativeLayout
         android:layout_marginTop="15dp"
@@ -72,7 +74,7 @@
         android:layout_marginEnd="15dp"
         android:padding="15dp"
         android:layout_height="0dp"
-        android:layout_weight="7.5"
+        android:layout_weight="8.25"
         android:layout_width="match_parent"
         android:id="@+id/list_view3"
         android:layout_gravity="center_horizontal"
