@@ -331,6 +331,25 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             PdfWriter docWriter = null;
             String path="";
             try {
+                int count=1,test;
+                long p,a,t;
+                ArrayList<Integer> list=new ArrayList<>();
+                for(int k=0;k<persons.size();k++){
+                    test=0;
+                    for(String l:selected_keys) {
+                        if(!persons.get(k).dates.containsKey(l)) {
+                            test++;
+                            if(test==selected_keys.size()){
+                                list.add(k);
+                            }
+                        }
+                    }
+                }
+                Collections.sort(list);
+                Collections.reverse(list);
+                for(int k:list){
+                    persons.remove(k);
+                }
                 Font bfBold12 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, new BaseColor(0, 0, 0));
                 Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
                 Date date=new Date();
@@ -380,25 +399,6 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 }
                 table.setHeadersInEvent(true);
                 table.setHeaderRows(1);
-                int count=1,test;
-                long p,a,t;
-                ArrayList<Integer> list=new ArrayList<>();
-                for(int k=0;k<persons.size();k++){
-                    test=0;
-                    for(String l:selected_keys) {
-                        if(!persons.get(k).dates.containsKey(l)) {
-                            test++;
-                            if(test==selected_keys.size()){
-                                list.add(k);
-                            }
-                        }
-                    }
-                }
-                Collections.sort(list);
-                Collections.reverse(list);
-                for(int k:list){
-                    persons.remove(k);
-                }
                 for(int i=0;i<persons.size();i++){
                     insertCell(table,Integer.toString(count),Element.ALIGN_CENTER,1,bf12);
                     insertCell(table,persons.get(i).getLname().toUpperCase()+"  "+persons.get(i).getFname().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
