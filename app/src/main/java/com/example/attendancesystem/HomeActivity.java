@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
                 AlertDialog.Builder builder=new AlertDialog.Builder(HomeActivity.this);
                 builder.setMessage("Are you sure you want to logout?");
                 builder.setTitle("Logout");
-                builder.setCancelable(false);
+                builder.setCancelable(true);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
