@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
                                     if(task.getException().getMessage().equals("The password is invalid or the user does not have a password.")){
                                         builder.setMessage("Wrong Password");
                                     }
+                                    else if(task.getException().getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted.")){
+                                        builder.setMessage("This user is not registered");
+                                    }
                                     else {
                                         builder.setMessage(task.getException().getMessage());
                                     }
