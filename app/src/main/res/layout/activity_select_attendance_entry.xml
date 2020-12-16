@@ -48,7 +48,7 @@
         android:padding="15dp"
         android:id="@+id/select_empty_message"
         android:textSize="20sp"
-        android:text="You can create event by Manage Events -> Add New Event -> (Create event) and also add users to it after creating event by Manage Events -> (click on event) -> Add Person"
+        android:text="There is currently no entry for this event. Entry will be displayed once you start taking attendance"
         android:textAlignment="center"
         android:gravity="center_vertical"
         android:layout_gravity="center" />
