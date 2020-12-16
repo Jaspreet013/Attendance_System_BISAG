@@ -51,6 +51,7 @@ public class AddPerson extends AppCompatActivity {
                 lname.getText().clear();
                 email.getText().clear();
                 id.getText().clear();
+                fname.requestFocus();
             }
         });
         submit.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +107,7 @@ public class AddPerson extends AppCompatActivity {
                                     lname.getText().clear();
                                     email.getText().clear();
                                     id.getText().clear();
+                                    fname.requestFocus();
                                 }
                             }
 

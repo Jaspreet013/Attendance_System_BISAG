@@ -33,7 +33,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_height="0dp"
-        android:layout_weight="8.8"
+        android:layout_weight="8.5"
         android:layout_width="match_parent"
         android:id="@+id/list_view"
         android:layout_gravity="center_horizontal"
@@ -47,7 +47,7 @@
         android:layout_marginRight="15dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8.8"
+        android:layout_weight="8.5"
         android:id="@+id/modification_empty_message"
         android:textSize="20sp"
         android:text="Your events will display here once you create them"
@@ -56,7 +56,7 @@
         android:layout_gravity="center_vertical" />
 
     <Button
-        android:layout_weight="0.025"
+        android:layout_weight="0.25"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_width="match_parent"
@@ -67,7 +67,10 @@
         android:id="@+id/add_event_button"
         android:textColor="#FFFFFF"
         android:background="@drawable/rounded_button"
-        android:textSize="20sp"
+        app:autoSizeMaxTextSize="25sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
         android:text="Add New Event" />
 
 </LinearLayout>

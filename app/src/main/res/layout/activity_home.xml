@@ -37,7 +37,7 @@
         </RelativeLayout>
 
         <Button
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
@@ -48,10 +48,11 @@
             android:textColor="#FFFFFF"
             android:text="Take Attendance"
             android:textSize="25sp"
+            android:padding="15dp"
             android:background="@drawable/rounded_button"/>
 
         <Button
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
@@ -61,6 +62,7 @@
             android:textColor="#FFFFFF"
             android:text="Manage Events"
             android:textSize="25sp"
+            android:padding="15dp"
             android:layout_below="@+id/take_attendance"
             android:background="@drawable/rounded_button"/>
 
@@ -80,7 +82,7 @@
             android:background="@drawable/rounded_button"/>
 
         <Button
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
@@ -90,6 +92,7 @@
             android:textColor="#FFFFFF"
             android:text="Logout"
             android:textSize="25sp"
+            android:padding="15dp"
             android:layout_below="@+id/check_attendance"
             android:background="@drawable/rounded_button"/>
 

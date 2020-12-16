@@ -471,7 +471,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                     builder.setTitle("Are you sure to delete this person?");
-                    builder.setMessage("All the information regarding this person for this event will be deleted from records");
+                    builder.setMessage("All the information regarding this person for this event will be deleted from records. You can exclude them by clicking on the person and disable the future attendances option so that person can be excluded without damaging the previous records of the person.");
                     builder.setNegativeButton("Cancel",null);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override

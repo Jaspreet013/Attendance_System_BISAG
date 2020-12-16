@@ -99,7 +99,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     if(!isChecked) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
                         alertDialog.setTitle("Exclude this person from future entries?");
-                        alertDialog.setMessage("This will prevent from including this person from future entries but any previous records of the person will not be affected");
+                        alertDialog.setMessage("This will prevent from including this person into future entries but any previous records of the person will not be affected");
                         alertDialog.setCancelable(false);
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
