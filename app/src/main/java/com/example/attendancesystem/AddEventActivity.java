@@ -57,7 +57,7 @@ public class AddEventActivity extends AppCompatActivity {
                         progressDialog.setCancelable(false);
                         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.show();
-                        databaseReference = FirebaseDatabase.getInstance().getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -82,7 +82,7 @@ public class AddEventActivity extends AppCompatActivity {
                                     ArrayList<Person> person=gson.fromJson(json, type);
                                     if(person!=null){
                                         for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                             String key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);

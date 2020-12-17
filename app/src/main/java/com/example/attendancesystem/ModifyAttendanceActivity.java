@@ -110,7 +110,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 progressDialog.setCancelable(false);
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.show();
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 database.child(key).setValue(current_person);
                                 progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
@@ -139,7 +139,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 progressDialog.setCancelable(false);
                                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 progressDialog.show();
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 database.child(key).setValue(current_person);
                                 progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
@@ -183,7 +183,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setFname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
@@ -237,7 +237,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             progressDialog.show();
                             current_person.setLname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString().trim());
                             progressDialog.dismiss();
@@ -292,7 +292,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -374,7 +374,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -442,7 +442,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else {
                             current_person.setAttendance(getPresentCount());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.child(key).setValue(current_person);
                             Toast.makeText(ModifyAttendanceActivity.this, "Attendance Updated Successfully", Toast.LENGTH_SHORT).show();
                             finish();

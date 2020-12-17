@@ -79,7 +79,7 @@ public class AddPerson extends AppCompatActivity {
                     progressDialog.show();
                     try {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = database.getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

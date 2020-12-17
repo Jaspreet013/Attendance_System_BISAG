@@ -62,7 +62,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -79,7 +79,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                             listView.setEmptyView(findViewById(R.id.select_empty_message));
                             textView.setVisibility(View.VISIBLE);
                             if(arrayList.isEmpty()) {
-                               textView.setText("No Events");
+                                textView.setText("No Events");
                             }
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());

@@ -89,10 +89,10 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             }
                             else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference = database.getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.remove(key);
                                 databaseReference.child(event_key).setValue(current_event);
-                                databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 for (int i = 0; i < arrayList.size(); i++) {
                                     arrayList.get(i).dates.remove(key);
                                     arrayList.get(i).setAttendance(getPresentCount(i));
@@ -126,7 +126,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

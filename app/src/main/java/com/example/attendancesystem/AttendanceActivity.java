@@ -123,7 +123,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 Date date=new Date();
                                 SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.put(datef.format(date),Long.parseLong(Integer.toString(arrayList.size())));
                                 databaseReference.child(key).setValue(current_event);
                                 for (int i = 0; i<arrayList.size(); i++) {
@@ -141,7 +141,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                     Toast.makeText(AttendanceActivity.this,"Entry cannot be saved because you took attendance recently", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
-                                    DatabaseReference dbreference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    DatabaseReference dbreference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     for (int i = 0; i < keys.size(); i++) {
                                         dbreference.child(keys.get(i)).setValue(arrayList.get(i));
                                     }
@@ -170,7 +170,7 @@ public class AttendanceActivity extends AppCompatActivity {
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+            final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

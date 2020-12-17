@@ -136,7 +136,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             }
             else {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Persons/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -208,7 +208,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     waiting.setCancelable(false);
                                     waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                     waiting.show();
-                                    databaseReference = database.getReference("events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -230,7 +230,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
-                                                databaseReference=database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                databaseReference=database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -313,7 +313,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             waiting.setCancelable(false);
                             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             waiting.show();
-                            databaseReference = database.getReference("events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -335,7 +335,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     if(set){
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
-                                        databaseReference=database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        databaseReference=database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -406,7 +406,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            databaseReference = database.getReference("events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             try {
                                 waiting.show();
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -429,7 +429,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                     }
                                 });
-                                databaseReference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 for (String del : keys) {
                                     databaseReference.child(del).removeValue();
                                 }
@@ -498,14 +498,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 waiting.show();
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference reference = database.getReference("Persons/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                final DatabaseReference reference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         final Set<String> events=arrayList.get(position).dates.keySet();
                                         reference.child(keys.get(position)).removeValue();
                                         arrayList.remove(position);
-                                        final DatabaseReference dbreference=database.getReference("events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        final DatabaseReference dbreference=database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
