@@ -25,7 +25,8 @@ import com.google.gson.Gson;
 public class AddPerson extends AppCompatActivity {
     private Event current_event;
     private EditText fname,lname,email,id;
-    boolean set=true;
+    private boolean set=true;
+    private String event_key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,7 @@ public class AddPerson extends AppCompatActivity {
         lname=findViewById(R.id.register_lname);
         email=findViewById(R.id.register_email);
         id=findViewById(R.id.register_id);
+        event_key=getIntent().getStringExtra("Key");
         Button submit=findViewById(R.id.register_submit);
         Button clear=findViewById(R.id.register_clear);
         current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
@@ -73,20 +75,19 @@ public class AddPerson extends AppCompatActivity {
                     progressDialog.show();
                     try {
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                 for(DataSnapshot child:children){
                                     Person person=child.getValue(Person.class);
-                                    if(person.getOrganisation().equals(current_event.getOrganisation()) &&
-                                            person.getPerson_email().equals(email.getText().toString().trim()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
+                                    if(person.getPerson_email().equals(email.getText().toString().trim())){
                                         set=false;
                                         progressDialog.dismiss();
                                         Toast.makeText(AddPerson.this,"This email is already registered to this Event",Toast.LENGTH_SHORT).show();
                                     }
-                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString().trim())){
+                                    if(person.getPerson_ID().equals(id.getText().toString().trim())){
                                         set=false;
                                         progressDialog.dismiss();
                                         Toast.makeText(AddPerson.this,"This ID is already registered to this Event",Toast.LENGTH_SHORT).show();
@@ -94,7 +95,7 @@ public class AddPerson extends AppCompatActivity {
                                 }
                                 if(set) {
                                     String key = databaseReference.push().getKey();
-                                    databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim(), current_event.getName().trim(), current_event.getOrganisation().trim()));
+                                    databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim()));
                                     progressDialog.dismiss();
                                     Toast.makeText(AddPerson.this, "Person successfully added to the Event", Toast.LENGTH_SHORT).show();
                                     fname.getText().clear();

@@ -128,7 +128,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                     Toast.makeText(AttendanceActivity.this,"Entry cannot be saved because you took attendance recently", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
-                                    DatabaseReference dbreference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    DatabaseReference dbreference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
                                     for (int i = 0; i < keys.size(); i++) {
                                         dbreference.child(keys.get(i)).setValue(arrayList.get(i));
                                     }
@@ -157,7 +157,7 @@ public class AttendanceActivity extends AppCompatActivity {
             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+            final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -165,7 +165,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for (DataSnapshot child : children) {
                             Person person = child.getValue(Person.class);
-                            if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.getEnabled().equals("Yes")) {
+                            if(person.getEnabled().equals("Yes")) {
                                 person.setIspresent(false);
                                 arrayList.add(person);
                                 keys.add(child.getKey());

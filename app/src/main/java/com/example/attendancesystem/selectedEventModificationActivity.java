@@ -76,6 +76,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(selectedEventModificationActivity.this,AddPerson.class);
                 intent.putExtra("Event",new Gson().toJson(current_event));
+                intent.putExtra("Key",event_key);
                 startActivity(intent);
                 finish();
             }
@@ -126,7 +127,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             }
             else {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -134,11 +135,9 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 Person person = child.getValue(Person.class);
-                                if (person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation())) {
-                                    arrayList.add(person);
-                                    keys.add(child.getKey());
-                                    adapter.notifyDataSetChanged();
-                                }
+                                arrayList.add(person);
+                                keys.add(child.getKey());
+                                adapter.notifyDataSetChanged();
                             }
                             waiting.dismiss();
                             person_count.setText("Total no. of People : "+arrayList.size());
@@ -220,26 +219,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
-                                                databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                                        for(DataSnapshot child:children){
-                                                            Person person=child.getValue(Person.class);
-                                                            if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
-                                                                person.setEvent_name(input.getText().toString().trim().toUpperCase());
-                                                                String key=child.getKey();
-                                                                databaseReference.child(key).setValue(person);
-                                                            }
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                    }
-                                                });
                                                 waiting.dismiss();
                                                 Toast.makeText(selectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
@@ -325,25 +304,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     if(set){
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
-                                        databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                                for(DataSnapshot child:children){
-                                                    Person person=child.getValue(Person.class);
-                                                    if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName())){
-                                                        person.setOrganisation(input.getText().toString().trim().toUpperCase());
-                                                        String key=child.getKey();
-                                                        databaseReference.child(key).setValue(person);
-                                                    }
-                                                }
-                                            }
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
                                         waiting.dismiss();
                                         Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                         finish();
@@ -420,9 +380,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     }
                                 });
                                 databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                for (String del : keys) {
+                                databaseReference.child(event_key).removeValue();
+                                /*for (String del : keys) {
                                     databaseReference.child(del).removeValue();
-                                }
+                                }*/
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
                                 finish();
                             } catch (Exception e) {
@@ -488,7 +449,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                 waiting.show();
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference reference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                final DatabaseReference reference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

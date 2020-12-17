@@ -62,6 +62,7 @@ import java.util.HashMap;
 
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private Event current_event;
+    private String event_key;
     private TextView textView;
     private ListView listView;
     private ArrayList<String> arrayList=new ArrayList<>();
@@ -79,6 +80,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         textView=findViewById(R.id.select_subject_text);
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
+        event_key=getIntent().getStringExtra("Event_Key");
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
@@ -102,16 +104,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         else{
             try{
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                         for(DataSnapshot child:children){
                             Person person=child.getValue(Person.class);
-                            if(current_event.getName().equals(person.getEvent_name()) && current_event.getOrganisation().equals(person.getOrganisation())){
-                                persons.add(person);
-                            }
+                            persons.add(person);
                         }
                     }
                     @Override
@@ -301,7 +301,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(SelectAttendanceEntryActivity.this,CheckAttendanceActivity.class);
                     intent.putExtra("Event",new Gson().toJson(current_event));
-                    intent.putExtra("Event_Key",getIntent().getStringExtra("Event_Key"));
+                    intent.putExtra("Event_Key",event_key);
                     intent.putExtra("Entry_Key",arrayList.get(position));
                     startActivity(intent);
                     finish();

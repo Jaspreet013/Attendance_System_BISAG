@@ -85,7 +85,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.remove(key);
                                 databaseReference.child(event_key).setValue(current_event);
-                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 for (int i = 0; i < arrayList.size(); i++) {
                                     arrayList.get(i).dates.remove(key);
                                     arrayList.get(i).setAttendance(getPresentCount(i));
@@ -119,7 +119,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -128,7 +128,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                             for (DataSnapshot child : children) {
                                 Person person = child.getValue(Person.class);
-                                if(person.getEvent_name().equals(current_event.getName()) && person.getOrganisation().equals(current_event.getOrganisation()) && person.dates.containsKey(key)) {
+                                if(person.dates.containsKey(key)) {
                                     arrayList.add(person);
                                     count++;
                                     keys.add(child.getKey());

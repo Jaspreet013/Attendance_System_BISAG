@@ -72,24 +72,22 @@ public class AddEventActivity extends AppCompatActivity {
                                     Toast.makeText(AddEventActivity.this,"Your another Event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
                                 }
                                 else{
+                                    String key=databaseReference.push().getKey();
+                                    databaseReference.child(key).setValue(ev);
                                     if(getIntent().getExtras()!=null){
                                         Type type=new TypeToken<ArrayList<Person>>(){}.getType();
                                         ArrayList<Person> person=new Gson().fromJson(getIntent().getStringExtra("People"),type);
                                         for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            String key = dbreference.push().getKey();
+                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
+                                            String push_key = dbreference.push().getKey();
                                             temp.setAttendance(0);
                                             temp.setAttendance_total(0);
                                             temp.dates.clear();
-                                            temp.setEvent_name(event_name.getText().toString().trim().toUpperCase());
-                                            temp.setOrganisation(event_organisation.getText().toString().trim().toUpperCase());
-                                            dbreference.child(key).setValue(temp);
+                                            dbreference.child(push_key).setValue(temp);
                                         }
                                     }
                                     Toast.makeText(AddEventActivity.this,"Event Added",Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
-                                    String key=databaseReference.push().getKey();
-                                    databaseReference.child(key).setValue(ev);
                                     finish();
                                 }
                             }
