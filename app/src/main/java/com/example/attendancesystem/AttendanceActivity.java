@@ -60,8 +60,8 @@ public class AttendanceActivity extends AppCompatActivity {
         edit.apply();
         edit.remove("Current event");
         edit.apply();
-        TextView set_event_name=findViewById(R.id.message_event_name);
-        TextView set_organisation_name=findViewById(R.id.message_organisation_name);
+        final TextView set_event_name=findViewById(R.id.message_event_name);
+        final TextView set_organisation_name=findViewById(R.id.message_organisation_name);
         set_event_name.setText(current_event.getName());
         set_organisation_name.setText(current_event.getOrganisation());
         adapter=new MyBaseAdapter(AttendanceActivity.this);
@@ -69,9 +69,15 @@ public class AttendanceActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
-        Button submit=findViewById(R.id.attendance_submit_button);
+        final Button submit=findViewById(R.id.attendance_submit_button);
         selectall=findViewById(R.id.select_all);
         total=findViewById(R.id.total_people);
+        set_event_name.setVisibility(View.GONE);
+        set_organisation_name.setVisibility(View.GONE);
+        total.setVisibility(View.GONE);
+        selectall.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
+        submit.setVisibility(View.GONE);
         selectall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +187,6 @@ public class AttendanceActivity extends AppCompatActivity {
                         }
                         total.setText(total.getText()+Integer.toString(arrayList.size()));
                         waiting.dismiss();
-                        listView.setAdapter(adapter);
                         if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
                             builder.setMessage("Please go to manage events -> (click on this event) -> add new person to add people or include people if you have excluded them");
@@ -194,6 +199,15 @@ public class AttendanceActivity extends AppCompatActivity {
                                 }
                             });
                             builder.show();
+                        }
+                        else{
+                            listView.setAdapter(adapter);
+                            set_event_name.setVisibility(View.VISIBLE);
+                            set_organisation_name.setVisibility(View.VISIBLE);
+                            selectall.setVisibility(View.VISIBLE);
+                            total.setVisibility(View.VISIBLE);
+                            submit.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.VISIBLE);
                         }
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());

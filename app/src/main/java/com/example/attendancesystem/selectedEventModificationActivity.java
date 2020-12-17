@@ -56,6 +56,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_event_modification);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation),person_count = findViewById(R.id.disp_total_people);;
+        final ImageButton delete_button=findViewById(R.id.deleteButton);
         preferences = getSharedPreferences("Events", MODE_PRIVATE);
         input = new EditText(selectedEventModificationActivity.this);
         Gson gson = new Gson();
@@ -67,10 +69,16 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setEmptyView(findViewById(R.id.empty_message));
         current_event = gson.fromJson(json, event.class);
         add_person=findViewById(R.id.add_person_button);
         create_event=findViewById(R.id.create_new_event);
+        eventview.setVisibility(View.GONE);
+        organisationview.setVisibility(View.GONE);
+        person_count.setVisibility(View.GONE);
+        delete_button.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
+        add_person.setVisibility(View.GONE);
+        create_event.setVisibility(View.GONE);
         add_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,10 +122,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 }
             }
         });
-        final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation);
         eventview.setText(current_event.getName());
         organisationview.setText(current_event.getOrganisation());
-        ImageButton delete_button=findViewById(R.id.deleteButton);
         try {
             final ProgressDialog waiting;
             waiting = new ProgressDialog(selectedEventModificationActivity.this);
@@ -145,12 +151,18 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 }
                             }
                             waiting.dismiss();
-                            TextView person_count = findViewById(R.id.disp_total_people);
                             person_count.setText("Total no. of People : "+arrayList.size());
+                            eventview.setVisibility(View.VISIBLE);
+                            organisationview.setVisibility(View.VISIBLE);
+                            person_count.setVisibility(View.VISIBLE);
+                            delete_button.setVisibility(View.VISIBLE);
+                            add_person.setVisibility(View.VISIBLE);
+                            listView.setEmptyView(findViewById(R.id.empty_message));
                             if(arrayList.isEmpty()) {
                                 create_event.setEnabled(false);
                                 create_event.setBackgroundResource(R.drawable.disabled_button);
                             }
+                            create_event.setVisibility(View.VISIBLE);
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }

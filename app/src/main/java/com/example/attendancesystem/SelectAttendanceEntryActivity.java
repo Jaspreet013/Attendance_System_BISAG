@@ -92,6 +92,16 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
+        for(String i:current_event.dates.keySet()) {
+            arrayList.add(i);
+        }
+        Collections.sort(arrayList);
+        Collections.reverse(arrayList);
+        adapter.notifyDataSetChanged();
+        final Button download=findViewById(R.id.download_pdf);
+        if(arrayList.isEmpty()){
+            download.setVisibility(View.INVISIBLE);
+        }
         if (!isNetworkAvailable()) {
             Toast.makeText(SelectAttendanceEntryActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
@@ -119,16 +129,6 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             catch(Exception e){
                 Log.e("Database exception is",e.getMessage());
             }
-        }
-        for(String i:current_event.dates.keySet()) {
-            arrayList.add(i);
-        }
-        Collections.sort(arrayList);
-        Collections.reverse(arrayList);
-        adapter.notifyDataSetChanged();
-        final Button download=findViewById(R.id.download_pdf);
-        if(arrayList.isEmpty()){
-            download.setVisibility(View.INVISIBLE);
         }
         download.setOnClickListener(new View.OnClickListener() {
             @Override

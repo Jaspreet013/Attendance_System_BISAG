@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,19 +43,13 @@ public class CheckSelectActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         listView=findViewById(R.id.list_view3);
         textView=findViewById(R.id.select_subject_text);
-        textView.setText("Total Events : 0");
         adapter=new MyBaseAdapter(CheckSelectActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setEmptyView(findViewById(R.id.select_empty_message));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("String is", "Hello Dude");
-            }
-        });
+        textView.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
         if (!isNetworkAvailable()) {
             Toast.makeText(CheckSelectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
@@ -83,6 +76,9 @@ public class CheckSelectActivity extends AppCompatActivity {
                             }
                             waiting.dismiss();
                             textView.setText("Total Events : "+arrayList.size());
+                            textView.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.VISIBLE);
+                            listView.setEmptyView(findViewById(R.id.select_empty_message));
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }

@@ -53,8 +53,11 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         key=get_event.getString("Key","");
         event_key=get_event.getString("Event key","");
         current_event=gson.fromJson(json,event.class);
-        TextView set_event_name=findViewById(R.id.check_event_name);
-        TextView set_organisation_name=findViewById(R.id.check_organisation_name);
+        final TextView set_event_name=findViewById(R.id.check_event_name);
+        final TextView set_organisation_name=findViewById(R.id.check_organisation_name);
+        final TextView presence = findViewById(R.id.present_count);
+        final TextView absence = findViewById(R.id.absent_count);
+        final TextView text = findViewById(R.id.count);
         set_event_name.setText(current_event.getName());
         set_organisation_name.setText(current_event.getOrganisation());
         listView=findViewById(R.id.list_view2);
@@ -63,7 +66,14 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
-        ImageButton delete=findViewById(R.id.deleteButton);
+        final ImageButton delete=findViewById(R.id.deleteButton);
+        set_event_name.setVisibility(View.GONE);
+        set_organisation_name.setVisibility(View.GONE);
+        presence.setVisibility(View.GONE);
+        absence.setVisibility(View.GONE);
+        text.setVisibility(View.GONE);
+        delete.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,13 +154,17 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 }
                                 total++;
                             }
-                            TextView presence = findViewById(R.id.present_count);
                             presence.setText(presence.getText().toString() + present);
-                            TextView absence = findViewById(R.id.absent_count);
                             absence.setText(absence.getText().toString() + absent);
-                            TextView text = findViewById(R.id.count);
                             text.setText(text.getText().toString() + total);
                             waiting.dismiss();
+                            set_event_name.setVisibility(View.VISIBLE);
+                            set_organisation_name.setVisibility(View.VISIBLE);
+                            delete.setVisibility(View.VISIBLE);
+                            presence.setVisibility(View.VISIBLE);
+                            absence.setVisibility(View.VISIBLE);
+                            text.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.VISIBLE);
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }

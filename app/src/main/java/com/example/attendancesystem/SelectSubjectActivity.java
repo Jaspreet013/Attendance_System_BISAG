@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class SelectSubjectActivity extends AppCompatActivity {
+    private TextView textView;
     private ListView listView;
     private ArrayList<event> arrayList=new ArrayList<>();
     private ArrayList<String> keys=new ArrayList<>();
@@ -41,12 +42,14 @@ public class SelectSubjectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_subject);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         listView=findViewById(R.id.list_view3);
+        textView=findViewById(R.id.select_subject_text);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setEmptyView(findViewById(R.id.select_empty_message));
+        textView.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
         if (!isNetworkAvailable()) {
             Toast.makeText(SelectSubjectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
@@ -72,6 +75,12 @@ public class SelectSubjectActivity extends AppCompatActivity {
                                 adapter.notifyDataSetChanged();
                             }
                             waiting.dismiss();
+                            listView.setVisibility(View.VISIBLE);
+                            listView.setEmptyView(findViewById(R.id.select_empty_message));
+                            textView.setVisibility(View.VISIBLE);
+                            if(arrayList.isEmpty()) {
+                               textView.setText("No Events");
+                            }
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }

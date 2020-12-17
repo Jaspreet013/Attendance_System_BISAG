@@ -37,8 +37,7 @@
         android:layout_width="match_parent"
         android:id="@+id/list_view3"
         android:layout_gravity="center_horizontal"
-        android:nestedScrollingEnabled="true"
-        android:visibility="gone"/>
+        android:nestedScrollingEnabled="true"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -50,6 +49,7 @@
         android:text="You can create event by Manage Events -> Add New Event -> (Create event) and also add users to it after creating event by Manage Events -> (click on event) -> Add Person"
         android:textAlignment="center"
         android:gravity="center_vertical"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </LinearLayout>

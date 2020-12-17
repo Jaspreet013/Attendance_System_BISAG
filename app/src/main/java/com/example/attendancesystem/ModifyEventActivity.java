@@ -41,6 +41,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        final Button add_event = findViewById(R.id.add_event_button);
         listView = findViewById(R.id.list_view);
         total_events = findViewById(R.id.total_events);
         adapter = new MyBaseAdapter(ModifyEventActivity.this);
@@ -48,8 +49,9 @@ public class ModifyEventActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        listView.setEmptyView(findViewById(R.id.modification_empty_message));
-        Button add_event = findViewById(R.id.add_event_button);
+        total_events.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
+        add_event.setVisibility(View.GONE);
         add_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,8 +84,13 @@ public class ModifyEventActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
-                            total_events.setText(total_events.getText().toString() + arrayList.size());
                             waiting.dismiss();
+                            total_events.setText(total_events.getText().toString() + arrayList.size());
+                            total_events.setVisibility(View.VISIBLE);
+                            listView.setVisibility(View.VISIBLE);
+                            add_event.setVisibility(View.VISIBLE);
+                            listView.setEmptyView(findViewById(R.id.modification_empty_message));
+
                         } catch (Exception e) {
                             Log.e("Exception : ", e.getMessage());
                         }
