@@ -2,7 +2,6 @@ package com.example.attendancesystem;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,10 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,8 +23,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 public class AddPerson extends AppCompatActivity {
-    event current_event;
-    EditText fname,lname,email,id;
+    private Event current_event;
+    private EditText fname,lname,email,id;
     boolean set=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +37,7 @@ public class AddPerson extends AppCompatActivity {
         id=findViewById(R.id.register_id);
         Button submit=findViewById(R.id.register_submit);
         Button clear=findViewById(R.id.register_clear);
-        SharedPreferences preferences=getSharedPreferences("Events",MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = preferences.getString("Current event", "");
-        current_event = gson.fromJson(json, event.class);
+        current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,19 +84,19 @@ public class AddPerson extends AppCompatActivity {
                                             person.getPerson_email().equals(email.getText().toString().trim()) && person.getEvent_name().equals(current_event.getName().toUpperCase())){
                                         set=false;
                                         progressDialog.dismiss();
-                                        Toast.makeText(AddPerson.this,"This email is already registered to this event",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddPerson.this,"This email is already registered to this Event",Toast.LENGTH_SHORT).show();
                                     }
                                     if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(id.getText().toString().trim())){
                                         set=false;
                                         progressDialog.dismiss();
-                                        Toast.makeText(AddPerson.this,"This ID is already registered to this event",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddPerson.this,"This ID is already registered to this Event",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 if(set) {
                                     String key = databaseReference.push().getKey();
                                     databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim(), current_event.getName().trim(), current_event.getOrganisation().trim()));
                                     progressDialog.dismiss();
-                                    Toast.makeText(AddPerson.this, "Person successfully added to the event", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddPerson.this, "Person successfully added to the Event", Toast.LENGTH_SHORT).show();
                                     fname.getText().clear();
                                     lname.getText().clear();
                                     email.getText().clear();

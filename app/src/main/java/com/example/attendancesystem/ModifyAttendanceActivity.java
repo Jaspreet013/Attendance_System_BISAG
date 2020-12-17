@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,30 +39,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ModifyAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_person;
-    ArrayList<String> arrayList = new ArrayList<>();
-    Person current_person;
-    String key;
-    ListView listView;
-    MyBaseAdapter adapter;
-    event current_event;
-    String event_key;
-    Switch enable;
+    private ArrayList<String> arrayList = new ArrayList<>();
+    private Person current_person;
+    private String key;
+    private ListView listView;
+    private MyBaseAdapter adapter;
+    private Event current_event;
+    private String event_key;
+    private Switch enable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_attendance);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_person = getSharedPreferences("Person", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = get_person.getString("Current Person", "");
-        current_person = gson.fromJson(json, Person.class);
-        key = get_person.getString("Key", "");
-        SharedPreferences preferences = getSharedPreferences("Events", MODE_PRIVATE);
-        Gson gson2 = new Gson();
-        String json2 = preferences.getString("Current event", "");
-        event_key=preferences.getString("Key","");
-        current_event = gson2.fromJson(json2, event.class);
+        current_person = new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
+        key = getIntent().getStringExtra("Key");
+        event_key=getIntent().getStringExtra("Event_Key");
+        current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         enable=findViewById(R.id.option);
         enable.setChecked(current_person.getEnabled().equals("Yes"));
         adapter = new MyBaseAdapter(ModifyAttendanceActivity.this);
@@ -302,7 +293,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             Person person=child.getValue(Person.class);
                                             if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && person.getPerson_ID().equals(input.getText().toString().trim()) && !person.getPerson_email().equals(current_person.getPerson_email())){
                                                 set=false;
-                                                Toast.makeText(ModifyAttendanceActivity.this,"This ID is already registered to this event",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ModifyAttendanceActivity.this,"This ID is already registered to this Event",Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         if(set) {
@@ -384,7 +375,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             Person person=child.getValue(Person.class);
                                             if(person.getOrganisation().equals(current_event.getOrganisation()) && person.getEvent_name().equals(current_event.getName()) && !person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString().trim())){
                                                 set=false;
-                                                Toast.makeText(ModifyAttendanceActivity.this,"This email is already registered to this event",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ModifyAttendanceActivity.this,"This email is already registered to this Event",Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         if(set) {
@@ -454,7 +445,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             }
         });
     }
-    public class MyBaseAdapter extends BaseAdapter {
+    private class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
 
@@ -551,7 +542,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    public long getPresentCount () {
+    private long getPresentCount () {
         long count = 0;
         for (String str : current_person.dates.keySet()) {
             if (current_person.dates.get(str).equals("Present")) {

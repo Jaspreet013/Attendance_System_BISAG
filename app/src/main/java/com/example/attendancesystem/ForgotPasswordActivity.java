@@ -13,10 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +50,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
                                 builder.setTitle("Task Successful");
-                                builder.setMessage("Password reset email has been sent to you, please check your mail");
+                                builder.setMessage("Password reset mail has been sent to the registered Email-ID, please check your mail");
                                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

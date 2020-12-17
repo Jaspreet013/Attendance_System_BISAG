@@ -9,7 +9,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -35,7 +34,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,14 +61,13 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
-    SharedPreferences get_event;
-    event current_event;
-    TextView textView;
-    ListView listView;
-    ArrayList<String> arrayList=new ArrayList<>();
-    ArrayList<Person> persons=new ArrayList<>();
-    MyBaseAdapter adapter;
-    DatePickerDialog picker;
+    private Event current_event;
+    private TextView textView;
+    private ListView listView;
+    private ArrayList<String> arrayList=new ArrayList<>();
+    private ArrayList<Person> persons=new ArrayList<>();
+    private MyBaseAdapter adapter;
+    private DatePickerDialog picker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +77,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         builders.detectFileUriExposure();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         textView=findViewById(R.id.select_subject_text);
-        get_event=getSharedPreferences("Events",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=get_event.getString("Current event","");
-        current_event=gson.fromJson(json,event.class);
+        current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
         listView=findViewById(R.id.list_view3);
         adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
@@ -245,7 +239,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             }
         });
     }
-    public class MyBaseAdapter extends BaseAdapter {
+    private class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
         MyBaseAdapter(Context context) {
@@ -305,10 +299,11 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedPreferences.Editor editor=get_event.edit();
-                    editor.putString("Key",arrayList.get(position));
-                    editor.apply();
-                    startActivity(new Intent(SelectAttendanceEntryActivity.this,CheckAttendanceActivity.class));
+                    Intent intent=new Intent(SelectAttendanceEntryActivity.this,CheckAttendanceActivity.class);
+                    intent.putExtra("Event",new Gson().toJson(current_event));
+                    intent.putExtra("Event_Key",getIntent().getStringExtra("Event_Key"));
+                    intent.putExtra("Entry_Key",arrayList.get(position));
+                    startActivity(intent);
                     finish();
                 }
             });
@@ -321,11 +316,11 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    class PrintReport {
+    private class PrintReport {
         HashMap<String,Long> present=new HashMap<>();
         HashMap<String,Long> absent=new HashMap<>();
         HashMap<String,Long> total=new HashMap<>();
-        public String createPDF (final event ev,ArrayList<Person> persons,ArrayList<String> selected_keys,int start_day,int start_month,int start_year,int end_day,int end_month,int end_year){
+        public String createPDF (final Event ev, ArrayList<Person> persons, ArrayList<String> selected_keys, int start_day, int start_month, int start_year, int end_day, int end_month, int end_year){
             Collections.sort(selected_keys);
             Document doc = new Document();
             PdfWriter docWriter = null;

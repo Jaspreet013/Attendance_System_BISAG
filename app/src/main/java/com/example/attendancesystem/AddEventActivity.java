@@ -2,7 +2,6 @@ package com.example.attendancesystem;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,11 +26,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity {
-    EditText event_name;
-    EditText event_organisation;
-    Button button;
-    DatabaseReference databaseReference;
-    ProgressDialog progressDialog;
+    private EditText event_name,event_organisation;
+    private Button button;
+    private DatabaseReference databaseReference;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,24 +60,21 @@ public class AddEventActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                 boolean set=true;
-                                event ev=new event(event_name.getText().toString().trim().toUpperCase(),event_organisation.getText().toString().trim().toUpperCase());
+                                Event ev=new Event(event_name.getText().toString().trim().toUpperCase(),event_organisation.getText().toString().trim().toUpperCase());
                                 for(DataSnapshot child:children){
-                                    event eve=child.getValue(event.class);
+                                    Event eve=child.getValue(Event.class);
                                     if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())){
                                         set=false;
                                     }
                                 }
                                 if(!set){
                                     progressDialog.dismiss();
-                                    Toast.makeText(AddEventActivity.this,"Your another event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddEventActivity.this,"Your another Event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
                                 }
                                 else{
-                                    SharedPreferences prefs = getSharedPreferences("All people",MODE_PRIVATE);
-                                    Gson gson = new Gson();
-                                    String json = prefs.getString("people", null);
-                                    Type type = new TypeToken<ArrayList<Person>>() {}.getType();
-                                    ArrayList<Person> person=gson.fromJson(json, type);
-                                    if(person!=null){
+                                    if(getIntent().getExtras()!=null){
+                                        Type type=new TypeToken<ArrayList<Person>>(){}.getType();
+                                        ArrayList<Person> person=new Gson().fromJson(getIntent().getStringExtra("People"),type);
                                         for(Person temp:person) {
                                             DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                             String key = dbreference.push().getKey();
@@ -91,10 +85,6 @@ public class AddEventActivity extends AppCompatActivity {
                                             temp.setOrganisation(event_organisation.getText().toString().trim().toUpperCase());
                                             dbreference.child(key).setValue(temp);
                                         }
-                                        SharedPreferences.Editor edit=prefs.edit();
-                                        edit.remove("people");
-                                        edit.clear();
-                                        edit.apply();
                                     }
                                     Toast.makeText(AddEventActivity.this,"Event Added",Toast.LENGTH_SHORT).show();
                                     progressDialog.dismiss();
@@ -120,15 +110,5 @@ public class AddEventActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    public void onBackPressed() {
-        SharedPreferences prefs = getSharedPreferences("All people",MODE_PRIVATE);
-        SharedPreferences.Editor edit=prefs.edit();
-        edit.remove("people");
-        edit.clear();
-        edit.apply();
-        super.onBackPressed();
     }
 }

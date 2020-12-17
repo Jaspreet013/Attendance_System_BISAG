@@ -22,11 +22,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    ProgressDialog waiting;
-    FirebaseAuth firebaseAuth;
-    EditText email,password;
-    TextView new_user,forgot_password;
-    Button login;
+    private ProgressDialog waiting;
+    private FirebaseAuth firebaseAuth;
+    private EditText email,password;
+    private TextView new_user,forgot_password;
+    private Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

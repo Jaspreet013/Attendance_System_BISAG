@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,18 +37,15 @@ import java.util.Collections;
 import java.util.Set;
 
 public class selectedEventModificationActivity extends AppCompatActivity {
-    SharedPreferences preferences;
-    String id="";
-    String key,event_key;
+    private String id="",key,event_key;
     private ListView listView;
-    ArrayList<String> keys=new ArrayList<>();
-    EditText input;
-    Button create_event,add_person;
-    MyPeopleAdapter adapter;
-    event current_event;
-    ArrayList<Person> arrayList=new ArrayList<>();
-    FirebaseDatabase database=FirebaseDatabase.getInstance();
-    DatabaseReference databaseReference;
+    private ArrayList<String> keys=new ArrayList<>();
+    private EditText input;
+    private Button create_event,add_person;
+    private MyPeopleAdapter adapter;
+    private Event current_event;
+    private ArrayList<Person> arrayList=new ArrayList<>();
+    private DatabaseReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,18 +53,15 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation),person_count = findViewById(R.id.disp_total_people);;
         final ImageButton delete_button=findViewById(R.id.deleteButton);
-        preferences = getSharedPreferences("Events", MODE_PRIVATE);
         input = new EditText(selectedEventModificationActivity.this);
-        Gson gson = new Gson();
-        String json = preferences.getString("Current event", "");
-        event_key=preferences.getString("Key","");
+        event_key=getIntent().getStringExtra("Key");
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        current_event = gson.fromJson(json, event.class);
+        current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         add_person=findViewById(R.id.add_person_button);
         create_event=findViewById(R.id.create_new_event);
         eventview.setVisibility(View.GONE);
@@ -82,7 +74,9 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         add_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(selectedEventModificationActivity.this,AddPerson.class));
+                Intent intent=new Intent(selectedEventModificationActivity.this,AddPerson.class);
+                intent.putExtra("Event",new Gson().toJson(current_event));
+                startActivity(intent);
                 finish();
             }
         });
@@ -106,17 +100,13 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         for(int k:list){
                             arrayList.remove(k);
                         }
-                        SharedPreferences prefs = getSharedPreferences("All people", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(arrayList);
-                        editor.putString("people", json);
-                        editor.apply();
-                        startActivity(new Intent(selectedEventModificationActivity.this, AddEventActivity.class));
+                        Intent intent=new Intent(selectedEventModificationActivity.this, AddEventActivity.class);
+                        intent.putExtra("People",new Gson().toJson(arrayList));
+                        startActivity(intent);
                         finish();
                     }
                     else{
-                        Toast.makeText(selectedEventModificationActivity.this,"All the people are excluded from this event",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(selectedEventModificationActivity.this,"All the people are excluded from this Event",Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -208,15 +198,15 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     waiting.setCancelable(false);
                                     waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                     waiting.show();
-                                    databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                             boolean set=true;
-                                            event eve=new event();
+                                            Event eve=new Event();
                                             for(DataSnapshot child:children){
-                                                event ev=child.getValue(event.class);
+                                                Event ev=child.getValue(Event.class);
                                                 if(input.getText().toString().trim().toUpperCase().equals(ev.getName().toUpperCase()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation().toUpperCase())){
                                                     set=false;
                                                     key="";
@@ -230,7 +220,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
-                                                databaseReference=database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -256,7 +246,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             }
                                             else{
                                                 waiting.dismiss();
-                                                Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                         }
@@ -313,15 +303,15 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             waiting.setCancelable(false);
                             waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                             waiting.show();
-                            databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children=dataSnapshot.getChildren();
                                     boolean set=true;
-                                    event eve=new event();
+                                    Event eve=new Event();
                                     for(DataSnapshot child:children){
-                                        event ev=child.getValue(event.class);
+                                        Event ev=child.getValue(Event.class);
                                         if(input.getText().toString().trim().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().toUpperCase().equals(ev.getName().toUpperCase())){
                                             set=false;
                                             key="";
@@ -335,7 +325,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     if(set){
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
-                                        databaseReference=database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -360,7 +350,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     }
                                     else{
                                         waiting.dismiss();
-                                        Toast.makeText(selectedEventModificationActivity.this, "Your another event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
                                 }
@@ -394,8 +384,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 }
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
-                    builder.setTitle("Delete event");
-                    builder.setMessage("Are you sure you want to delete all data linked with this event?");
+                    builder.setTitle("Delete Event");
+                    builder.setMessage("Are you sure you want to delete all data linked with this Event?");
                     builder.setNegativeButton("cancel",null);
                     final ProgressDialog waiting;
                     waiting = new ProgressDialog(selectedEventModificationActivity.this);
@@ -415,7 +405,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         try {
                                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                             for (DataSnapshot child : children) {
-                                                event ev = child.getValue(event.class);
+                                                Event ev = child.getValue(Event.class);
                                                 if (ev.getName().equals(current_event.getName()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
                                                     child.getRef().removeValue();
                                                 }
@@ -445,7 +435,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             }
         });
     }
-    public class MyPeopleAdapter extends BaseAdapter {
+    private class MyPeopleAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
 
@@ -483,7 +473,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                     builder.setTitle("Are you sure to delete this person?");
-                    builder.setMessage("All the information regarding this person for this event will be deleted from records. You can exclude them by clicking on the person and disable the future attendances option so that person can be excluded without damaging the previous records of the person.");
+                    builder.setMessage("All the information regarding this person for this Event will be deleted from records. You can exclude them by clicking on the person and disable the future attendances option so that person can be excluded without damaging the previous records of the person.");
                     builder.setNegativeButton("Cancel",null);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -509,7 +499,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                event ev=dataSnapshot.child(event_key).getValue(event.class);
+                                                Event ev=dataSnapshot.child(event_key).getValue(Event.class);
                                                 for(String str:events){
                                                     long l=ev.dates.get(str);
                                                     Log.e("Key",str);
@@ -521,13 +511,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                         ev.dates.replace(str, l);
                                                     }
                                                 }
-                                                SharedPreferences get_event = getSharedPreferences("Events", MODE_PRIVATE);
-                                                SharedPreferences.Editor prefsEditor = get_event.edit();
-                                                Gson gson = new Gson();
-                                                String json = gson.toJson(ev);
-                                                prefsEditor.putString("Current event", json);
-                                                prefsEditor.putString("Key",event_key);
-                                                prefsEditor.apply();
                                                 dbreference.child(event_key).setValue(ev);
                                             }
 
@@ -561,14 +544,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedPreferences preferences=getSharedPreferences("Person",MODE_PRIVATE);
-                    SharedPreferences.Editor pref=preferences.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(std);
-                    pref.putString("Current Person", json);
-                    pref.putString("Key",keys.get(position));
-                    pref.apply();
-                    startActivity(new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class));
+                    Intent intent=new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class);
+                    intent.putExtra("Person",new Gson().toJson(std));
+                    intent.putExtra("Key",keys.get(position));
+                    intent.putExtra("Event",new Gson().toJson(current_event));
+                    intent.putExtra("Event_Key",event_key);
+                    startActivity(intent);
                     finish();
                 }
             });

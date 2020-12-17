@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,19 +17,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AttendanceInfoActivity extends AppCompatActivity {
-    ArrayList<String> arraylist=new ArrayList<>();
-    ListView listView;
-    Person person;
-    MyBaseAdapter adapter;
+    private ArrayList<String> arraylist=new ArrayList<>();
+    private ListView listView;
+    private Person person;
+    private MyBaseAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance_info);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        SharedPreferences sharedPreferences=getSharedPreferences("Person",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=sharedPreferences.getString("Current Person","");
-        person=gson.fromJson(json,Person.class);
+        person=new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
         TextView name=findViewById(R.id.disp_user_name);
         name.setText(person.getLname()+" "+person.getFname());
         TextView id=findViewById(R.id.disp_user_id);

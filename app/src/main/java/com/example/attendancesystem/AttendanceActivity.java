@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,10 +18,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,31 +32,21 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class AttendanceActivity extends AppCompatActivity {
-    ArrayList<Person> arrayList=new ArrayList<>();
-    ArrayList<String> keys=new ArrayList<>();
-    String key;
-    ListView listView;
-    SharedPreferences get_event;
-    SharedPreferences.Editor edit;
-    event current_event;
-    MyBaseAdapter adapter;
-    TextView selectall,total;
-    int count=0;
+    private ArrayList<Person> arrayList=new ArrayList<>();
+    private ArrayList<String> keys=new ArrayList<>();
+    private String key;
+    private ListView listView;
+    private Event current_event;
+    private MyBaseAdapter adapter;
+    private TextView selectall,total;
+    private int count=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_event=getSharedPreferences("Events",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=get_event.getString("Current event","");
-        current_event=gson.fromJson(json,event.class);
-        key=get_event.getString("Key","");
-        edit=get_event.edit();
-        edit.remove("Key");
-        edit.apply();
-        edit.remove("Current event");
-        edit.apply();
+        current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
+        key=getIntent().getStringExtra("Key");
         final TextView set_event_name=findViewById(R.id.message_event_name);
         final TextView set_organisation_name=findViewById(R.id.message_organisation_name);
         set_event_name.setText(current_event.getName());
@@ -189,8 +176,8 @@ public class AttendanceActivity extends AppCompatActivity {
                         waiting.dismiss();
                         if(arrayList.isEmpty()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setMessage("Please go to manage events -> (click on this event) -> add new person to add people or include people if you have excluded them");
-                            builder.setTitle("No people are in this event");
+                            builder.setMessage("Please go to manage events -> (click on this Event) -> add new person to add people or include people if you have excluded them");
+                            builder.setTitle("No people are in this Event");
                             builder.setCancelable(false);
                             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
@@ -223,7 +210,7 @@ public class AttendanceActivity extends AppCompatActivity {
 
         }
     }
-    public long getPresentCount(int i) {
+    private long getPresentCount(int i) {
         long pcount = 0;
         for (String str : arrayList.get(i).dates.keySet()) {
             if (arrayList.get(i).dates.get(str).equals("Present")) {
@@ -232,7 +219,7 @@ public class AttendanceActivity extends AppCompatActivity {
         }
         return pcount;
     }
-    public class MyBaseAdapter extends BaseAdapter {
+    private class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
         MyBaseAdapter(Context context) {

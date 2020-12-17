@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -20,10 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,25 +31,21 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
-    SharedPreferences get_event;
-    event current_event;
-    long present=0,absent=0,total=0;
-    ListView listView;
-    ArrayList<Person> arrayList=new ArrayList<>();
-    ArrayList<String> keys=new ArrayList<>();
-    MyBaseAdapter adapter;
-    String key,event_key;
+    private Event current_event;
+    private long present=0,absent=0,total=0;
+    private ListView listView;
+    private ArrayList<Person> arrayList=new ArrayList<>();
+    private ArrayList<String> keys=new ArrayList<>();
+    private MyBaseAdapter adapter;
+    private String key,event_key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_attendance);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        get_event=getSharedPreferences("Events",MODE_PRIVATE);
-        Gson gson=new Gson();
-        String json=get_event.getString("Current event","");
-        key=get_event.getString("Key","");
-        event_key=get_event.getString("Event key","");
-        current_event=gson.fromJson(json,event.class);
+        key=getIntent().getStringExtra("Entry_Key");
+        event_key=getIntent().getStringExtra("Event_Key");
+        current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         final TextView set_event_name=findViewById(R.id.check_event_name);
         final TextView set_organisation_name=findViewById(R.id.check_organisation_name);
         final TextView presence = findViewById(R.id.present_count);
@@ -79,7 +72,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CheckAttendanceActivity.this);
                 builder.setTitle("Deleted data will not be recovered");
-                builder.setMessage("Are you sure you want to delete this entry from this event?");
+                builder.setMessage("Are you sure you want to delete this entry from this Event?");
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -180,7 +173,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             }
         }
     }
-    public class MyBaseAdapter extends BaseAdapter {
+    private class MyBaseAdapter extends BaseAdapter {
         Context context;
         LayoutInflater inflater;
         MyBaseAdapter(Context context) {
@@ -218,13 +211,9 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedPreferences sharedPreferences = getSharedPreferences("Person", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(arrayList.get(position));
-                    editor.putString("Current Person", json);
-                    editor.apply();
-                    startActivity(new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class));
+                    Intent intent=new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class);
+                    intent.putExtra("Person",new Gson().toJson(arrayList.get(position)));
+                    startActivity(intent);
                 }
             });
             return view;
@@ -236,7 +225,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    public long getPresentCount (int i) {
+    private long getPresentCount (int i) {
         long count = 0;
         for (String str : arrayList.get(i).dates.keySet()) {
             if (arrayList.get(i).dates.get(str).equals("Present")) {

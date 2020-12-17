@@ -1,11 +1,11 @@
 package com.example.attendancesystem;
 import java.util.HashMap;
 
-public class event {
+public class Event {
     private String name,organisation;
     public HashMap<String,Long> dates = new HashMap<>();
-    public event(){}
-    public event(String name,String organisation)
+    public Event(){}
+    public Event(String name, String organisation)
     {
         this.name=name;
         this.organisation=organisation;
