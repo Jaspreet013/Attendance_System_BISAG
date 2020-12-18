@@ -10,8 +10,7 @@
             android:id="@+id/disp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Name"
             android:textStyle="bold"
             android:layout_alignParentStart="true"/>
@@ -19,11 +18,11 @@
         <TextView
             android:id="@+id/disp_id"
             android:layout_toStartOf="@id/deleteButton"
+            android:textAppearance="?android:textAppearanceMedium"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/disp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
             android:text="ID" />
 
         <ImageButton
