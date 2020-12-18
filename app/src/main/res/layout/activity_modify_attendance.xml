@@ -114,7 +114,7 @@
         android:layout_weight="9.25"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="There is currently no entry for this person"/>

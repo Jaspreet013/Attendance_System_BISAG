@@ -10,7 +10,6 @@
 
         <TextView
             android:id="@+id/dispname"
-            android:text="Name"
             android:layout_toStartOf="@+id/dispstatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +18,6 @@
             android:layout_alignParentTop="true"/>
 
         <TextView
-            android:text="ID"
             android:layout_toStartOf="@id/dispstatus"
             android:layout_below="@id/dispname"
             android:id="@+id/disporganisation"
@@ -30,7 +28,6 @@
         <TextView
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="Status"
             android:id="@+id/dispstatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

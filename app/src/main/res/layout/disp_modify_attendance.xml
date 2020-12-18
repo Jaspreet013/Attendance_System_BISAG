@@ -13,7 +13,6 @@
         android:id="@+id/dispname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="entry name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000"
         android:textStyle="bold"
@@ -29,8 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:scaleX="1.2"
-        android:scaleY="1.2"
-        android:backgroundTint="@color/cardview_dark_background"
-        android:src="@android:drawable/ic_menu_delete"/>
+        android:scaleY="1.2" />
 
 </LinearLayout>

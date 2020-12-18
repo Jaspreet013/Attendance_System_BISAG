@@ -7,7 +7,7 @@
     tools:context=".RegistrationActivity">
 
     <RelativeLayout
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingBottom="35dp">
 
@@ -33,8 +33,7 @@
                 android:paddingRight="15sp"
                 android:id="@+id/register_fname"
                 android:inputType="textCapWords"
-                android:maxLength="15"
-                />
+                android:maxLength="15" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

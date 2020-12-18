@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="55dp">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -123,7 +123,9 @@
             android:layout_below="@id/border5"
             android:weightSum="2"
             android:orientation="horizontal">
+
             <Button
+                style="@style/TextAppearance.AppCompat.Button"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="65dp"
@@ -138,6 +140,7 @@
                 android:background="@drawable/rounded_button"/>
 
             <Button
+                style="@style/TextAppearance.AppCompat.Button"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="65dp"

@@ -24,7 +24,7 @@
         android:id="@+id/total_events"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="Total events : "
+        android:text="Total Events : "
         android:textStyle="bold"/>
 
     <ListView
