@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".CheckAttendanceActivity"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:layout_centerHorizontal="true"
-    android:id="@+id/layout_welcome"
-    android:paddingBottom="10dp">
+    android:id="@+id/layout_welcome">
 
         <TextView
             android:textStyle="bold"
@@ -16,10 +16,13 @@
             android:id="@+id/check_event_name"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:textAlignment="center"
-            android:textSize="45sp"/>
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="15sp"
+            app:autoSizeMaxTextSize="45sp"
+            app:autoSizeStepGranularity="1sp"/>
 
         <TextView
             android:layout_marginStart="15dp"
@@ -28,15 +31,19 @@
             android:id="@+id/check_organisation_name"
             android:layout_centerHorizontal="true"
             android:textAlignment="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:layout_below="@+id/check_event_name"
-            android:textSize="30sp"/>
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="15sp"
+            app:autoSizeMaxTextSize="30sp"
+            app:autoSizeStepGranularity="1sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="15dp"
             android:id="@+id/present_count"
             android:text="Present : "
@@ -67,6 +74,7 @@
             android:layout_below="@+id/check_organisation_name"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
             android:backgroundTint="@color/cardview_dark_background"
             android:src="@android:drawable/ic_menu_delete" />
 
@@ -78,6 +86,6 @@
             android:layout_gravity="center_horizontal"
             android:nestedScrollingEnabled="true"
             android:layout_below="@+id/count"
-            android:layout_margin="15dp" />
+            android:layout_margin="15dp"/>
 
 </RelativeLayout>
