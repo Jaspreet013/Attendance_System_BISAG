@@ -19,6 +19,7 @@
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
         app:autoSizeTextType="uniform"
+        android:textStyle="bold"
         android:layout_weight="1"
         android:text="Event"
         app:autoSizeMinTextSize="20sp"
