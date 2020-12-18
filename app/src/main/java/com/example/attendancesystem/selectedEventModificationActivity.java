@@ -37,23 +37,22 @@ import java.util.Collections;
 import java.util.Set;
 
 public class selectedEventModificationActivity extends AppCompatActivity {
-    private String id="",key,event_key;
+    private String key,event_key;
     private ListView listView;
-    private ArrayList<String> keys=new ArrayList<>();
-    private EditText input;
+    private final ArrayList<String> keys=new ArrayList<>();
     private Button create_event,add_person;
     private MyPeopleAdapter adapter;
     private Event current_event;
-    private ArrayList<Person> arrayList=new ArrayList<>();
+    private final ArrayList<Person> arrayList=new ArrayList<>();
     private DatabaseReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_event_modification);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation),person_count = findViewById(R.id.disp_total_people);;
+        final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation),person_count = findViewById(R.id.disp_total_people);
         final ImageButton delete_button=findViewById(R.id.deleteButton);
-        input = new EditText(selectedEventModificationActivity.this);
+        EditText input = new EditText(selectedEventModificationActivity.this);
         event_key=getIntent().getStringExtra("Key");
         listView=findViewById(R.id.list_view1);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
@@ -397,8 +396,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         });
     }
     private class MyPeopleAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
 
         MyPeopleAdapter(Context context) {
             this.context = context;

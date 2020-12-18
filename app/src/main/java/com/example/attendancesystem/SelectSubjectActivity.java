@@ -29,8 +29,8 @@ import java.util.ArrayList;
 public class SelectSubjectActivity extends AppCompatActivity {
     private TextView textView;
     private ListView listView;
-    private ArrayList<Event> arrayList=new ArrayList<>();
-    private ArrayList<String> keys=new ArrayList<>();
+    private final ArrayList<Event> arrayList=new ArrayList<>();
+    private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +92,8 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
 
         MyBaseAdapter(Context context) {
             this.context = context;

@@ -20,10 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
 public class AddPerson extends AppCompatActivity {
-    private Event current_event;
     private EditText fname,lname,email,id;
     private boolean set=true;
     private String event_key;
@@ -39,7 +37,6 @@ public class AddPerson extends AppCompatActivity {
         event_key=getIntent().getStringExtra("Key");
         Button submit=findViewById(R.id.register_submit);
         Button clear=findViewById(R.id.register_clear);
-        current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

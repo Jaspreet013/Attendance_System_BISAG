@@ -24,7 +24,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegistrationActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
-    private FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
+    private final FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

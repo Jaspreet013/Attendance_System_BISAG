@@ -39,12 +39,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ModifyAttendanceActivity extends AppCompatActivity {
-    private ArrayList<String> arrayList = new ArrayList<>();
+    private final ArrayList<String> arrayList = new ArrayList<>();
     private Person current_person;
     private String key;
-    private ListView listView;
-    private MyBaseAdapter adapter;
-    private Event current_event;
     private String event_key;
     private Switch enable;
     @Override
@@ -55,19 +52,17 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         current_person = new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
         key = getIntent().getStringExtra("Key");
         event_key=getIntent().getStringExtra("Event_Key");
-        current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
+        Event current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         enable=findViewById(R.id.option);
         enable.setChecked(current_person.getEnabled().equals("Yes"));
-        adapter = new MyBaseAdapter(ModifyAttendanceActivity.this);
-        listView = findViewById(R.id.list_view);
+        MyBaseAdapter adapter = new MyBaseAdapter(ModifyAttendanceActivity.this);
+        ListView listView = findViewById(R.id.list_view);
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setAdapter(adapter);
         listView.setEmptyView(findViewById(R.id.empty_entry));
-        for (String i : current_person.dates.keySet()) {
-            arrayList.add(i);
-        }
+        arrayList.addAll(current_person.dates.keySet());
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
@@ -446,8 +441,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         });
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
 
         MyBaseAdapter(Context context) {
             this.context = context;
@@ -475,7 +470,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             View view = inflater.inflate(R.layout.disp_modify_attendance, null);
             final TextView tv1=view.findViewById(R.id.dispname);
             String str[]=arrayList.get(position).split("-",5);
-            String set="";
+            String set;
             if (!DateFormat.is24HourFormat(ModifyAttendanceActivity.this))
             {
                 if(Integer.parseInt(str[3])>12){

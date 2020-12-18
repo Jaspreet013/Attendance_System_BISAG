@@ -25,16 +25,14 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog waiting;
     private FirebaseAuth firebaseAuth;
     private EditText email,password;
-    private TextView new_user,forgot_password;
-    private Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-            login = findViewById(R.id.login_submit);
-            new_user = findViewById(R.id.new_user);
-            forgot_password=findViewById(R.id.forgot_password);
+            Button login = findViewById(R.id.login_submit);
+            TextView new_user = findViewById(R.id.new_user);
+            TextView forgot_password=findViewById(R.id.forgot_password);
             new_user.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -53,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     email = findViewById(R.id.login_email);
                     password = findViewById(R.id.login_password);
-                    new_user = findViewById(R.id.new_user);
                     waiting = new ProgressDialog(MainActivity.this);
                     if (TextUtils.isEmpty(email.getText().toString().trim())) {
                         Toast.makeText(MainActivity.this, "Email cannot be left blank", Toast.LENGTH_SHORT).show();

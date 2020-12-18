@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity {
     private EditText event_name,event_organisation;
-    private Button button;
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
     @Override
@@ -37,7 +36,7 @@ public class AddEventActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         event_name=findViewById(R.id.event_name);
         event_organisation=findViewById(R.id.event_organisation);
-        button=findViewById(R.id.event_submit);
+        Button button=findViewById(R.id.event_submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

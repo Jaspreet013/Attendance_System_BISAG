@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 public class CheckSelectActivity extends AppCompatActivity {
     private ListView listView;
-    private ArrayList<Event> arrayList=new ArrayList<>();
-    private ArrayList<String> keys=new ArrayList<>();
+    private final ArrayList<Event> arrayList=new ArrayList<>();
+    private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
     private TextView textView;
     @Override
@@ -90,8 +90,8 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
 
         MyBaseAdapter(Context context) {
             this.context = context;

@@ -63,11 +63,8 @@ import java.util.HashMap;
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private Event current_event;
     private String event_key;
-    private TextView textView;
-    private ListView listView;
-    private ArrayList<String> arrayList=new ArrayList<>();
-    private ArrayList<Person> persons=new ArrayList<>();
-    private MyBaseAdapter adapter;
+    private final ArrayList<String> arrayList=new ArrayList<>();
+    private final ArrayList<Person> persons=new ArrayList<>();
     private DatePickerDialog picker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,20 +74,18 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builders.build());
         builders.detectFileUriExposure();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        textView=findViewById(R.id.select_subject_text);
+        TextView textView=findViewById(R.id.select_subject_text);
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
         event_key=getIntent().getStringExtra("Event_Key");
-        listView=findViewById(R.id.list_view3);
-        adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
+        ListView listView=findViewById(R.id.list_view3);
+        MyBaseAdapter adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setEmptyView(findViewById(R.id.select_empty_message));
-        for(String i:current_event.dates.keySet()) {
-            arrayList.add(i);
-        }
+        arrayList.addAll(current_event.dates.keySet());
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
@@ -131,7 +126,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 final ArrayList<String> selected_keys = new ArrayList<>();
                 SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                 String date[] = format.format(new Date()).split("-", 3);
-                if (date[1] == "1") {
+                if (date[1].equals("1")) {
                     date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
                     date[1] = "12";
                 }
@@ -162,7 +157,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                             }
                         }
                         if(!selected_keys.isEmpty()) {
-                            int end_day = 0, end_month = 0, end_year = 0;
+                            int end_day, end_month, end_year;
                             if (dayOfMonth == 1) {
                                 if (month >= 1 && month <= 7) {
                                     end_month = month;
@@ -240,8 +235,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         });
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
         MyBaseAdapter(Context context) {
             this.context = context;
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -267,7 +262,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             View view=inflater.inflate(R.layout.event_list_view,null);
             TextView tv=view.findViewById(R.id.dispname);
             String str[]=arrayList.get(position).split("-",5);
-            String set="";
+            String set;
             if (!DateFormat.is24HourFormat(SelectAttendanceEntryActivity.this))
             {
                 if(Integer.parseInt(str[3])>12){
@@ -317,10 +312,10 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     private class PrintReport {
-        HashMap<String,Long> present=new HashMap<>();
-        HashMap<String,Long> absent=new HashMap<>();
-        HashMap<String,Long> total=new HashMap<>();
-        public String createPDF (final Event ev, ArrayList<Person> persons, ArrayList<String> selected_keys, int start_day, int start_month, int start_year, int end_day, int end_month, int end_year){
+        final HashMap<String,Long> present=new HashMap<>();
+        final HashMap<String,Long> absent=new HashMap<>();
+        final HashMap<String,Long> total=new HashMap<>();
+        String createPDF (final Event ev, ArrayList<Person> persons, ArrayList<String> selected_keys, int start_day, int start_month, int start_year, int end_day, int end_month, int end_year){
             Collections.sort(selected_keys);
             Document doc = new Document();
             PdfWriter docWriter = null;
@@ -513,7 +508,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             picker.show();
         }
-        else if(!(ActivityCompat.shouldShowRequestPermissionRationale(SelectAttendanceEntryActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) && !(SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)){
+        else if(!(ActivityCompat.shouldShowRequestPermissionRationale(SelectAttendanceEntryActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) && !(SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
             alertDialogBuilder.setTitle("Permission needed");
             alertDialogBuilder.setMessage("Storage permission needed for storing pdf");
@@ -532,6 +527,5 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
         }
-        return;
     }
 }

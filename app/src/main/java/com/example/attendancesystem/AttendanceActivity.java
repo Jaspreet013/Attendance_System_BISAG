@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class AttendanceActivity extends AppCompatActivity {
-    private ArrayList<Person> arrayList=new ArrayList<>();
-    private ArrayList<String> keys=new ArrayList<>();
+    private final ArrayList<Person> arrayList=new ArrayList<>();
+    private final ArrayList<String> keys=new ArrayList<>();
     private String key;
     private ListView listView;
     private Event current_event;
@@ -220,8 +220,8 @@ public class AttendanceActivity extends AppCompatActivity {
         return pcount;
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
         MyBaseAdapter(Context context) {
             this.context = context;
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

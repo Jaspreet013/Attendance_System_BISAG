@@ -17,10 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AttendanceInfoActivity extends AppCompatActivity {
-    private ArrayList<String> arraylist=new ArrayList<>();
-    private ListView listView;
+    private final ArrayList<String> arraylist=new ArrayList<>();
     private Person person;
-    private MyBaseAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +32,9 @@ public class AttendanceInfoActivity extends AppCompatActivity {
         TextView email=findViewById(R.id.disp_user_email);
         email.setText(email.getText().toString()+person.getPerson_email());
         TextView attendance=findViewById(R.id.disp_user_attendance);
-        attendance.setText(attendance.getText().toString()+Long.toString(person.getAttendance()));
+        attendance.setText(attendance.getText().toString()+person.getAttendance());
         TextView total_attendance=findViewById(R.id.disp_user_total_attendance);
-        total_attendance.setText(total_attendance.getText().toString()+Long.toString(person.getAttendance_total()));
+        total_attendance.setText(total_attendance.getText().toString()+person.getAttendance_total());
         TextView percent_attendance=findViewById(R.id.disp_user_percent_attendance);
         float percent;
         if(person.getAttendance()!=0) {
@@ -46,22 +44,20 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             percent=0;
         }
         percent_attendance.setText(percent_attendance.getText().toString()+String.format("%.2f",percent)+"%");
-        adapter=new MyBaseAdapter(AttendanceInfoActivity.this);
-        listView=findViewById(R.id.list_view);
+        MyBaseAdapter adapter=new MyBaseAdapter(AttendanceInfoActivity.this);
+        ListView listView=findViewById(R.id.list_view);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
         listView.setAdapter(adapter);
-        for(String i:person.dates.keySet()){
-            arraylist.add(i);
-        }
+        arraylist.addAll(person.dates.keySet());
         Collections.sort(arraylist);
         Collections.reverse(arraylist);
         adapter.notifyDataSetChanged();
     }
-    public class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+    private class MyBaseAdapter extends BaseAdapter {
+        final Context context;
+        final LayoutInflater inflater;
 
         MyBaseAdapter(Context context) {
             this.context = context;
@@ -87,7 +83,7 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             TextView tv1=view.findViewById(R.id.dispname);
             TextView tv2=view.findViewById(R.id.disporganisation);
             String date[]=arraylist.get(position).split("-",5);
-            String set="";
+            String set;
             if (!DateFormat.is24HourFormat(AttendanceInfoActivity.this))
             {
                 if(Integer.parseInt(date[3])>12){

@@ -34,8 +34,8 @@ public class CheckAttendanceActivity extends AppCompatActivity {
     private Event current_event;
     private long present=0,absent=0,total=0;
     private ListView listView;
-    private ArrayList<Person> arrayList=new ArrayList<>();
-    private ArrayList<String> keys=new ArrayList<>();
+    private final ArrayList<Person> arrayList=new ArrayList<>();
+    private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
     private String key,event_key;
     @Override
@@ -174,8 +174,8 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         }
     }
     private class MyBaseAdapter extends BaseAdapter {
-        Context context;
-        LayoutInflater inflater;
+        final Context context;
+        final LayoutInflater inflater;
         MyBaseAdapter(Context context) {
             this.context = context;
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
