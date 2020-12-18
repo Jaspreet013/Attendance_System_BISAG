@@ -61,7 +61,6 @@
         android:layout_marginRight="15dp"
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:id="@+id/add_event_button"
