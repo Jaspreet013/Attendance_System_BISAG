@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +49,38 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         final TextView set_event_name=findViewById(R.id.check_event_name);
         final TextView set_organisation_name=findViewById(R.id.check_organisation_name);
+        final TextView set_entry_name = findViewById(R.id.check_entry_name);
         final TextView presence = findViewById(R.id.present_count);
         final TextView absence = findViewById(R.id.absent_count);
         final TextView text = findViewById(R.id.count);
+        String date[]=key.split("-",5);
+        String set;
+        if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
+        {
+            if(Integer.parseInt(date[3])>12){
+                if(Integer.parseInt(date[3])-12<10) {
+                    date[3]="0"+(Integer.parseInt(date[3])-12);
+                }
+                else{
+                    date[3]=Integer.toString(Integer.parseInt(date[3])-12);
+                }
+                set="PM";
+            }
+            else if(date[3].equals("00")){
+                date[3]="12";
+                set="AM";
+            }
+            else if(date[3].equals("12")){
+                set="PM";
+            }
+            else{
+                set="AM";
+            }
+            set_entry_name.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]+" "+set);
+        }
+        else {
+            set_entry_name.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
+        }
         set_event_name.setText(current_event.getName());
         set_organisation_name.setText(current_event.getOrganisation());
         listView=findViewById(R.id.list_view2);
@@ -60,6 +90,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         final ImageButton delete=findViewById(R.id.deleteButton);
+        set_entry_name.setVisibility(View.GONE);
         set_event_name.setVisibility(View.GONE);
         set_organisation_name.setVisibility(View.GONE);
         presence.setVisibility(View.GONE);
@@ -153,6 +184,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             waiting.dismiss();
                             set_event_name.setVisibility(View.VISIBLE);
                             set_organisation_name.setVisibility(View.VISIBLE);
+                            set_entry_name.setVisibility(View.VISIBLE);
                             delete.setVisibility(View.VISIBLE);
                             presence.setVisibility(View.VISIBLE);
                             absence.setVisibility(View.VISIBLE);

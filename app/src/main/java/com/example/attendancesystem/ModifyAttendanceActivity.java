@@ -492,7 +492,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 else{
                     set="AM";
                 }
-                tv1.setText(str[2] + "/" + str[1] + "/" + str[0] + "  " + str[3] + ":" + str[4]+" "+set);
+                tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]+" "+set);
             }
             else {
                 tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);

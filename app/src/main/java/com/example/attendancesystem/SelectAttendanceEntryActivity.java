@@ -284,7 +284,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 else{
                     set="AM";
                 }
-                tv.setText(str[2] + "/" + str[1] + "/" + str[0] + "  " + str[3] + ":" + str[4]+" "+set);
+                tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]+" "+set);
             }
             else {
                 tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);

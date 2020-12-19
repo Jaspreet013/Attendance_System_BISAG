@@ -105,7 +105,7 @@ public class AttendanceInfoActivity extends AppCompatActivity {
                 else{
                     set="AM";
                 }
-                tv1.setText(date[2] + "/" + date[1] + "/" + date[0] + "  " + date[3] + ":" + date[4]+" "+set);
+                tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]+" "+set);
             }
             else {
                 tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
