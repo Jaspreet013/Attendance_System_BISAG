@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -425,6 +427,9 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             final Person std=arrayList.get(position);
             TextView tv1=view.findViewById(R.id.disp_name);
             tv1.setText(std.getFname()+" "+std.getLname());
+            if(std.getEnabled().equals("No")){
+                tv1.setTextColor(Color.RED);
+            }
             TextView tv2=view.findViewById(R.id.disp_id);
             tv2.setText(std.getPerson_ID());
             ImageButton button=view.findViewById(R.id.deleteButton);
