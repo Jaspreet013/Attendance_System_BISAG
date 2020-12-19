@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
                 ll.addView(lname);
                 alertDialog.setView(ll);
                 alertDialog.setNegativeButton("Cancel",null);
+                alertDialog.setCancelable(false);
                 alertDialog.setPositiveButton("Update",  new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String name[]=FirebaseAuth.getInstance().getCurrentUser().getDisplayName().split(" ",2);
@@ -82,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
                 AlertDialog alert = alertDialog.create();
+                alert.setCancelable(false);
                 fname.requestFocus();
                 alert.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

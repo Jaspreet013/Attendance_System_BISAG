@@ -142,6 +142,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         }
                     }
                 });
+                alertDialog.setCancelable(true);
                 alertDialog.show();
             }
         });
@@ -308,7 +309,7 @@ public class AttendanceActivity extends AppCompatActivity {
         AlertDialog.Builder builder=new AlertDialog.Builder(AttendanceActivity.this);
         builder.setMessage("Entry will not be saved");
         builder.setTitle("Are you sure to go back?");
-        builder.setCancelable(false);
+        builder.setCancelable(true);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -381,9 +381,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 });
                                 databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.child(event_key).removeValue();
-                                /*for (String del : keys) {
-                                    databaseReference.child(del).removeValue();
-                                }*/
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
                                 finish();
                             } catch (Exception e) {
@@ -501,7 +498,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    builder.setCancelable(false);
+                    builder.setCancelable(true);
                     builder.show();
                 }
             });
