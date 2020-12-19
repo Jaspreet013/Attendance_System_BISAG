@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".AttendanceInfoActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
-    android:weightSum="60"
     android:paddingLeft="15dp"
     android:paddingRight="15dp">
 
@@ -15,65 +14,70 @@
         android:layout_marginTop="15dp"
         android:layout_height="wrap_content"
         android:textSize="25sp"
-        android:layout_weight="1"
         android:textStyle="bold"
         android:text="Name"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
         android:textAlignment="center"
         android:id="@+id/disp_user_name"/>
 
     <TextView
+        android:layout_below="@id/disp_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Person ID : "
+        android:layout_marginTop="5dp"
         android:textSize="20sp"
         android:id="@+id/disp_user_id"
-        android:layout_weight="1"
         android:layout_gravity="start"/>
 
     <TextView
         android:layout_gravity="start"
-        android:layout_weight="1"
+        android:layout_below="@id/disp_user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/disp_user_email"
+        android:layout_marginTop="5dp"
         android:text="Email : "
         android:textSize="20sp" />
 
     <TextView
+        android:layout_below="@+id/disp_user_email"
         android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/disp_user_attendance"
-        android:layout_weight="1"
         android:text="Attendance : "
+        android:layout_marginTop="5dp"
         android:textSize="20sp" />
 
     <TextView
+        android:layout_below="@+id/disp_user_attendance"
         android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/disp_user_total_attendance"
         android:text="Entries Count : "
-        android:textSize="20sp"
-        android:layout_weight="1"/>
+        android:layout_marginTop="5dp"
+        android:textSize="20sp" />
 
     <TextView
+        android:layout_below="@id/disp_user_total_attendance"
         android:layout_gravity="start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/disp_user_percent_attendance"
         android:text="Attendance (in %) : "
-        android:textSize="20sp"
-        android:layout_weight="1"/>
+        android:layout_marginTop="5dp"
+        android:textSize="20sp" />
 
     <ListView
-        android:layout_weight="52"
+        android:layout_below="@id/disp_user_percent_attendance"
         android:padding="15dp"
-        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/list_view"
         android:layout_gravity="center_horizontal"
         android:nestedScrollingEnabled="true"/>
 
-</LinearLayout>
+</RelativeLayout>
