@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
         final EditText email=findViewById(R.id.reset_password);
+        final TextInputLayout border=findViewById(R.id.border);
         Button submit=findViewById(R.id.reset_submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,10 +35,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 if(!isNetworkAvailable()){
                     Toast.makeText(ForgotPasswordActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
-                else if(TextUtils.isEmpty(email.getText().toString().trim()) || !email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                    Toast.makeText(ForgotPasswordActivity.this,"Please provide a valid E-mail",Toast.LENGTH_SHORT).show();
+                if(email.getText().toString().trim().isEmpty()){
+                    border.setError("Email cannot be left blank");
+                }
+                else if(!email.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
+                    border.setError("Please enter a proper Email");
                 }
                 else{
+                    border.setError(null);
+                }
+                if(TextUtils.isEmpty(border.getError())){
                     final ProgressDialog waiting=new ProgressDialog(ForgotPasswordActivity.this);
                     waiting.setMessage("Please Wait");
                     waiting.setCancelable(false);
@@ -64,7 +72,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
                                 builder.setTitle("Error");
                                 if (task.getException().getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted.")) {
-                                    builder.setMessage("This user is not registered");
+                                    builder.setMessage("This email is not registered");
                                 }
                                 else {
                                     builder.setMessage(task.getException().getMessage());

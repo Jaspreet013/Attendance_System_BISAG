@@ -17,8 +17,9 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border2"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -27,7 +28,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter First Name"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -39,12 +40,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border3"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -54,7 +55,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Last Name"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -66,12 +67,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border4"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -81,7 +82,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Email"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -92,12 +93,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border5"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -107,7 +108,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter ID"
                 android:maxLength="20"
                 android:paddingLeft="15sp"
@@ -128,7 +129,7 @@
                 style="@style/TextAppearance.AppCompat.Button"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="50dp"
                 android:id="@+id/register_submit"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="15dp"
@@ -143,7 +144,7 @@
                 style="@style/TextAppearance.AppCompat.Button"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="30dp"
                 android:id="@+id/register_clear"

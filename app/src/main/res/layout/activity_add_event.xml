@@ -17,7 +17,8 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:id="@+id/border7"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
@@ -27,7 +28,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Event Name"
                 android:maxLength="22"
                 android:paddingLeft="15sp"
@@ -38,12 +39,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/border7"
+            app:errorEnabled="true"
             android:id="@+id/border8"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
@@ -53,7 +55,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Organisation Name"
                 android:maxLength="22"
                 android:paddingLeft="15sp"

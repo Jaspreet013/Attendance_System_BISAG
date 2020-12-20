@@ -17,8 +17,9 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border2"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -27,7 +28,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:hint="Enter First Name"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -38,12 +39,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:id="@+id/border3"
+            app:errorEnabled="true"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
             app:boxCornerRadiusBottomEnd="5dp"
@@ -53,7 +54,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Last Name"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -64,11 +65,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:id="@+id/border4"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
@@ -79,7 +80,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Email"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -90,11 +91,11 @@
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_below="@+id/border4"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:id="@+id/border5"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
@@ -104,23 +105,22 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Enter Password"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
                 android:id="@+id/register_password"
-                android:maxLength="12"
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_below="@+id/border5"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
             android:id="@+id/border6"
             android:layout_centerHorizontal="true"
             app:boxCornerRadiusBottomStart="5dp"
@@ -130,12 +130,11 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:hint="Confirm Password"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
                 android:id="@+id/register_cnfpassword"
-                android:maxLength="12"
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,7 +148,7 @@
         <Button
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="50dp"
             android:id="@+id/registration_submit"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="15dp"
@@ -163,7 +162,7 @@
         <Button
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="50dp"
             android:id="@+id/registration_clear"
             android:layout_width="match_parent"
             android:layout_height="60dp"

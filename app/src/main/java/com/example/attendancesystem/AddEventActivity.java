@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +31,7 @@ public class AddEventActivity extends AppCompatActivity {
     private EditText event_name,event_organisation;
     private DatabaseReference databaseReference;
     private ProgressDialog progressDialog;
+    private TextInputLayout border7,border8;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,66 +40,80 @@ public class AddEventActivity extends AppCompatActivity {
         event_name=findViewById(R.id.event_name);
         event_organisation=findViewById(R.id.event_organisation);
         Button button=findViewById(R.id.event_submit);
+        border7=findViewById(R.id.border7);
+        border8=findViewById(R.id.border8);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isNetworkAvailable()){
                     Toast.makeText(AddEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
-                else if(TextUtils.isEmpty(event_organisation.getText().toString().trim()) || TextUtils.isEmpty(event_name.getText().toString().trim())){
-                    Toast.makeText(AddEventActivity.this,"Please fill all details properly",Toast.LENGTH_SHORT).show();
-                }
                 else {
-                    try {
-                        progressDialog=new ProgressDialog(AddEventActivity.this);
-                        progressDialog.setMessage("Please Wait");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressDialog.show();
-                        databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                boolean set=true;
-                                Event ev=new Event(event_name.getText().toString().trim().toUpperCase(),event_organisation.getText().toString().trim().toUpperCase());
-                                for(DataSnapshot child:children){
-                                    Event eve=child.getValue(Event.class);
-                                    if(eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())){
-                                        set=false;
-                                    }
-                                }
-                                if(!set){
-                                    progressDialog.dismiss();
-                                    Toast.makeText(AddEventActivity.this,"Your another Event with same name and organisation already exists",Toast.LENGTH_SHORT).show();
-                                }
-                                else{
-                                    String key=databaseReference.push().getKey();
-                                    databaseReference.child(key).setValue(ev);
-                                    if(getIntent().getExtras()!=null){
-                                        Type type=new TypeToken<ArrayList<Person>>(){}.getType();
-                                        ArrayList<Person> person=new Gson().fromJson(getIntent().getStringExtra("People"),type);
-                                        for(Person temp:person) {
-                                            DatabaseReference dbreference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
-                                            String push_key = dbreference.push().getKey();
-                                            temp.setAttendance(0);
-                                            temp.setAttendance_total(0);
-                                            temp.dates.clear();
-                                            dbreference.child(push_key).setValue(temp);
+                    if (TextUtils.isEmpty(event_organisation.getText().toString().trim())) {
+                        border8.setError("Organisation name cannot be left blank");
+                    }
+                    else{
+                        border8.setError(null);
+                    }
+                    if (TextUtils.isEmpty(event_name.getText().toString().trim())) {
+                        border7.setError("Event name cannot be left blank");
+                    }
+                    else{
+                        border7.setError(null);
+                    }
+                    if(TextUtils.isEmpty(border7.getError()) && TextUtils.isEmpty(border8.getError())){
+                        try {
+                            progressDialog = new ProgressDialog(AddEventActivity.this);
+                            progressDialog.setMessage("Please Wait");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialog.show();
+                            databaseReference = FirebaseDatabase.getInstance().getReference("Events/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                                    boolean set = true;
+                                    Event ev = new Event(event_name.getText().toString().trim().toUpperCase(), event_organisation.getText().toString().trim().toUpperCase());
+                                    for (DataSnapshot child : children) {
+                                        Event eve = child.getValue(Event.class);
+                                        if (eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())) {
+                                            set = false;
                                         }
                                     }
-                                    Toast.makeText(AddEventActivity.this,"Event Added",Toast.LENGTH_SHORT).show();
-                                    progressDialog.dismiss();
-                                    finish();
+                                    if (!set) {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(AddEventActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        String key = databaseReference.push().getKey();
+                                        databaseReference.child(key).setValue(ev);
+                                        if (getIntent().getExtras() != null) {
+                                            Type type = new TypeToken<ArrayList<Person>>() {
+                                            }.getType();
+                                            ArrayList<Person> person = new Gson().fromJson(getIntent().getStringExtra("People"), type);
+                                            for (Person temp : person) {
+                                                DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + key);
+                                                String push_key = dbreference.push().getKey();
+                                                temp.setAttendance(0);
+                                                temp.setAttendance_total(0);
+                                                temp.dates.clear();
+                                                dbreference.child(push_key).setValue(temp);
+                                            }
+                                        }
+                                        Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                        finish();
+                                    }
                                 }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.e("Error : ", e.getMessage());
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.e("Error : ", e.getMessage());
+                        }
                     }
                 }
             }
