@@ -69,23 +69,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 builder.show();
                             }
                             else{
-                                AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
-                                builder.setTitle("Error");
                                 if (task.getException().getMessage().equals("There is no user record corresponding to this identifier. The user may have been deleted.")) {
-                                    builder.setMessage("This email is not registered");
+                                    border.setError("This email is not registered");
                                 }
                                 else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
+                                    builder.setTitle("Error");
                                     builder.setMessage(task.getException().getMessage());
+                                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                            startActivity(new Intent(ForgotPasswordActivity.this,MainActivity.class));
+                                        }
+                                    });
+                                    builder.setCancelable(false);
+                                    builder.show();
                                 }
-                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                        startActivity(new Intent(ForgotPasswordActivity.this,MainActivity.class));
-                                    }
-                                });
-                                builder.setCancelable(false);
-                                builder.show();
                             }
                         }
                     });
