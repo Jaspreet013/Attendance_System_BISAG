@@ -126,7 +126,7 @@
             android:orientation="horizontal">
 
             <Button
-                style="@style/TextAppearance.AppCompat.Button"
+                style="?borderlessButtonStyle"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="50dp"
@@ -138,10 +138,10 @@
                 android:text="Save"
                 android:textSize="20sp"
                 android:textColor="#FFFFFF"
-                android:background="@drawable/rounded_button"/>
+                android:background="@drawable/rounded_button" />
 
             <Button
-                style="@style/TextAppearance.AppCompat.Button"
+                style="?borderlessButtonStyle"
                 android:layout_weight="1"
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="50dp"

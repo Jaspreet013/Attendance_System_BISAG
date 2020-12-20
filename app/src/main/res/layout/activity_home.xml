@@ -49,9 +49,11 @@
             android:text="Take Attendance"
             android:textSize="25sp"
             android:padding="15dp"
+            style="?borderlessButtonStyle"
             android:background="@drawable/rounded_button"/>
 
         <Button
+            style="?borderlessButtonStyle"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
@@ -72,6 +74,7 @@
             android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:padding="15dp"
+            style="?borderlessButtonStyle"
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/check_attendance"
@@ -89,6 +92,7 @@
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/logout"
+            style="?borderlessButtonStyle"
             android:textColor="#FFFFFF"
             android:text="Logout"
             android:textSize="25sp"

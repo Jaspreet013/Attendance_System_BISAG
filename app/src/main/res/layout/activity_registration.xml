@@ -156,12 +156,14 @@
             android:layout_height="60dp"
             android:text="Sign Up"
             android:textSize="20sp"
+            style="?borderlessButtonStyle"
             android:textColor="#FFFFFF"
             android:background="@drawable/rounded_button"/>
 
         <Button
             android:layout_weight="1"
             android:shadowColor="#FFFFFF"
+            style="?borderlessButtonStyle"
             android:layout_marginTop="50dp"
             android:id="@+id/registration_clear"
             android:layout_width="match_parent"

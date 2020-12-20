@@ -77,7 +77,8 @@
             android:textSize="20sp"
             android:textColor="#FFFFFF"
             android:layout_below="@id/border8"
-            android:background="@drawable/rounded_button"/>
+            android:background="@drawable/rounded_button"
+            style="?borderlessButtonStyle"/>
 
     </RelativeLayout>
 

@@ -130,6 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
+        style="?borderlessButtonStyle"
         android:text="Update Attendance"
         android:textColor="#FFFFFF"
         android:background="@drawable/rounded_button"
