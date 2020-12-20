@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
                     if(password.getText().toString().trim().length()==0){
                         border1.setError("Password cannot be left blank");
                     }
+                    else if(password.getText().toString().trim().length()<6){
+                        border1.setError("Password length cannot be less than 6");
+                    }
                     else{
                         border1.setError(null);
                     }

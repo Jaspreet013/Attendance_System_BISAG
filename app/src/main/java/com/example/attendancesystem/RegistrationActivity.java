@@ -82,11 +82,15 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                     if (password.getText().toString().trim().isEmpty()) {
                         border5.setError("Password cannot be left blank");
+                    } else if(password.getText().toString().trim().length()<6){
+                        border5.setError("Password length cannot be less than 6");
                     } else {
                         border5.setError(null);
                     }
                     if (cnfpassword.getText().toString().trim().isEmpty()) {
                         border6.setError("Please confirm password");
+                    } else if (cnfpassword.getText().toString().trim().length()<6) {
+                        border6.setError("Password length cannot be less than 6");
                     } else if (!cnfpassword.getText().toString().trim().equals(password.getText().toString().trim())) {
                         border5.setError("Password doesn't match with confirm password field");
                         border6.setError("Password doesn't match with confirm password field");
