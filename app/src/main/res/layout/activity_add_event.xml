@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingBottom="55dp">
+        android:paddingBottom="15dp">
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
