@@ -32,6 +32,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:textAlignment="center"
+                android:text="Display Name Here"
+                android:textColor="#00f"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/welcome_message"
                 android:textSize="30sp"/>
