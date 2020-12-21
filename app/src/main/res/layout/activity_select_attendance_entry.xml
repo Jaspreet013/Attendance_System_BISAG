@@ -9,15 +9,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="10"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
     <TextView
         app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeMaxTextSize="45sp"
         app:autoSizeStepGranularity="1sp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:id="@+id/select_subject_text"
         android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"
@@ -31,8 +31,6 @@
     <ListView
         android:padding="15dp"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_height="0dp"
         android:layout_weight="8.5"
         android:layout_width="match_parent"
@@ -56,8 +54,6 @@
     <Button
         android:layout_weight="0.25"
         android:id="@+id/download_pdf"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:padding="15dp"
         style="?borderlessButtonStyle"
         android:layout_width="match_parent"

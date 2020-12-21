@@ -9,13 +9,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp">
+        android:paddingBottom="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp">
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_marginTop="45dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border2"
@@ -40,8 +40,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border3"
@@ -67,8 +65,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border4"
@@ -93,8 +89,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border5"
@@ -131,7 +125,6 @@
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="50dp"
                 android:id="@+id/register_submit"
-                android:layout_marginStart="30dp"
                 android:layout_marginEnd="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
@@ -146,7 +139,6 @@
                 android:shadowColor="#FFFFFF"
                 android:layout_marginTop="50dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginEnd="30dp"
                 android:id="@+id/register_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"

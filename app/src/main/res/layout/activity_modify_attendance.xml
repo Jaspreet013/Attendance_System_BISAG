@@ -8,7 +8,9 @@
     android:orientation="vertical"
     android:weightSum="10.025"
     android:layout_height="match_parent"
-    tools:context=".ModifyAttendanceActivity">
+    tools:context=".ModifyAttendanceActivity"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -17,7 +19,6 @@
 
     <TextView
         android:layout_marginTop="15dp"
-        android:layout_marginStart="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25sp"
@@ -46,7 +47,6 @@
         android:id="@+id/disp_user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
         android:text="Person ID : "
         android:textColor="#1515FF"
         android:textSize="20sp" />
@@ -56,7 +56,6 @@
         android:id="@+id/disp_user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
         android:text="Email : "
         android:textColor="#1515FF"
         android:textSize="20sp" />
@@ -69,19 +68,18 @@
         android:weightSum="5">
 
         <TextView
-            android:layout_marginStart="15dp"
             android:layout_toStartOf="@+id/option"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:text="Future attendances : "
+            android:text="Future Attendance : "
             android:id="@+id/include"
             android:layout_alignParentTop="true"/>
 
         <Switch
             android:track="@drawable/custom_switch_track"
             android:thumb="@drawable/custom_switch_thumb"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/option"
@@ -93,8 +91,6 @@
     </RelativeLayout>
 
     <ListView
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:layout_weight="9.25"
         android:padding="15dp"
         android:layout_marginTop="15dp"
@@ -107,8 +103,6 @@
     <TextView
         android:id="@+id/empty_entry"
         android:visibility="gone"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:layout_marginTop="15dp"
         android:textAlignment="center"
         android:layout_weight="9.25"
@@ -124,8 +118,6 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/update_attendance"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_weight="0.25"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

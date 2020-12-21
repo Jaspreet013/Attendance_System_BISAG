@@ -384,8 +384,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 PdfPTable table = new PdfPTable(columnWidths);
                 table.setWidthPercentage(90f);
                 insertCell(table,"No.",Element.ALIGN_CENTER,1,bfBold12);
-                insertCell(table,"Name",Element.ALIGN_LEFT,1,bfBold12);
-                insertCell(table,"ID",Element.ALIGN_LEFT,1,bfBold12);
+                insertCell(table,"Name",Element.ALIGN_CENTER,1,bfBold12);
+                insertCell(table,"ID",Element.ALIGN_CENTER,1,bfBold12);
                 for(int i=0;i<selected_keys.size();i++){
                     String str[]=selected_keys.get(i).split("-",5);
                     insertCell(table,str[2],Element.ALIGN_CENTER,1,bfBold12);

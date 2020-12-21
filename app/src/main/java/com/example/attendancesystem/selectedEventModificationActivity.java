@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -434,7 +437,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(selectedEventModificationActivity.this);
                     builder.setTitle("Are you sure to delete this person?");
-                    builder.setMessage("All the information regarding this person for this Event will be deleted from records. You can exclude them by clicking on the person and disable the future attendances option so that person can be excluded without damaging the previous records of the person.");
+                    builder.setMessage(Html.fromHtml("All the information regarding this person for this Event will be deleted from records. You can exclude them by clicking on the person and disable the "+"<b>"+"Future Attendance"+"</b>"+" option so that person can be excluded without damaging the previous records of the person.", HtmlCompat.FROM_HTML_MODE_COMPACT));
                     builder.setNegativeButton("Cancel",null);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override

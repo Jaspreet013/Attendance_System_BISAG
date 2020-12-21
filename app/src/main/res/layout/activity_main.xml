@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="10"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp">
 
         <TextView
             android:layout_weight="6"
@@ -17,8 +19,6 @@
             app:autoSizeMinTextSize="10sp"
             app:autoSizeMaxTextSize="100sp"
             app:autoSizeStepGranularity="1sp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
             android:textAlignment="center"
             android:id="@+id/welcome_text"
             android:layout_marginTop="25dp"/>
@@ -26,9 +26,7 @@
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
             app:errorEnabled="true"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border"
@@ -49,8 +47,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/border1"
@@ -72,8 +68,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp"
             android:textSize="15sp"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
@@ -87,8 +81,6 @@
         <Button
             android:layout_marginTop="15dp"
             android:id="@+id/login_submit"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Login"
@@ -98,8 +90,6 @@
             style="?borderlessButtonStyle"/>
 
         <TextView
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New User? Click Here To Register"

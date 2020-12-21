@@ -8,7 +8,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="10"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
     <TextView
         app:autoSizeTextType="uniform"
@@ -22,18 +24,14 @@
         android:gravity="center"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:text="Select an Event"
         android:textStyle="bold" />
 
     <ListView
         android:padding="15dp"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_height="0dp"
-        android:layout_weight="8.5"
+        android:layout_weight="8.8"
         android:layout_width="match_parent"
         android:id="@+id/list_view3"
         android:layout_gravity="center_horizontal"
@@ -42,7 +40,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8.5"
+        android:layout_weight="8.8"
         android:padding="15dp"
         android:id="@+id/select_empty_message"
         android:textSize="20sp"

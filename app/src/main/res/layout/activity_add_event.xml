@@ -9,13 +9,13 @@
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingBottom="15dp">
+        android:paddingBottom="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp">
 
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_marginTop="45dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:errorEnabled="true"
@@ -40,8 +40,6 @@
         <com.google.android.material.textfield.TextInputLayout
             app:boxBackgroundMode="outline"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/border7"
@@ -69,8 +67,6 @@
             android:layout_marginTop="25dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/event_submit"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="Save"

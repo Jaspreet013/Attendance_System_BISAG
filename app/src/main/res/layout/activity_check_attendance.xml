@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:layout_centerHorizontal="true"
-    android:id="@+id/layout_welcome">
+    android:id="@+id/layout_welcome"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
         <TextView
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
             android:text="Event Name"
             android:id="@+id/check_event_name"
             android:layout_centerHorizontal="true"
@@ -24,8 +24,6 @@
             app:autoSizeStepGranularity="1sp"/>
 
         <TextView
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
             android:text="Organisation"
             android:id="@+id/check_organisation_name"
             android:layout_centerHorizontal="true"
@@ -40,8 +38,6 @@
 
         <TextView
             android:textStyle="bold"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
             android:text="Entry Name"
             android:id="@+id/check_entry_name"
             android:layout_below="@+id/check_organisation_name"
@@ -59,7 +55,6 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="15dp"
             android:id="@+id/present_count"
             android:text="Present : "
             android:layout_below="@+id/check_entry_name"/>
@@ -68,7 +63,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginStart="15dp"
             android:id="@+id/absent_count"
             android:text="Absent : "
             android:layout_below="@+id/present_count"/>
@@ -77,7 +71,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginStart="15dp"
             android:id="@+id/count"
             android:text="Total : "
             android:layout_below="@+id/absent_count"/>
@@ -88,7 +81,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/check_entry_name"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="15dp"
             android:layout_marginTop="5dp"
             android:backgroundTint="@color/cardview_dark_background"
             android:src="@android:drawable/ic_menu_delete" />
@@ -101,6 +93,7 @@
             android:layout_gravity="center_horizontal"
             android:nestedScrollingEnabled="true"
             android:layout_below="@+id/count"
-            android:layout_margin="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"/>
 
 </RelativeLayout>

@@ -7,12 +7,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
-    android:weightSum="10.925">
+    android:weightSum="10.925"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp">
 
     <TextView
         android:id="@+id/message_event_name"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,8 +27,6 @@
         app:autoSizeStepGranularity="1sp"/>
 
     <TextView
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="5sp"
         app:autoSizeMaxTextSize="30sp"
@@ -53,7 +51,6 @@
             android:text="People : "
             android:textSize="20sp"
             android:id="@+id/total_people"
-            android:layout_marginStart="15dp"
             android:layout_alignParentStart="true"/>
 
         <TextView
@@ -64,15 +61,12 @@
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginEnd="15dp"
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 
     <ListView
         android:layout_marginBottom="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
         android:padding="15dp"
         android:layout_height="0dp"
         android:layout_weight="8.25"
@@ -88,8 +82,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:background="@drawable/rounded_button"
         android:padding="10dp"
         android:text="Save Attendance"
