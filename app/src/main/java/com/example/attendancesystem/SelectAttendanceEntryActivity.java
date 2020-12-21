@@ -384,8 +384,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 PdfPTable table = new PdfPTable(columnWidths);
                 table.setWidthPercentage(90f);
                 insertCell(table,"No.",Element.ALIGN_CENTER,1,bfBold12);
-                insertCell(table,"Name",Element.ALIGN_CENTER,1,bfBold12);
-                insertCell(table,"ID",Element.ALIGN_CENTER,1,bfBold12);
+                insertCell(table,"Name",Element.ALIGN_LEFT,1,bfBold12);
+                insertCell(table,"ID",Element.ALIGN_LEFT,1,bfBold12);
                 for(int i=0;i<selected_keys.size();i++){
                     String str[]=selected_keys.get(i).split("-",5);
                     insertCell(table,str[2],Element.ALIGN_CENTER,1,bfBold12);
@@ -394,7 +394,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 table.setHeaderRows(1);
                 for(int i=0;i<persons.size();i++){
                     insertCell(table,Integer.toString(count),Element.ALIGN_CENTER,1,bf12);
-                    insertCell(table,persons.get(i).getLname().toUpperCase()+"  "+persons.get(i).getFname().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
+                    insertCell(table,persons.get(i).getFname().toUpperCase()+"  "+persons.get(i).getLname().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
                     insertCell(table,persons.get(i).getPerson_ID(),Element.ALIGN_LEFT,1,bf12);
                     for(String key:selected_keys) {
                         if (persons.get(i).dates.containsKey(key)){

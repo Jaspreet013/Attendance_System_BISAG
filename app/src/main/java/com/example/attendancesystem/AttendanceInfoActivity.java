@@ -26,7 +26,7 @@ public class AttendanceInfoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         person=new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
         TextView name=findViewById(R.id.disp_user_name);
-        name.setText(person.getLname()+" "+person.getFname());
+        name.setText(person.getFname()+" "+person.getLname());
         TextView id=findViewById(R.id.disp_user_id);
         id.setText(id.getText()+person.getPerson_ID());
         TextView email=findViewById(R.id.disp_user_email);
