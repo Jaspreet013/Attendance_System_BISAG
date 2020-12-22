@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -32,6 +32,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
     private final ArrayList<Event> arrayList=new ArrayList<>();
     private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +40,13 @@ public class SelectSubjectActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         listView=findViewById(R.id.list_view3);
         textView=findViewById(R.id.select_subject_text);
+        loading=findViewById(R.id.check_attendance_progress);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        loading.setVisibility(View.VISIBLE);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         if (!isNetworkAvailable()) {
@@ -51,12 +54,6 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
         else {
             try {
-                final ProgressDialog waiting;
-                waiting = new ProgressDialog(SelectSubjectActivity.this);
-                waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
-                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -70,7 +67,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
-                            waiting.dismiss();
+                            loading.setVisibility(View.GONE);
                             listView.setVisibility(View.VISIBLE);
                             listView.setEmptyView(findViewById(R.id.select_empty_message));
                             textView.setVisibility(View.VISIBLE);

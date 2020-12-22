@@ -27,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -66,6 +67,9 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private final ArrayList<String> arrayList=new ArrayList<>();
     private final ArrayList<Person> persons=new ArrayList<>();
     private DatePickerDialog picker;
+    private ProgressBar loading;
+    private TextView textView;
+    private ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,25 +78,26 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builders.build());
         builders.detectFileUriExposure();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        TextView textView=findViewById(R.id.select_subject_text);
+        textView=findViewById(R.id.select_subject_text);
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
         event_key=getIntent().getStringExtra("Event_Key");
-        ListView listView=findViewById(R.id.list_view3);
+        listView=findViewById(R.id.list_view3);
+        loading=findViewById(R.id.check_attendance_progress);
+        textView.setVisibility(View.GONE);
         MyBaseAdapter adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
-        listView.setEmptyView(findViewById(R.id.select_empty_message));
         arrayList.addAll(current_event.dates.keySet());
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
+        listView.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         final Button download=findViewById(R.id.download_pdf);
-        if(arrayList.isEmpty()){
-            download.setVisibility(View.INVISIBLE);
-        }
+        download.setVisibility(View.GONE);
         if (!isNetworkAvailable()) {
             Toast.makeText(SelectAttendanceEntryActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
@@ -107,6 +112,13 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                         for(DataSnapshot child:children){
                             Person person=child.getValue(Person.class);
                             persons.add(person);
+                        }
+                        loading.setVisibility(View.GONE);
+                        textView.setVisibility(View.VISIBLE);
+                        listView.setVisibility(View.VISIBLE);
+                        listView.setEmptyView(findViewById(R.id.select_empty_message));
+                        if(!arrayList.isEmpty()){
+                            download.setVisibility(View.VISIBLE);
                         }
                     }
                     @Override

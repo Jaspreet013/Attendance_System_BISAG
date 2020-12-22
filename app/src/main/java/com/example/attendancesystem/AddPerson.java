@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +28,7 @@ public class AddPerson extends AppCompatActivity {
     private boolean set=true;
     private String event_key;
     private TextInputLayout border2,border3,border4,border5;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +45,21 @@ public class AddPerson extends AppCompatActivity {
         border3=findViewById(R.id.border3);
         border4=findViewById(R.id.border4);
         border5=findViewById(R.id.border5);
+        loading=findViewById(R.id.check_attendance_progress);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fname.getText().clear();
-                lname.getText().clear();
-                email.getText().clear();
-                id.getText().clear();
-                border2.setError(null);
-                border3.setError(null);
-                border4.setError(null);
-                border5.setError(null);
-                fname.requestFocus();
+                if(loading.getVisibility()==View.GONE) {
+                    fname.getText().clear();
+                    lname.getText().clear();
+                    email.getText().clear();
+                    id.getText().clear();
+                    border2.setError(null);
+                    border3.setError(null);
+                    border4.setError(null);
+                    border5.setError(null);
+                    fname.requestFocus();
+                }
             }
         });
         submit.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +96,8 @@ public class AddPerson extends AppCompatActivity {
                     } else {
                         border5.setError(null);
                     }
-                    if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty((border5.getError()))) {
-                        final ProgressDialog progressDialog = new ProgressDialog(AddPerson.this);
-                        progressDialog.setMessage("Please Wait");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressDialog.show();
+                    if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty((border5.getError())) && loading.getVisibility()==View.GONE) {
+                        loading.setVisibility(View.VISIBLE);
                         try {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             final DatabaseReference databaseReference = database.getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + event_key);
@@ -109,20 +109,20 @@ public class AddPerson extends AppCompatActivity {
                                         Person person = child.getValue(Person.class);
                                         if(person.getPerson_email().equals(email.getText().toString().trim()) && person.getPerson_ID().equals(id.getText().toString().trim())){
                                             set = false;
-                                            progressDialog.dismiss();
+                                            loading.setVisibility(View.GONE);
                                             border4.setError("This email is already registered to this Event");
                                             border5.setError("This ID is already registered to this Event");
                                             break;
                                         }
                                         if (person.getPerson_email().equals(email.getText().toString().trim())) {
                                             set = false;
-                                            progressDialog.dismiss();
+                                            loading.setVisibility(View.GONE);
                                             border4.setError("This email is already registered to this Event");
                                             break;
                                         }
                                         if (person.getPerson_ID().equals(id.getText().toString().trim())) {
                                             set = false;
-                                            progressDialog.dismiss();
+                                            loading.setVisibility(View.GONE);
                                             border5.setError("This ID is already registered to this Event");
                                             break;
                                         }
@@ -130,7 +130,7 @@ public class AddPerson extends AppCompatActivity {
                                     if (set) {
                                         String key = databaseReference.push().getKey();
                                         databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim()));
-                                        progressDialog.dismiss();
+                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(AddPerson.this, "Person successfully added to the Event", Toast.LENGTH_SHORT).show();
                                         fname.getText().clear();
                                         lname.getText().clear();

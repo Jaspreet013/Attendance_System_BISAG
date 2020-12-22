@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +30,8 @@ import java.util.ArrayList;
 public class AddEventActivity extends AppCompatActivity {
     private EditText event_name,event_organisation;
     private DatabaseReference databaseReference;
-    private ProgressDialog progressDialog;
     private TextInputLayout border7,border8;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,7 @@ public class AddEventActivity extends AppCompatActivity {
         Button button=findViewById(R.id.event_submit);
         border7=findViewById(R.id.border7);
         border8=findViewById(R.id.border8);
+        loading=findViewById(R.id.check_attendance_progress);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,13 +62,9 @@ public class AddEventActivity extends AppCompatActivity {
                     else{
                         border7.setError(null);
                     }
-                    if(TextUtils.isEmpty(border7.getError()) && TextUtils.isEmpty(border8.getError())){
+                    if(TextUtils.isEmpty(border7.getError()) && TextUtils.isEmpty(border8.getError()) && loading.getVisibility()==View.GONE){
                         try {
-                            progressDialog = new ProgressDialog(AddEventActivity.this);
-                            progressDialog.setMessage("Please Wait");
-                            progressDialog.setCancelable(false);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.show();
+                            loading.setVisibility(View.VISIBLE);
                             databaseReference = FirebaseDatabase.getInstance().getReference("Events/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -79,10 +76,11 @@ public class AddEventActivity extends AppCompatActivity {
                                         Event eve = child.getValue(Event.class);
                                         if (eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())) {
                                             set = false;
+                                            break;
                                         }
                                     }
                                     if (!set) {
-                                        progressDialog.dismiss();
+                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(AddEventActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                     } else {
                                         String key = databaseReference.push().getKey();
@@ -101,8 +99,10 @@ public class AddEventActivity extends AppCompatActivity {
                                             }
                                         }
                                         Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
-                                        finish();
+                                        loading.setVisibility(View.GONE);
+                                        event_name.getText().clear();
+                                        event_organisation.getText().clear();
+                                        event_name.requestFocus();
                                     }
                                 }
 

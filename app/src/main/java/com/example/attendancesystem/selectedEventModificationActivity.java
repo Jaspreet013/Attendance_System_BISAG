@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -49,16 +49,21 @@ public class selectedEventModificationActivity extends AppCompatActivity {
     private Event current_event;
     private final ArrayList<Person> arrayList=new ArrayList<>();
     private DatabaseReference databaseReference;
+    private TextView eventview,organisationview,person_count;
+    private ImageButton delete_button;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_event_modification);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        final TextView eventview = findViewById(R.id.eventView),organisationview=findViewById(R.id.event_organisation),person_count = findViewById(R.id.disp_total_people);
-        final ImageButton delete_button=findViewById(R.id.deleteButton);
-        EditText input = new EditText(selectedEventModificationActivity.this);
+        loading=findViewById(R.id.check_attendance_progress);
         event_key=getIntent().getStringExtra("Key");
         listView=findViewById(R.id.list_view1);
+        eventview = findViewById(R.id.eventView);
+        organisationview=findViewById(R.id.event_organisation);
+        person_count = findViewById(R.id.disp_total_people);
+        delete_button=findViewById(R.id.deleteButton);
         adapter=new MyPeopleAdapter(selectedEventModificationActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
@@ -74,6 +79,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView.setVisibility(View.GONE);
         add_person.setVisibility(View.GONE);
         create_event.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         add_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,12 +125,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         eventview.setText(current_event.getName());
         organisationview.setText(current_event.getOrganisation());
         try {
-            final ProgressDialog waiting;
-            waiting = new ProgressDialog(selectedEventModificationActivity.this);
-            waiting.setMessage("Please Wait");
-            waiting.setCancelable(false);
-            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            waiting.show();
             if (!isNetworkAvailable()) {
                 Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
             }
@@ -142,8 +142,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
-                            waiting.dismiss();
-                            person_count.setText("Total no. of People : "+arrayList.size());
+                            loading.setVisibility(View.GONE);
+                            person_count.setText("Total People : "+arrayList.size());
                             eventview.setVisibility(View.VISIBLE);
                             organisationview.setVisibility(View.VISIBLE);
                             person_count.setVisibility(View.VISIBLE);
@@ -194,12 +194,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                                 }
                                 else {
-                                    final ProgressDialog waiting;
-                                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                                    waiting.setMessage("Please Wait");
-                                    waiting.setCancelable(false);
-                                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                    waiting.show();
+                                    eventview.setVisibility(View.GONE);
+                                    organisationview.setVisibility(View.GONE);
+                                    person_count.setVisibility(View.GONE);
+                                    delete_button.setVisibility(View.GONE);
+                                    listView.setVisibility(View.GONE);
+                                    add_person.setVisibility(View.GONE);
+                                    create_event.setVisibility(View.GONE);
+                                    loading.setVisibility(View.VISIBLE);
                                     databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -222,12 +224,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
                                                 databaseReference.child(key).setValue(eve);
-                                                waiting.dismiss();
+                                                loading.setVisibility(View.GONE);
                                                 Toast.makeText(selectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
                                             else{
-                                                waiting.dismiss();
+                                                loading.setVisibility(View.GONE);
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                                 finish();
                                             }
@@ -279,12 +281,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            final ProgressDialog waiting;
-                            waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                            waiting.setMessage("Please Wait");
-                            waiting.setCancelable(false);
-                            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            waiting.show();
+                            loading.setVisibility(View.VISIBLE);
+                            eventview.setVisibility(View.GONE);
+                            organisationview.setVisibility(View.GONE);
+                            person_count.setVisibility(View.GONE);
+                            delete_button.setVisibility(View.GONE);
+                            listView.setVisibility(View.GONE);
+                            add_person.setVisibility(View.GONE);
+                            create_event.setVisibility(View.GONE);
                             databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -307,12 +311,12 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     if(set){
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         databaseReference.child(key).setValue(eve);
-                                        waiting.dismiss();
+                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
                                     else{
-                                        waiting.dismiss();
+                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
@@ -350,18 +354,25 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     builder.setTitle("Delete Event");
                     builder.setMessage("Are you sure you want to delete all data linked with this Event?");
                     builder.setNegativeButton("cancel",null);
-                    final ProgressDialog waiting;
-                    waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                    waiting.setMessage("Please Wait");
-                    waiting.setCancelable(false);
-                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            eventview.setVisibility(View.GONE);
+                            organisationview.setVisibility(View.GONE);
+                            person_count.setVisibility(View.GONE);
+                            delete_button.setVisibility(View.GONE);
+                            listView.setVisibility(View.GONE);
+                            add_person.setVisibility(View.GONE);
+                            create_event.setVisibility(View.GONE);
+                            TextView textView=findViewById(R.id.empty_message);
+                            if(textView.getVisibility()==View.VISIBLE){
+                                textView.setVisibility(View.GONE);
+                            }
+                            loading.setVisibility(View.VISIBLE);
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             try {
-                                waiting.show();
+                                loading.setVisibility(View.GONE);
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -446,11 +457,14 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                final ProgressDialog waiting = new ProgressDialog(selectedEventModificationActivity.this);
-                                waiting.setMessage("Please Wait");
-                                waiting.setCancelable(false);
-                                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                waiting.show();
+                                eventview.setVisibility(View.GONE);
+                                organisationview.setVisibility(View.GONE);
+                                person_count.setVisibility(View.GONE);
+                                delete_button.setVisibility(View.GONE);
+                                listView.setVisibility(View.GONE);
+                                add_person.setVisibility(View.GONE);
+                                create_event.setVisibility(View.GONE);
+                                loading.setVisibility(View.VISIBLE);
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference reference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -483,9 +497,16 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                             }
                                         });
-                                        waiting.dismiss();
+                                        loading.setVisibility(View.GONE);
+                                        eventview.setVisibility(View.VISIBLE);
+                                        organisationview.setVisibility(View.VISIBLE);
+                                        person_count.setVisibility(View.VISIBLE);
+                                        delete_button.setVisibility(View.VISIBLE);
+                                        listView.setVisibility(View.VISIBLE);
+                                        add_person.setVisibility(View.VISIBLE);
+                                        create_event.setVisibility(View.VISIBLE);
                                         TextView person_count = findViewById(R.id.disp_total_people);
-                                        person_count.setText("Total no. of People : "+arrayList.size());
+                                        person_count.setText("Total People : "+arrayList.size());
                                         adapter.notifyDataSetChanged();
                                         if(arrayList.isEmpty()) {
                                             create_event.setEnabled(false);

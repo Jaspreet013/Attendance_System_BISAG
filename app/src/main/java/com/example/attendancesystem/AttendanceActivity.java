@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -16,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -40,6 +40,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private MyBaseAdapter adapter;
     private TextView selectall,total;
     private int count=0;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,12 +60,14 @@ public class AttendanceActivity extends AppCompatActivity {
         final Button submit=findViewById(R.id.attendance_submit_button);
         selectall=findViewById(R.id.select_all);
         total=findViewById(R.id.total_people);
+        loading=findViewById(R.id.check_attendance_progress);
         set_event_name.setVisibility(View.GONE);
         set_organisation_name.setVisibility(View.GONE);
         total.setVisibility(View.GONE);
         selectall.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         submit.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         selectall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,12 +104,13 @@ public class AttendanceActivity extends AppCompatActivity {
                         }
                         else {
                             try {
-                                final ProgressDialog waiting;
-                                waiting = new ProgressDialog(AttendanceActivity.this);
-                                waiting.setMessage("Please Wait");
-                                waiting.setCancelable(false);
-                                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                waiting.show();
+                                set_event_name.setVisibility(View.GONE);
+                                set_organisation_name.setVisibility(View.GONE);
+                                total.setVisibility(View.GONE);
+                                selectall.setVisibility(View.GONE);
+                                listView.setVisibility(View.GONE);
+                                submit.setVisibility(View.GONE);
+                                loading.setVisibility(View.VISIBLE);
                                 Date date=new Date();
                                 SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -134,7 +138,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                     }
                                     Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
                                 }
-                                waiting.dismiss();
+                                loading.setVisibility(View.GONE);
                                 finish();
                             } catch (Exception e) {
 
@@ -151,12 +155,6 @@ public class AttendanceActivity extends AppCompatActivity {
             finish();
         }
         try {
-            final ProgressDialog waiting;
-            waiting = new ProgressDialog(AttendanceActivity.this);
-            waiting.setMessage("Please Wait");
-            waiting.setCancelable(false);
-            waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            waiting.show();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -174,8 +172,8 @@ public class AttendanceActivity extends AppCompatActivity {
                             }
                         }
                         total.setText(total.getText()+Integer.toString(arrayList.size()));
-                        waiting.dismiss();
                         if(arrayList.isEmpty()) {
+                            loading.setVisibility(View.GONE);
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
                             builder.setMessage("Please go to manage events -> (click on this Event) -> add new person to add people or include people if you have excluded them");
                             builder.setTitle("No people are in this Event");
@@ -190,6 +188,7 @@ public class AttendanceActivity extends AppCompatActivity {
                         }
                         else{
                             listView.setAdapter(adapter);
+                            loading.setVisibility(View.GONE);
                             set_event_name.setVisibility(View.VISIBLE);
                             set_organisation_name.setVisibility(View.VISIBLE);
                             selectall.setVisibility(View.VISIBLE);

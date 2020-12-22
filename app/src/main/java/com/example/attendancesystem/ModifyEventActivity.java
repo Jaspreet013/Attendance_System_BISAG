@@ -1,6 +1,5 @@
 package com.example.attendancesystem;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -33,6 +33,7 @@ public class ModifyEventActivity extends AppCompatActivity {
     private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
     private TextView total_events;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +42,13 @@ public class ModifyEventActivity extends AppCompatActivity {
         final Button add_event = findViewById(R.id.add_event_button);
         listView = findViewById(R.id.list_view);
         total_events = findViewById(R.id.total_events);
+        loading=findViewById(R.id.check_attendance_progress);
         adapter = new MyBaseAdapter(ModifyEventActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        loading.setVisibility(View.VISIBLE);
         total_events.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         add_event.setVisibility(View.GONE);
@@ -62,12 +65,6 @@ public class ModifyEventActivity extends AppCompatActivity {
         }
         else {
             try {
-                final ProgressDialog waiting;
-                waiting = new ProgressDialog(ModifyEventActivity.this);
-                waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
-                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,7 +78,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
-                            waiting.dismiss();
+                            loading.setVisibility(View.GONE);
                             total_events.setText(total_events.getText().toString() + arrayList.size());
                             total_events.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.VISIBLE);

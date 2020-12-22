@@ -76,6 +76,15 @@
             android:background="@drawable/rounded_button"
             style="?borderlessButtonStyle"/>
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_submit"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:id="@+id/check_attendance_progress"/>
+
     </RelativeLayout>
 
 </ScrollView>

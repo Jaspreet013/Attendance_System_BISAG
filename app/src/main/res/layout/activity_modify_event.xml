@@ -67,4 +67,12 @@
         app:autoSizeTextType="uniform"
         android:text="Add New Event" />
 
+    <ProgressBar
+        android:layout_weight="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:id="@+id/check_attendance_progress"/>
+
 </LinearLayout>

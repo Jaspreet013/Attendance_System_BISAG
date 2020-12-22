@@ -11,6 +11,14 @@
     android:paddingStart="15dp"
     android:paddingEnd="15dp">
 
+    <ProgressBar
+        android:layout_weight="10"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/check_attendance_progress"/>
+
     <TextView
         app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="20sp"

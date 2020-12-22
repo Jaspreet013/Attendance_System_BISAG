@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -13,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegistrationActivity extends AppCompatActivity {
-    private ProgressDialog progressDialog;
+    private ProgressBar loading;
     private final FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
     private TextInputLayout border2,border3,border4,border5,border6;
     @Override
@@ -40,7 +40,7 @@ public class RegistrationActivity extends AppCompatActivity {
         border4=findViewById(R.id.border4);
         border5=findViewById(R.id.border5);
         border6=findViewById(R.id.border6);
-        progressDialog=new ProgressDialog(RegistrationActivity.this);
+        loading=findViewById(R.id.check_attendance_progress);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,12 +97,9 @@ public class RegistrationActivity extends AppCompatActivity {
                     } else {
                         border6.setError(null);
                     }
-                    if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty(border5.getError()) && TextUtils.isEmpty(border6.getError())) {
-                        progressDialog.setMessage("Please Wait");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        progressDialog.show();
+                    if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty(border5.getError()) && TextUtils.isEmpty(border6.getError()) && loading.getVisibility()==View.GONE) {
                         try {
+                            loading.setVisibility(View.VISIBLE);
                             firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(Task<AuthResult> task) {
@@ -110,7 +107,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                         firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                progressDialog.dismiss();
+                                                loading.setVisibility(View.GONE);
                                                 if (!task.isSuccessful()) {
                                                     firebaseAuth.signOut();
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
@@ -126,7 +123,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                         Log.e("Exception is", e.toString());
                                                     }
                                                     firebaseAuth.signOut();
-                                                    progressDialog.dismiss();
+                                                    loading.setVisibility(View.GONE);
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                                     builder.setTitle("Verify your email");
                                                     builder.setMessage("Please check your email for verification and after that you will be able to login");
@@ -144,8 +141,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                     }
                                     else {
-                                        progressDialog.dismiss();
-                                        firebaseAuth.signOut();
+                                        loading.setVisibility(View.GONE);
+                                        //firebaseAuth.signOut();
                                         AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                         builder.setTitle("Error");
                                         builder.setMessage(task.getException().getMessage());

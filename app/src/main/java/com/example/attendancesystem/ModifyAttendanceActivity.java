@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -52,7 +51,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         current_person = new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
         key = getIntent().getStringExtra("Key");
         event_key=getIntent().getStringExtra("Event_Key");
-        Event current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         enable=findViewById(R.id.option);
         enable.setChecked(current_person.getEnabled().equals("Yes"));
         MyBaseAdapter adapter = new MyBaseAdapter(ModifyAttendanceActivity.this);
@@ -91,14 +89,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 current_person.setEnabled("No");
-                                final ProgressDialog progressDialog = new ProgressDialog(ModifyAttendanceActivity.this);
-                                progressDialog.setMessage("Please Wait");
-                                progressDialog.setCancelable(false);
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.show();
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 database.child(key).setValue(current_person);
-                                progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(false);
                             }
@@ -120,14 +112,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 enable.setChecked(false);
                             } else {
                                 current_person.setEnabled("Yes");
-                                final ProgressDialog progressDialog = new ProgressDialog(ModifyAttendanceActivity.this);
-                                progressDialog.setMessage("Please Wait");
-                                progressDialog.setCancelable(false);
-                                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                                progressDialog.show();
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 database.child(key).setValue(current_person);
-                                progressDialog.dismiss();
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(true);
                             }
@@ -163,16 +149,10 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper first name",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getFname())){
-                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
-                            progressDialog.setMessage("Please Wait");
-                            progressDialog.setCancelable(false);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.show();
                             current_person.setFname(input.getText().toString().trim());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
-                            progressDialog.dismiss();
                             Toast.makeText(ModifyAttendanceActivity.this,"Person first name changed successfully",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -217,16 +197,10 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper last name",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getLname())){
-                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
-                            progressDialog.setMessage("Please Wait");
-                            progressDialog.setCancelable(false);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.show();
                             current_person.setLname(input.getText().toString().trim());
                             DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString().trim());
-                            progressDialog.dismiss();
                             Toast.makeText(ModifyAttendanceActivity.this,"Person last name changed successfully",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -262,7 +236,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
                             Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
                         }
                         else if(input.getText().toString().trim().length()>20){
                             Toast.makeText(ModifyAttendanceActivity.this,"ID length cannot be more than 15",Toast.LENGTH_SHORT).show();
@@ -271,11 +244,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             Toast.makeText(ModifyAttendanceActivity.this,"ID cannot be left blank",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
-                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
-                            progressDialog.setMessage("Please Wait");
-                            progressDialog.setCancelable(false);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
@@ -294,12 +262,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                         if(set) {
                                             current_person.setPerson_ID(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
-                                            progressDialog.dismiss();
                                             Toast.makeText(ModifyAttendanceActivity.this,"ID changed successfully",Toast.LENGTH_SHORT).show();
                                             id.setText("Person ID : "+input.getText().toString());
-                                        }
-                                        else{
-                                            progressDialog.dismiss();
                                         }
                                     }
 
@@ -353,11 +317,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
 
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
-                            final ProgressDialog progressDialog=new ProgressDialog(ModifyAttendanceActivity.this);
-                            progressDialog.setMessage("Please Wait");
-                            progressDialog.setCancelable(false);
-                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialog.show();
                             try {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
@@ -376,12 +335,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                         if(set) {
                                             current_person.setPerson_email(input.getText().toString().trim());
                                             databaseReference.child(key).setValue(current_person);
-                                            progressDialog.dismiss();
                                             Toast.makeText(ModifyAttendanceActivity.this,"Email changed successfully",Toast.LENGTH_SHORT).show();
                                             email.setText("Email : "+input.getText().toString().trim());
-                                        }
-                                        else{
-                                            progressDialog.dismiss();
                                         }
                                     }
 

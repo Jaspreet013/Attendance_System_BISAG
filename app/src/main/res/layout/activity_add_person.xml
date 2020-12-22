@@ -112,11 +112,21 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:layout_below="@id/border5"
+            android:id="@+id/check_attendance_progress"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/border5"
             android:weightSum="2"
+            android:id="@+id/layout"
             android:orientation="horizontal">
 
             <Button

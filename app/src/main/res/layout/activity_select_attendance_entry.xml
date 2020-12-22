@@ -68,4 +68,12 @@
         app:autoSizeStepGranularity="1sp"
         app:autoSizeTextType="uniform"/>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/check_attendance_progress"
+        android:layout_gravity="center"
+        android:layout_weight="10"/>
+
 </LinearLayout>

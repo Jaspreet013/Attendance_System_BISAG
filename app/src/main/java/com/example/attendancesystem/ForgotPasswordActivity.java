@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +29,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         final EditText email=findViewById(R.id.reset_password);
         final TextInputLayout border=findViewById(R.id.border);
         Button submit=findViewById(R.id.reset_submit);
+        final ProgressBar loading=findViewById(R.id.check_attendance_progress);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,17 +45,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 else{
                     border.setError(null);
                 }
-                if(TextUtils.isEmpty(border.getError())){
-                    final ProgressDialog waiting=new ProgressDialog(ForgotPasswordActivity.this);
-                    waiting.setMessage("Please Wait");
-                    waiting.setCancelable(false);
-                    waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    waiting.show();
+                if(TextUtils.isEmpty(border.getError()) && loading.getVisibility()==View.GONE){
+                    loading.setVisibility(View.VISIBLE);
                     FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
                     firebaseAuth.sendPasswordResetEmail(email.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            waiting.dismiss();
+                            loading.setVisibility(View.GONE);
                             if(task.isSuccessful()){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPasswordActivity.this);
                                 builder.setTitle("Task Successful");

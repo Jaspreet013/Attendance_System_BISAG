@@ -2,7 +2,6 @@ package com.example.attendancesystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +32,7 @@ public class CheckSelectActivity extends AppCompatActivity {
     private final ArrayList<String> keys=new ArrayList<>();
     private MyBaseAdapter adapter;
     private TextView textView;
+    private ProgressBar loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,19 +45,15 @@ public class CheckSelectActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         if (!isNetworkAvailable()) {
             Toast.makeText(CheckSelectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
         else {
             try {
-                final ProgressDialog waiting;
-                waiting = new ProgressDialog(CheckSelectActivity.this);
-                waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
-                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                waiting.show();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -70,7 +67,7 @@ public class CheckSelectActivity extends AppCompatActivity {
                                 keys.add(child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
-                            waiting.dismiss();
+                            loading.setVisibility(View.GONE);
                             textView.setText("Total Events : "+arrayList.size());
                             textView.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.VISIBLE);

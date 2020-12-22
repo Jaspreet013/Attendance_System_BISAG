@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -10,9 +9,15 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +28,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    private ProgressDialog waiting;
     private FirebaseAuth firebaseAuth;
     private EditText email,password;
     private TextInputLayout border,border1;
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 email = findViewById(R.id.login_email);
                 password = findViewById(R.id.login_password);
-                waiting = new ProgressDialog(MainActivity.this);
                 if (!isNetworkAvailable()) {
                     Toast.makeText(MainActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
@@ -81,17 +84,15 @@ public class MainActivity extends AppCompatActivity {
                         border1.setError(null);
                     }
                     if(TextUtils.isEmpty(border.getError()) && TextUtils.isEmpty(border1.getError())) {
-                        waiting.setMessage("Please Wait");
-                        waiting.setCancelable(false);
-                        waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                        waiting.show();
+                        final AlertDialog dialog=setProgressDialog();
+                        dialog.show();
                         firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     if (firebaseAuth.getCurrentUser().isEmailVerified()) {
                                         try {
-                                            waiting.dismiss();
+                                            dialog.dismiss();
                                             finish();
                                             startActivity(new Intent(MainActivity.this, HomeActivity.class));
                                         } catch (Exception e) {
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                         builder.setPositiveButton("Ok", null);
                                         builder.setCancelable(false);
                                         builder.show();
-                                        waiting.dismiss();
+                                        dialog.dismiss();
                                     }
                                 } else {
                                     if (task.getException().getMessage().equals("The password is invalid or the user does not have a password.")) {
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                         builder.setCancelable(false);
                                         builder.show();
                                     }
-                                    waiting.dismiss();
+                                    dialog.dismiss();
                                 }
                             }
                         });
@@ -126,6 +127,41 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    public AlertDialog setProgressDialog() {
+        int llPadding = 30;
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
+        ll.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llParam.gravity = Gravity.LEFT;
+        ll.setLayoutParams(llParam);
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setPadding(0, 0, llPadding, 0);
+        progressBar.setLayoutParams(llParam);
+        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        llParam.gravity = Gravity.CENTER;
+        TextView tvText = new TextView(this);
+        tvText.setText("Please Wait.....");
+        tvText.setTextSize(20);
+        tvText.setLayoutParams(llParam);
+        ll.addView(progressBar);
+        ll.addView(tvText);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(ll);
+        AlertDialog dialog = builder.create();
+        Window window = dialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(layoutParams);
+        }
+        return dialog;
     }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

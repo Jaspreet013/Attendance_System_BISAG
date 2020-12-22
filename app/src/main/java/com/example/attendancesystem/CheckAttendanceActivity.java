@@ -1,7 +1,6 @@
 package com.example.attendancesystem;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -53,6 +53,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         final TextView presence = findViewById(R.id.present_count);
         final TextView absence = findViewById(R.id.absent_count);
         final TextView text = findViewById(R.id.count);
+        final ProgressBar loading=findViewById(R.id.check_attendance_progress);
         String date[]=key.split("-",5);
         String set;
         if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
@@ -112,6 +113,15 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 Toast.makeText(CheckAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                             }
                             else {
+                                set_entry_name.setVisibility(View.GONE);
+                                set_event_name.setVisibility(View.GONE);
+                                set_organisation_name.setVisibility(View.GONE);
+                                presence.setVisibility(View.GONE);
+                                absence.setVisibility(View.GONE);
+                                text.setVisibility(View.GONE);
+                                delete.setVisibility(View.GONE);
+                                listView.setVisibility(View.GONE);
+                                loading.setVisibility(View.VISIBLE);
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.remove(key);
@@ -143,12 +153,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         }
         else {
             try {
-                final ProgressDialog waiting;
-                waiting = new ProgressDialog(CheckAttendanceActivity.this);
-                waiting.setMessage("Please Wait");
-                waiting.setCancelable(false);
-                waiting.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                waiting.show();
+                loading.setVisibility(View.VISIBLE);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,7 +186,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                             presence.setText(presence.getText().toString() + present);
                             absence.setText(absence.getText().toString() + absent);
                             text.setText(text.getText().toString() + total);
-                            waiting.dismiss();
+                            loading.setVisibility(View.GONE);
                             set_event_name.setVisibility(View.VISIBLE);
                             set_organisation_name.setVisibility(View.VISIBLE);
                             set_entry_name.setVisibility(View.VISIBLE);
