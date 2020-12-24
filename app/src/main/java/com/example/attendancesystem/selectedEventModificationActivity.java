@@ -375,27 +375,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             try {
                                 databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.child(event_key).removeValue();
-                                /*loading.setVisibility(View.GONE);
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        try {
-                                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                                            for (DataSnapshot child : children) {
-                                                Event ev = child.getValue(Event.class);
-                                                if(ev.getName().equals(current_event.getName()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
-                                                    child.getRef().removeValue();
-                                                }
-                                            }
-                                        } catch (Exception e) {
-                                            Log.e("Exception : ", e.getMessage());
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });*/
                                 databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.child(event_key).removeValue();
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
