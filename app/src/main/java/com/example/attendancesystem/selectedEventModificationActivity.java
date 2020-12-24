@@ -439,14 +439,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                eventview.setVisibility(View.GONE);
-                                organisationview.setVisibility(View.GONE);
-                                person_count.setVisibility(View.GONE);
-                                delete_button.setVisibility(View.GONE);
-                                listView.setVisibility(View.GONE);
-                                add_person.setVisibility(View.GONE);
-                                create_event.setVisibility(View.GONE);
-                                loading.setVisibility(View.VISIBLE);
                                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 final DatabaseReference reference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -462,7 +454,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                 Event ev=dataSnapshot.child(event_key).getValue(Event.class);
                                                 for(String str:events){
                                                     long l=ev.dates.get(str);
-                                                    Log.e("Key",str);
                                                     l--;
                                                     if(l==0){
                                                         ev.dates.remove(str);
@@ -479,14 +470,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
 
                                             }
                                         });
-                                        loading.setVisibility(View.GONE);
-                                        eventview.setVisibility(View.VISIBLE);
-                                        organisationview.setVisibility(View.VISIBLE);
-                                        person_count.setVisibility(View.VISIBLE);
-                                        delete_button.setVisibility(View.VISIBLE);
-                                        listView.setVisibility(View.VISIBLE);
-                                        add_person.setVisibility(View.VISIBLE);
-                                        create_event.setVisibility(View.VISIBLE);
+                                        Toast.makeText(selectedEventModificationActivity.this,"Person deleted successfully",Toast.LENGTH_SHORT).show();
                                         TextView person_count = findViewById(R.id.disp_total_people);
                                         person_count.setText("Total People : "+arrayList.size());
                                         adapter.notifyDataSetChanged();
