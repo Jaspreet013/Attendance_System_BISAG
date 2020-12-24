@@ -1,7 +1,7 @@
 package com.example.attendancesystem;
 import java.util.HashMap;
 
-public class Event {
+public class Event implements Comparable<Event>{
     private String name,organisation;
     public final HashMap<String,Long> dates = new HashMap<>();
     public Event(){}
@@ -21,5 +21,15 @@ public class Event {
     }
     public String getOrganisation() {
         return organisation;
+    }
+
+    @Override
+    public int compareTo(Event o) {
+        if(!this.getName().equalsIgnoreCase(o.getName())){
+            return this.getName().compareToIgnoreCase(o.getName());
+        }
+        else{
+            return this.getOrganisation().compareToIgnoreCase(o.getOrganisation());
+        }
     }
 }

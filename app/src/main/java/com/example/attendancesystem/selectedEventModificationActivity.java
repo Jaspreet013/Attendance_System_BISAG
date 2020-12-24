@@ -38,12 +38,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Set;
 
 public class selectedEventModificationActivity extends AppCompatActivity {
     private String key,event_key;
     private ListView listView;
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private Button create_event,add_person;
     private MyPeopleAdapter adapter;
     private Event current_event;
@@ -139,9 +140,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 Person person = child.getValue(Person.class);
                                 arrayList.add(person);
-                                keys.add(child.getKey());
+                                keys.put(person.getPerson_ID(),child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
+                            Collections.sort(arrayList);
                             loading.setVisibility(View.GONE);
                             person_count.setText("Total People : "+arrayList.size());
                             eventview.setVisibility(View.VISIBLE);
@@ -370,9 +372,10 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             }
                             loading.setVisibility(View.VISIBLE);
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             try {
-                                loading.setVisibility(View.GONE);
+                                databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                databaseReference.child(event_key).removeValue();
+                                /*loading.setVisibility(View.GONE);
                                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -380,7 +383,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                             for (DataSnapshot child : children) {
                                                 Event ev = child.getValue(Event.class);
-                                                if (ev.getName().equals(current_event.getName()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
+                                                if(ev.getName().equals(current_event.getName()) && ev.getOrganisation().equals(current_event.getOrganisation())) {
                                                     child.getRef().removeValue();
                                                 }
                                             }
@@ -392,7 +395,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
-                                });
+                                });*/
                                 databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.child(event_key).removeValue();
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
@@ -471,7 +474,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         final Set<String> events=arrayList.get(position).dates.keySet();
-                                        reference.child(keys.get(position)).removeValue();
+                                        reference.child(keys.get(std.getPerson_ID())).removeValue();
                                         arrayList.remove(position);
                                         final DatabaseReference dbreference=database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                         dbreference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -531,7 +534,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(selectedEventModificationActivity.this,ModifyAttendanceActivity.class);
                     intent.putExtra("Person",new Gson().toJson(std));
-                    intent.putExtra("Key",keys.get(position));
+                    intent.putExtra("Key",keys.get(std.getPerson_ID()));
                     intent.putExtra("Event",new Gson().toJson(current_event));
                     intent.putExtra("Event_Key",event_key);
                     startActivity(intent);

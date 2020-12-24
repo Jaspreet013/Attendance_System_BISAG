@@ -26,11 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class ModifyEventActivity extends AppCompatActivity {
     private ListView listView;
     private final ArrayList<Event> arrayList = new ArrayList<>();
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private TextView total_events;
     private ProgressBar loading;
@@ -75,9 +77,10 @@ public class ModifyEventActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 Event ev = child.getValue(Event.class);
                                 arrayList.add(ev);
-                                keys.add(child.getKey());
+                                keys.put(ev.getName()+", "+ev.getOrganisation(),child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
+                            Collections.sort(arrayList);
                             loading.setVisibility(View.GONE);
                             total_events.setText(total_events.getText().toString() + arrayList.size());
                             total_events.setVisibility(View.VISIBLE);
@@ -139,7 +142,7 @@ public class ModifyEventActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(ModifyEventActivity.this,selectedEventModificationActivity.class);
                     intent.putExtra("Event",new Gson().toJson(std));
-                    intent.putExtra("Key",keys.get(position));
+                    intent.putExtra("Key",keys.get(std.getName()+", "+std.getOrganisation()));
                     startActivity(intent);
                     finish();
                 }

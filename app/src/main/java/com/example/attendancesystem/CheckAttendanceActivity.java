@@ -30,13 +30,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class CheckAttendanceActivity extends AppCompatActivity {
     private Event current_event;
     private long present=0,absent=0,total=0;
     private ListView listView;
     private final ArrayList<Person> arrayList=new ArrayList<>();
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private String key,event_key;
     @Override
@@ -131,7 +133,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                     arrayList.get(i).dates.remove(key);
                                     arrayList.get(i).setAttendance(getPresentCount(i));
                                     arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
-                                    databaseReference.child(keys.get(i)).setValue(arrayList.get(i));
+                                    databaseReference.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
                                 }
                                 Toast.makeText(CheckAttendanceActivity.this, "Entry deleted successfully", Toast.LENGTH_SHORT).show();
                                 finish();
@@ -167,7 +169,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 if(person.dates.containsKey(key)) {
                                     arrayList.add(person);
                                     count++;
-                                    keys.add(child.getKey());
+                                    keys.put(person.getPerson_ID(),child.getKey());
                                     adapter.notifyDataSetChanged();
                                 }
                                 if(count == current_event.dates.get(key)) {
@@ -183,6 +185,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 }
                                 total++;
                             }
+                            Collections.sort(arrayList);
                             presence.setText(presence.getText().toString() + present);
                             absence.setText(absence.getText().toString() + absent);
                             text.setText(text.getText().toString() + total);

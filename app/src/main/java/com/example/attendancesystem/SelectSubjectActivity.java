@@ -25,12 +25,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class SelectSubjectActivity extends AppCompatActivity {
     private TextView textView;
     private ListView listView;
     private final ArrayList<Event> arrayList=new ArrayList<>();
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private ProgressBar loading;
     @Override
@@ -64,9 +66,10 @@ public class SelectSubjectActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 Event ev = child.getValue(Event.class);
                                 arrayList.add(ev);
-                                keys.add(child.getKey());
+                                keys.put(ev.getName()+", "+ev.getOrganisation(),child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
+                            Collections.sort(arrayList);
                             loading.setVisibility(View.GONE);
                             listView.setVisibility(View.VISIBLE);
                             listView.setEmptyView(findViewById(R.id.select_empty_message));
@@ -129,7 +132,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
                     else {
                         Intent intent=new Intent(SelectSubjectActivity.this, AttendanceActivity.class);
                         intent.putExtra("Event",new Gson().toJson(std));
-                        intent.putExtra("Key",keys.get(position));
+                        intent.putExtra("Key",keys.get(std.getName()+", "+std.getOrganisation()));
                         startActivity(intent);
                     }
                 }

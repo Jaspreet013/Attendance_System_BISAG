@@ -2,7 +2,7 @@ package com.example.attendancesystem;
 
 import java.util.HashMap;
 
-public class Person {
+public class Person implements Comparable<Person>{
     private String person_email, person_ID, fname, lname, enabled = "Yes";
     private long attendance = 0, attendance_total = 0;
     private Boolean ispresent = null;
@@ -87,4 +87,7 @@ public class Person {
     public void setEnabled(String enabled) { this.enabled = enabled; }
 
     public String getEnabled() { return enabled; }
+
+    @Override
+    public int compareTo(Person o) { return this.getPerson_ID().compareTo(o.getPerson_ID()); }
 }

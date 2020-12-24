@@ -29,11 +29,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 
 public class AttendanceActivity extends AppCompatActivity {
     private final ArrayList<Person> arrayList=new ArrayList<>();
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private String key;
     private ListView listView;
     private Event current_event;
@@ -134,7 +136,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 else {
                                     DatabaseReference dbreference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
                                     for (int i = 0; i < keys.size(); i++) {
-                                        dbreference.child(keys.get(i)).setValue(arrayList.get(i));
+                                        dbreference.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
                                     }
                                     Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
                                 }
@@ -167,7 +169,7 @@ public class AttendanceActivity extends AppCompatActivity {
                             if(person.getEnabled().equals("Yes")) {
                                 person.setIspresent(false);
                                 arrayList.add(person);
-                                keys.add(child.getKey());
+                                keys.put(person.getPerson_ID(),child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
@@ -187,6 +189,7 @@ public class AttendanceActivity extends AppCompatActivity {
                             builder.show();
                         }
                         else{
+                            Collections.sort(arrayList);
                             listView.setAdapter(adapter);
                             loading.setVisibility(View.GONE);
                             set_event_name.setVisibility(View.VISIBLE);

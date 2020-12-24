@@ -25,11 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class CheckSelectActivity extends AppCompatActivity {
     private ListView listView;
     private final ArrayList<Event> arrayList=new ArrayList<>();
-    private final ArrayList<String> keys=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private TextView textView;
     private ProgressBar loading;
@@ -64,10 +66,11 @@ public class CheckSelectActivity extends AppCompatActivity {
                             for (DataSnapshot child : children) {
                                 Event ev = child.getValue(Event.class);
                                 arrayList.add(ev);
-                                keys.add(child.getKey());
+                                keys.put(ev.getName()+", "+ev.getOrganisation(),child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                             loading.setVisibility(View.GONE);
+                            Collections.sort(arrayList);
                             textView.setText("Total Events : "+arrayList.size());
                             textView.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.VISIBLE);
@@ -127,7 +130,7 @@ public class CheckSelectActivity extends AppCompatActivity {
                     else {
                         Intent intent=new Intent(CheckSelectActivity.this, SelectAttendanceEntryActivity.class);
                         intent.putExtra("Event",new Gson().toJson(std));
-                        intent.putExtra("Event_Key",keys.get(position));
+                        intent.putExtra("Event_Key",keys.get(std.getName()+", "+std.getOrganisation()));
                         startActivity(intent);
                         finish();
                     }
