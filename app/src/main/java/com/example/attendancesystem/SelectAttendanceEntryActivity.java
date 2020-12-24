@@ -113,6 +113,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                             Person person=child.getValue(Person.class);
                             persons.add(person);
                         }
+                        Collections.sort(persons);
                         loading.setVisibility(View.GONE);
                         textView.setVisibility(View.VISIBLE);
                         listView.setVisibility(View.VISIBLE);
