@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class Event implements Comparable<Event>{
     private String name,organisation;
-    public final HashMap<String,Long> dates = new HashMap<>();
+    public HashMap<String,Long> dates = new HashMap<>();
     public Event(){}
     public Event(String name, String organisation)
     {

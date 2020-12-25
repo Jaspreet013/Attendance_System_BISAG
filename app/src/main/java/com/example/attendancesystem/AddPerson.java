@@ -132,6 +132,7 @@ public class AddPerson extends AppCompatActivity {
                                         databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim()));
                                         loading.setVisibility(View.GONE);
                                         Toast.makeText(AddPerson.this, "Person successfully added to the Event", Toast.LENGTH_SHORT).show();
+                                        setResult(RESULT_OK);
                                         fname.getText().clear();
                                         lname.getText().clear();
                                         email.getText().clear();
@@ -153,9 +154,9 @@ public class AddPerson extends AppCompatActivity {
             }
         });
     }
+
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

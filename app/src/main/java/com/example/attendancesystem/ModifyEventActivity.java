@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,8 +58,8 @@ public class ModifyEventActivity extends AppCompatActivity {
         add_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ModifyEventActivity.this, AddEventActivity.class));
-                finish();
+                Intent intent=new Intent(ModifyEventActivity.this, AddEventActivity.class);
+                startActivityForResult(intent,RESULT_FIRST_USER);
             }
         });
         if (!isNetworkAvailable()) {
@@ -143,11 +144,17 @@ public class ModifyEventActivity extends AppCompatActivity {
                     Intent intent=new Intent(ModifyEventActivity.this,selectedEventModificationActivity.class);
                     intent.putExtra("Event",new Gson().toJson(std));
                     intent.putExtra("Key",keys.get(std.getName()+", "+std.getOrganisation()));
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent,RESULT_FIRST_USER);
                 }
             });
             return view;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if(resultCode==RESULT_OK){
+            recreate();
         }
     }
     private boolean isNetworkAvailable() {

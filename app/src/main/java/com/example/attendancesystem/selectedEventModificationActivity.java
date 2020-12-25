@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.text.HtmlCompat;
@@ -87,8 +88,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 Intent intent=new Intent(selectedEventModificationActivity.this,AddPerson.class);
                 intent.putExtra("Event",new Gson().toJson(current_event));
                 intent.putExtra("Key",event_key);
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent,RESULT_FIRST_USER);
             }
         });
         create_event.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +96,6 @@ public class selectedEventModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!isNetworkAvailable()){
                     Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
                 }
                 else {
                     ArrayList<Integer> list=new ArrayList<>();
@@ -114,6 +113,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         Intent intent=new Intent(selectedEventModificationActivity.this, AddEventActivity.class);
                         intent.putExtra("People",new Gson().toJson(arrayList));
                         startActivity(intent);
+                        setResult(RESULT_OK);
                         finish();
                     }
                     else{
@@ -195,15 +195,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 else if(input.getText().toString().trim().length()>22){
                                     Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                                 }
-                                else {
-                                    eventview.setVisibility(View.GONE);
-                                    organisationview.setVisibility(View.GONE);
-                                    person_count.setVisibility(View.GONE);
-                                    delete_button.setVisibility(View.GONE);
-                                    listView.setVisibility(View.GONE);
-                                    add_person.setVisibility(View.GONE);
-                                    create_event.setVisibility(View.GONE);
-                                    loading.setVisibility(View.VISIBLE);
+                                else if(!input.getText().toString().trim().toUpperCase().equals(eventview.getText().toString().trim().toUpperCase())){
                                     databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -225,15 +217,17 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                             }
                                             if(set){
                                                 eve.setName(input.getText().toString().trim().toUpperCase());
+                                                current_event.setName(eve.getName());
+                                                eve.setOrganisation(organisationview.getText().toString().toUpperCase());
+                                                current_event.setOrganisation(eve.getOrganisation());
+                                                eve.dates=current_event.dates;
                                                 databaseReference.child(key).setValue(eve);
-                                                loading.setVisibility(View.GONE);
                                                 Toast.makeText(selectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
-                                                finish();
+                                                eventview.setText(eve.getName());
+                                                setResult(RESULT_OK);
                                             }
                                             else{
-                                                loading.setVisibility(View.GONE);
                                                 Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
-                                                finish();
                                             }
                                         }
 
@@ -282,15 +276,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                         else if(input.getText().toString().trim().length()>22){
                             Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                         }
-                        else {
-                            loading.setVisibility(View.VISIBLE);
-                            eventview.setVisibility(View.GONE);
-                            organisationview.setVisibility(View.GONE);
-                            person_count.setVisibility(View.GONE);
-                            delete_button.setVisibility(View.GONE);
-                            listView.setVisibility(View.GONE);
-                            add_person.setVisibility(View.GONE);
-                            create_event.setVisibility(View.GONE);
+                        else if(!input.getText().toString().trim().toUpperCase().equals(organisationview.getText().toString().trim().toUpperCase())){
                             databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -311,16 +297,18 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         }
                                     }
                                     if(set){
+                                        eve.setName(eventview.getText().toString());
+                                        current_event.setName(eve.getName());
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
+                                        current_event.setOrganisation(eve.getOrganisation());
+                                        eve.dates=current_event.dates;
                                         databaseReference.child(key).setValue(eve);
-                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
-                                        finish();
+                                        organisationview.setText(eve.getOrganisation());
+                                        setResult(RESULT_OK);
                                     }
                                     else{
-                                        loading.setVisibility(View.GONE);
                                         Toast.makeText(selectedEventModificationActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
-                                        finish();
                                     }
                                 }
                                 @Override
@@ -378,6 +366,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                 databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 databaseReference.child(event_key).removeValue();
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
                                 finish();
                             } catch (Exception e) {
 
@@ -457,9 +446,11 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                     l--;
                                                     if(l==0){
                                                         ev.dates.remove(str);
+                                                        current_event.dates.remove(str);
                                                     }
                                                     else {
-                                                        ev.dates.replace(str, l);
+                                                        ev.dates.replace(str,l);
+                                                        current_event.dates.replace(str,l);
                                                     }
                                                 }
                                                 dbreference.child(event_key).setValue(ev);
@@ -500,11 +491,17 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                     intent.putExtra("Key",keys.get(std.getPerson_ID()));
                     intent.putExtra("Event",new Gson().toJson(current_event));
                     intent.putExtra("Event_Key",event_key);
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent,RESULT_FIRST_USER);
                 }
             });
             return view;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            recreate();
         }
     }
     private boolean isNetworkAvailable() {

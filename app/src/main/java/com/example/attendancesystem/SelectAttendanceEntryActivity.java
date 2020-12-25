@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -64,12 +65,13 @@ import java.util.HashMap;
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private Event current_event;
     private String event_key;
-    private final ArrayList<String> arrayList=new ArrayList<>();
+    private ArrayList<String> arrayList=new ArrayList<>();
     private final ArrayList<Person> persons=new ArrayList<>();
     private DatePickerDialog picker;
     private ProgressBar loading;
     private TextView textView;
     private ListView listView;
+    private MyBaseAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +87,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
-        MyBaseAdapter adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
+        adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
@@ -311,8 +313,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                     intent.putExtra("Event",new Gson().toJson(current_event));
                     intent.putExtra("Event_Key",event_key);
                     intent.putExtra("Entry_Key",arrayList.get(position));
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent,RESULT_FIRST_USER);
+                    //finish();
                 }
             });
             return view;
@@ -542,6 +544,20 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             alertDialogBuilder.setNegativeButton("Cancel", null);
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            current_event=new Gson().fromJson(data.getStringExtra("Updated Data"),Event.class);
+            arrayList=new ArrayList<>();
+            arrayList.addAll(current_event.dates.keySet());
+            Collections.sort(arrayList);
+            Collections.reverse(arrayList);
+            textView.setText("Total Entries : "+current_event.dates.size());
+            adapter.notifyDataSetChanged();
+            setResult(RESULT_OK);
         }
     }
 }

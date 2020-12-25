@@ -136,6 +136,8 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                     databaseReference.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
                                 }
                                 Toast.makeText(CheckAttendanceActivity.this, "Entry deleted successfully", Toast.LENGTH_SHORT).show();
+                                Intent data= new Intent();
+                                setResult(RESULT_OK,data.putExtra("Updated Data",new Gson().toJson(current_event)));
                                 finish();
                             }
                         }

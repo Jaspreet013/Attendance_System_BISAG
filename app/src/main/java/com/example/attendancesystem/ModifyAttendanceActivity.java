@@ -93,6 +93,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 database.child(key).setValue(current_person);
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(false);
+                                setResult(RESULT_OK);
                             }
                         });
                         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -116,6 +117,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 database.child(key).setValue(current_person);
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(true);
+                                setResult(RESULT_OK);
                             }
                         }
                     }
@@ -154,6 +156,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             databaseReference.child(key).setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
                             Toast.makeText(ModifyAttendanceActivity.this,"Person first name changed successfully",Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
                         }
                     }
                 });
@@ -202,6 +205,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             databaseReference.child(key).setValue(current_person);
                             userlname.setText(input.getText().toString().trim());
                             Toast.makeText(ModifyAttendanceActivity.this,"Person last name changed successfully",Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
                         }
                     }
                 });
@@ -264,6 +268,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             databaseReference.child(key).setValue(current_person);
                                             Toast.makeText(ModifyAttendanceActivity.this,"ID changed successfully",Toast.LENGTH_SHORT).show();
                                             id.setText("Person ID : "+input.getText().toString());
+                                            setResult(RESULT_OK);
                                         }
                                     }
 
@@ -337,6 +342,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             databaseReference.child(key).setValue(current_person);
                                             Toast.makeText(ModifyAttendanceActivity.this,"Email changed successfully",Toast.LENGTH_SHORT).show();
                                             email.setText("Email : "+input.getText().toString().trim());
+                                            setResult(RESULT_OK);
                                         }
                                     }
 
@@ -386,6 +392,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
                             databaseReference.child(key).setValue(current_person);
                             Toast.makeText(ModifyAttendanceActivity.this, "Attendance Updated Successfully", Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
                             finish();
                         }
                     }
@@ -501,7 +508,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         }
         return count;
     }
-
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder=new AlertDialog.Builder(ModifyAttendanceActivity.this);

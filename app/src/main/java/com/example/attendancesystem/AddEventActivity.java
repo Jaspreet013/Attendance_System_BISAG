@@ -100,9 +100,8 @@ public class AddEventActivity extends AppCompatActivity {
                                         }
                                         Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
                                         loading.setVisibility(View.GONE);
-                                        event_name.getText().clear();
-                                        event_organisation.getText().clear();
-                                        event_name.requestFocus();
+                                        setResult(RESULT_OK);
+                                        finish();
                                     }
                                 }
 

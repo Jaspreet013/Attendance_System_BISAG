@@ -1,6 +1,7 @@
 package com.example.attendancesystem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -131,14 +132,22 @@ public class CheckSelectActivity extends AppCompatActivity {
                         Intent intent=new Intent(CheckSelectActivity.this, SelectAttendanceEntryActivity.class);
                         intent.putExtra("Event",new Gson().toJson(std));
                         intent.putExtra("Event_Key",keys.get(std.getName()+", "+std.getOrganisation()));
-                        startActivity(intent);
-                        finish();
+                        startActivityForResult(intent,RESULT_FIRST_USER);
                     }
                 }
             });
             return view;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            recreate();
+        }
+    }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
