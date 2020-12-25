@@ -25,8 +25,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegistrationActivity extends AppCompatActivity {
     private ProgressBar loading;
-    private final FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
     private TextInputLayout border2,border3,border4,border5,border6;
+    private EditText fname,lname,email,password,cnfpassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +44,11 @@ public class RegistrationActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText fname=findViewById(R.id.register_fname);
-                final EditText lname=findViewById(R.id.register_lname);
-                EditText email=findViewById(R.id.register_email);
-                EditText password=findViewById(R.id.register_password);
-                EditText cnfpassword=findViewById(R.id.register_cnfpassword);
+                fname=findViewById(R.id.register_fname);
+                lname=findViewById(R.id.register_lname);
+                email=findViewById(R.id.register_email);
+                password=findViewById(R.id.register_password);
+                cnfpassword=findViewById(R.id.register_cnfpassword);
                 if(!isNetworkAvailable()){
                     Toast.makeText(RegistrationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
@@ -100,16 +100,16 @@ public class RegistrationActivity extends AppCompatActivity {
                     if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty(border5.getError()) && TextUtils.isEmpty(border6.getError()) && loading.getVisibility()==View.GONE) {
                         try {
                             loading.setVisibility(View.VISIBLE);
-                            firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+                            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 loading.setVisibility(View.GONE);
                                                 if (!task.isSuccessful()) {
-                                                    firebaseAuth.signOut();
+                                                    FirebaseAuth.getInstance().signOut();
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                                     builder.setTitle("Error");
                                                     builder.setMessage(task.getException().getMessage());
@@ -122,7 +122,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                     } catch (Exception e) {
                                                         Log.e("Exception is", e.toString());
                                                     }
-                                                    firebaseAuth.signOut();
+                                                    FirebaseAuth.getInstance().signOut();
                                                     loading.setVisibility(View.GONE);
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                                     builder.setTitle("Verify your email");
@@ -142,7 +142,6 @@ public class RegistrationActivity extends AppCompatActivity {
                                     }
                                     else {
                                         loading.setVisibility(View.GONE);
-                                        //firebaseAuth.signOut();
                                         AlertDialog.Builder builder = new AlertDialog.Builder(RegistrationActivity.this);
                                         builder.setTitle("Error");
                                         builder.setMessage(task.getException().getMessage());
@@ -162,11 +161,6 @@ public class RegistrationActivity extends AppCompatActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               EditText fname=findViewById(R.id.register_fname);
-               EditText lname=findViewById(R.id.register_lname);
-               EditText email=findViewById(R.id.register_email);
-               EditText password=findViewById(R.id.register_password);
-               EditText cnfpassword=findViewById(R.id.register_cnfpassword);
                fname.getText().clear();
                lname.getText().clear();
                email.getText().clear();
@@ -182,8 +176,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

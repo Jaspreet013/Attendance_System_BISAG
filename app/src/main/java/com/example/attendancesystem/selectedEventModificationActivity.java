@@ -50,7 +50,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
     private MyPeopleAdapter adapter;
     private Event current_event;
     private final ArrayList<Person> arrayList=new ArrayList<>();
-    private DatabaseReference databaseReference;
+    private DatabaseReference people,events;
     private TextView eventview,organisationview,person_count;
     private ImageButton delete_button;
     private ProgressBar loading;
@@ -71,6 +71,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        people=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
+        events=FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
         current_event = new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         add_person=findViewById(R.id.add_person_button);
         create_event=findViewById(R.id.create_new_event);
@@ -130,9 +132,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                 Toast.makeText(selectedEventModificationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
             }
             else {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                people.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
@@ -196,8 +196,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                     Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                                 }
                                 else if(!input.getText().toString().trim().toUpperCase().equals(eventview.getText().toString().trim().toUpperCase())){
-                                    databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    events.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             Iterable<DataSnapshot> children=dataSnapshot.getChildren();
@@ -221,7 +220,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                                 eve.setOrganisation(organisationview.getText().toString().toUpperCase());
                                                 current_event.setOrganisation(eve.getOrganisation());
                                                 eve.dates=current_event.dates;
-                                                databaseReference.child(key).setValue(eve);
+                                                events.child(key).setValue(eve);
                                                 Toast.makeText(selectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
                                                 eventview.setText(eve.getName());
                                                 setResult(RESULT_OK);
@@ -277,8 +276,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             Toast.makeText(selectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().toUpperCase().equals(organisationview.getText().toString().trim().toUpperCase())){
-                            databaseReference = FirebaseDatabase.getInstance().getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            events.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children=dataSnapshot.getChildren();
@@ -302,7 +300,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                                         eve.setOrganisation(input.getText().toString().trim().toUpperCase());
                                         current_event.setOrganisation(eve.getOrganisation());
                                         eve.dates=current_event.dates;
-                                        databaseReference.child(key).setValue(eve);
+                                        events.child(key).setValue(eve);
                                         Toast.makeText(selectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                         organisationview.setText(eve.getOrganisation());
                                         setResult(RESULT_OK);
@@ -361,10 +359,8 @@ public class selectedEventModificationActivity extends AppCompatActivity {
                             loading.setVisibility(View.VISIBLE);
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             try {
-                                databaseReference = database.getReference("Events/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                databaseReference.child(event_key).removeValue();
-                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                databaseReference.child(event_key).removeValue();
+                                events.child(event_key).removeValue();
+                                people.child(event_key).removeValue();
                                 Toast.makeText(selectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();
@@ -505,8 +501,7 @@ public class selectedEventModificationActivity extends AppCompatActivity {
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

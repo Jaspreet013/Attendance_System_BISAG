@@ -95,7 +95,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isNetworkAvailable()) {
                     Toast.makeText(HomeActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
                 }
                 else {
                     startActivity(new Intent(HomeActivity.this, SelectSubjectActivity.class));
@@ -149,8 +148,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

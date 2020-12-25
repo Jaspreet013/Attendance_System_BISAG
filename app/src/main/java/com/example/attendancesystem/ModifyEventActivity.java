@@ -37,12 +37,14 @@ public class ModifyEventActivity extends AppCompatActivity {
     private MyBaseAdapter adapter;
     private TextView total_events;
     private ProgressBar loading;
+    private Button add_event;
+    private DatabaseReference events;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        final Button add_event = findViewById(R.id.add_event_button);
+        add_event = findViewById(R.id.add_event_button);
         listView = findViewById(R.id.list_view);
         total_events = findViewById(R.id.total_events);
         loading=findViewById(R.id.check_attendance_progress);
@@ -51,6 +53,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        events=FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
         loading.setVisibility(View.VISIBLE);
         total_events.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
@@ -68,9 +71,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         }
         else {
             try {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                events.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
@@ -158,8 +159,7 @@ public class ModifyEventActivity extends AppCompatActivity {
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

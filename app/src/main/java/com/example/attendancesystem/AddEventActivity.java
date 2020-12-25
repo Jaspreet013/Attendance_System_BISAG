@@ -29,9 +29,10 @@ import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity {
     private EditText event_name,event_organisation;
-    private DatabaseReference databaseReference;
+    private DatabaseReference events,people;
     private TextInputLayout border7,border8;
     private ProgressBar loading;
+    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +40,11 @@ public class AddEventActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         event_name=findViewById(R.id.event_name);
         event_organisation=findViewById(R.id.event_organisation);
-        Button button=findViewById(R.id.event_submit);
+        button = findViewById(R.id.event_submit);
         border7=findViewById(R.id.border7);
         border8=findViewById(R.id.border8);
         loading=findViewById(R.id.check_attendance_progress);
+        events = FirebaseDatabase.getInstance().getReference("Events/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,8 +67,7 @@ public class AddEventActivity extends AppCompatActivity {
                     if(TextUtils.isEmpty(border7.getError()) && TextUtils.isEmpty(border8.getError()) && loading.getVisibility()==View.GONE){
                         try {
                             loading.setVisibility(View.VISIBLE);
-                            databaseReference = FirebaseDatabase.getInstance().getReference("Events/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            events.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children = dataSnapshot.getChildren();
@@ -83,19 +84,19 @@ public class AddEventActivity extends AppCompatActivity {
                                         loading.setVisibility(View.GONE);
                                         Toast.makeText(AddEventActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        String key = databaseReference.push().getKey();
-                                        databaseReference.child(key).setValue(ev);
+                                        String key = events.push().getKey();
+                                        events.child(key).setValue(ev);
                                         if (getIntent().getExtras() != null) {
+                                            people = FirebaseDatabase.getInstance().getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
                                             Type type = new TypeToken<ArrayList<Person>>() {
                                             }.getType();
                                             ArrayList<Person> person = new Gson().fromJson(getIntent().getStringExtra("People"), type);
                                             for (Person temp : person) {
-                                                DatabaseReference dbreference = FirebaseDatabase.getInstance().getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + key);
-                                                String push_key = dbreference.push().getKey();
+                                                String push_key = people.push().getKey();
                                                 temp.setAttendance(0);
                                                 temp.setAttendance_total(0);
                                                 temp.dates.clear();
-                                                dbreference.child(push_key).setValue(temp);
+                                                people.child(push_key).setValue(temp);
                                             }
                                         }
                                         Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
@@ -119,8 +120,7 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

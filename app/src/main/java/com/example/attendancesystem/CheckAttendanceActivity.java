@@ -41,6 +41,10 @@ public class CheckAttendanceActivity extends AppCompatActivity {
     private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private String key,event_key;
+    private DatabaseReference event,people;
+    private TextView set_event_name,set_organisation_name,set_entry_name,presence,absence,text;
+    private ProgressBar loading;
+    private ImageButton delete;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +53,15 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         key=getIntent().getStringExtra("Entry_Key");
         event_key=getIntent().getStringExtra("Event_Key");
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
-        final TextView set_event_name=findViewById(R.id.check_event_name);
-        final TextView set_organisation_name=findViewById(R.id.check_organisation_name);
-        final TextView set_entry_name = findViewById(R.id.check_entry_name);
-        final TextView presence = findViewById(R.id.present_count);
-        final TextView absence = findViewById(R.id.absent_count);
-        final TextView text = findViewById(R.id.count);
-        final ProgressBar loading=findViewById(R.id.check_attendance_progress);
+        set_event_name=findViewById(R.id.check_event_name);
+        set_organisation_name=findViewById(R.id.check_organisation_name);
+        set_entry_name = findViewById(R.id.check_entry_name);
+        presence = findViewById(R.id.present_count);
+        absence = findViewById(R.id.absent_count);
+        text = findViewById(R.id.count);
+        loading=findViewById(R.id.check_attendance_progress);
+        event = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
+        people = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
         String date[]=key.split("-",5);
         String set;
         if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
@@ -92,7 +98,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
-        final ImageButton delete=findViewById(R.id.deleteButton);
+        delete=findViewById(R.id.deleteButton);
         set_entry_name.setVisibility(View.GONE);
         set_event_name.setVisibility(View.GONE);
         set_organisation_name.setVisibility(View.GONE);
@@ -124,16 +130,13 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                                 delete.setVisibility(View.GONE);
                                 listView.setVisibility(View.GONE);
                                 loading.setVisibility(View.VISIBLE);
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 current_event.dates.remove(key);
-                                databaseReference.child(event_key).setValue(current_event);
-                                databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
+                                event.setValue(current_event);
                                 for (int i = 0; i < arrayList.size(); i++) {
                                     arrayList.get(i).dates.remove(key);
                                     arrayList.get(i).setAttendance(getPresentCount(i));
                                     arrayList.get(i).setAttendance_total(arrayList.get(i).dates.size());
-                                    databaseReference.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
+                                    people.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
                                 }
                                 Toast.makeText(CheckAttendanceActivity.this, "Entry deleted successfully", Toast.LENGTH_SHORT).show();
                                 Intent data= new Intent();
@@ -158,9 +161,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         else {
             try {
                 loading.setVisibility(View.VISIBLE);
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                people.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
@@ -262,8 +263,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

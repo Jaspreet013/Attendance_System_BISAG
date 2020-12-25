@@ -72,6 +72,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private TextView textView;
     private ListView listView;
     private MyBaseAdapter adapter;
+    private Button download;
+    private DatabaseReference people;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +89,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
+        people=FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
         adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
@@ -98,16 +101,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         listView.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
-        final Button download=findViewById(R.id.download_pdf);
+        download=findViewById(R.id.download_pdf);
         download.setVisibility(View.GONE);
         if (!isNetworkAvailable()) {
             Toast.makeText(SelectAttendanceEntryActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
         else{
             try{
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                people.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> children = dataSnapshot.getChildren();
@@ -314,15 +315,13 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                     intent.putExtra("Event_Key",event_key);
                     intent.putExtra("Entry_Key",arrayList.get(position));
                     startActivityForResult(intent,RESULT_FIRST_USER);
-                    //finish();
                 }
             });
             return view;
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

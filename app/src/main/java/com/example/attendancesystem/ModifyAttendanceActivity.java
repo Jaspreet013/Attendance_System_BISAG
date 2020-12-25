@@ -43,6 +43,8 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
     private String key;
     private String event_key;
     private Switch enable;
+    private DatabaseReference person;
+    private TextView userfname,userlname,id,email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +66,11 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
-        final TextView userfname = findViewById(R.id.disp_user_fname);
-        final TextView userlname = findViewById(R.id.disp_user_lname);
-        final TextView id = findViewById(R.id.disp_user_id);
-        final TextView email = findViewById(R.id.disp_user_email);
+        person = FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key+"/"+key);
+        userfname = findViewById(R.id.disp_user_fname);
+        userlname  = findViewById(R.id.disp_user_lname);
+        id = findViewById(R.id.disp_user_id);
+        email = findViewById(R.id.disp_user_email);
         userfname.setText(current_person.getFname());
         userlname.setText(current_person.getLname());
         id.setText(id.getText().toString() + current_person.getPerson_ID());
@@ -89,8 +92,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 current_person.setEnabled("No");
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                                database.child(key).setValue(current_person);
+                                person.setValue(current_person);
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been excluded from future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(false);
                                 setResult(RESULT_OK);
@@ -113,8 +115,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 enable.setChecked(false);
                             } else {
                                 current_person.setEnabled("Yes");
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                                database.child(key).setValue(current_person);
+                                person.setValue(current_person);
                                 Toast.makeText(ModifyAttendanceActivity.this, "This person has been enabled to future entries", Toast.LENGTH_SHORT).show();
                                 enable.setChecked(true);
                                 setResult(RESULT_OK);
@@ -152,8 +153,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getFname())){
                             current_person.setFname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                            databaseReference.child(key).setValue(current_person);
+                            person.setValue(current_person);
                             userfname.setText(input.getText().toString().trim());
                             Toast.makeText(ModifyAttendanceActivity.this,"Person first name changed successfully",Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
@@ -249,9 +249,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             try {
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                person.getParent().addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
@@ -261,11 +259,12 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             if(person.getPerson_ID().equals(input.getText().toString().trim()) && !person.getPerson_email().equals(current_person.getPerson_email())){
                                                 set=false;
                                                 Toast.makeText(ModifyAttendanceActivity.this,"This ID is already registered to this Event",Toast.LENGTH_SHORT).show();
+                                                break;
                                             }
                                         }
                                         if(set) {
                                             current_person.setPerson_ID(input.getText().toString().trim());
-                                            databaseReference.child(key).setValue(current_person);
+                                            person.setValue(current_person);
                                             Toast.makeText(ModifyAttendanceActivity.this,"ID changed successfully",Toast.LENGTH_SHORT).show();
                                             id.setText("Person ID : "+input.getText().toString());
                                             setResult(RESULT_OK);
@@ -323,9 +322,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             try {
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                final DatabaseReference databaseReference = database.getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                person.getParent().addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         Iterable<DataSnapshot> children=dataSnapshot.getChildren();
@@ -335,11 +332,12 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             if(!person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString().trim())){
                                                 set=false;
                                                 Toast.makeText(ModifyAttendanceActivity.this,"This email is already registered to this Event",Toast.LENGTH_SHORT).show();
+                                                break;
                                             }
                                         }
                                         if(set) {
                                             current_person.setPerson_email(input.getText().toString().trim());
-                                            databaseReference.child(key).setValue(current_person);
+                                            person.setValue(current_person);
                                             Toast.makeText(ModifyAttendanceActivity.this,"Email changed successfully",Toast.LENGTH_SHORT).show();
                                             email.setText("Email : "+input.getText().toString().trim());
                                             setResult(RESULT_OK);
@@ -389,8 +387,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                         }
                         else {
                             current_person.setAttendance(getPresentCount());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                            databaseReference.child(key).setValue(current_person);
+                            person.setValue(current_person);
                             Toast.makeText(ModifyAttendanceActivity.this, "Attendance Updated Successfully", Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();
@@ -494,8 +491,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

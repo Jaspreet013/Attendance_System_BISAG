@@ -35,6 +35,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
     private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private ProgressBar loading;
+    private DatabaseReference events;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         textView=findViewById(R.id.select_subject_text);
         loading=findViewById(R.id.check_attendance_progress);
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
+        events = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
@@ -56,9 +58,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
         else {
             try {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                events.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
@@ -141,8 +141,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
     }
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

@@ -29,6 +29,7 @@ public class AddPerson extends AppCompatActivity {
     private String event_key;
     private TextInputLayout border2,border3,border4,border5;
     private ProgressBar loading;
+    private DatabaseReference people;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,7 @@ public class AddPerson extends AppCompatActivity {
         border4=findViewById(R.id.border4);
         border5=findViewById(R.id.border5);
         loading=findViewById(R.id.check_attendance_progress);
+        people = FirebaseDatabase.getInstance().getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,9 +101,7 @@ public class AddPerson extends AppCompatActivity {
                     if (TextUtils.isEmpty(border2.getError()) && TextUtils.isEmpty(border3.getError()) && TextUtils.isEmpty(border4.getError()) && TextUtils.isEmpty((border5.getError())) && loading.getVisibility()==View.GONE) {
                         loading.setVisibility(View.VISIBLE);
                         try {
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference databaseReference = database.getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + event_key);
-                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            people.child(event_key).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Iterable<DataSnapshot> children = dataSnapshot.getChildren();
@@ -128,8 +128,8 @@ public class AddPerson extends AppCompatActivity {
                                         }
                                     }
                                     if (set) {
-                                        String key = databaseReference.push().getKey();
-                                        databaseReference.child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim()));
+                                        String key = people.child(event_key).push().getKey();
+                                        people.child(event_key).child(key).setValue(new Person(fname.getText().toString().trim(), lname.getText().toString().trim(), email.getText().toString().trim(), id.getText().toString().trim()));
                                         loading.setVisibility(View.GONE);
                                         Toast.makeText(AddPerson.this, "Person successfully added to the Event", Toast.LENGTH_SHORT).show();
                                         setResult(RESULT_OK);
@@ -154,7 +154,6 @@ public class AddPerson extends AppCompatActivity {
             }
         });
     }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

@@ -36,6 +36,7 @@ public class CheckSelectActivity extends AppCompatActivity {
     private MyBaseAdapter adapter;
     private TextView textView;
     private ProgressBar loading;
+    private DatabaseReference events;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
+        events = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
         loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
@@ -57,9 +59,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
         else {
             try {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = database.getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                events.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
@@ -149,8 +149,7 @@ public class CheckSelectActivity extends AppCompatActivity {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
