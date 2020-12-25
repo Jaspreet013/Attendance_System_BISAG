@@ -556,6 +556,9 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             Collections.reverse(arrayList);
             textView.setText("Total Entries : "+current_event.dates.size());
             adapter.notifyDataSetChanged();
+            if(arrayList.isEmpty()){
+                download.setVisibility(View.GONE);
+            }
             setResult(RESULT_OK);
         }
     }
