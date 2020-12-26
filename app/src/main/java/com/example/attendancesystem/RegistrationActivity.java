@@ -27,12 +27,17 @@ public class RegistrationActivity extends AppCompatActivity {
     private ProgressBar loading;
     private TextInputLayout border2,border3,border4,border5,border6;
     private EditText fname,lname,email,password,cnfpassword;
+    private Button submit,clear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Button submit,clear;
+        fname=findViewById(R.id.register_fname);
+        lname=findViewById(R.id.register_lname);
+        email=findViewById(R.id.register_email);
+        password=findViewById(R.id.register_password);
+        cnfpassword=findViewById(R.id.register_cnfpassword);
         submit=findViewById(R.id.registration_submit);
         clear=findViewById(R.id.registration_clear);
         border2=findViewById(R.id.border2);
@@ -44,11 +49,6 @@ public class RegistrationActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fname=findViewById(R.id.register_fname);
-                lname=findViewById(R.id.register_lname);
-                email=findViewById(R.id.register_email);
-                password=findViewById(R.id.register_password);
-                cnfpassword=findViewById(R.id.register_cnfpassword);
                 if(!isNetworkAvailable()){
                     Toast.makeText(RegistrationActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                 }
