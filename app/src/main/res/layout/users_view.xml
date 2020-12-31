@@ -10,15 +10,16 @@
             android:id="@+id/disp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Name"
+            android:textColor="#000"
             android:textStyle="bold"
             android:layout_alignParentStart="true"/>
 
         <TextView
             android:id="@+id/disp_id"
             android:layout_toStartOf="@id/deleteButton"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?android:textAppearanceSmall"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/disp_name"
             android:layout_width="match_parent"
@@ -26,13 +27,14 @@
             android:text="ID" />
 
         <ImageButton
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="end"
-            android:backgroundTint="@color/cardview_dark_background"
-            android:src="@android:drawable/ic_menu_delete" />
+            android:tint="#000"
+            android:backgroundTint="#FFF"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
 </RelativeLayout>
