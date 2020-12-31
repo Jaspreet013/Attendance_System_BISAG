@@ -2,8 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/card_view">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/person_image"
+                    android:src="@drawable/ic_account_circle" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:layout_toStartOf="@id/deleteButton"
@@ -15,13 +33,13 @@
             android:text="Name"
             android:textColor="#000"
             android:textStyle="bold"
-            android:layout_alignParentStart="true"/>
+            android:layout_toEndOf="@id/card_view"/>
 
         <TextView
             android:id="@+id/disp_id"
             android:layout_toStartOf="@id/deleteButton"
             android:textAppearance="?android:textAppearanceSmall"
-            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/card_view"
             android:layout_below="@+id/disp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

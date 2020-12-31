@@ -24,12 +24,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:textAlignment="center"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="15sp"
-            app:autoSizeMaxTextSize="45sp"
-            app:autoSizeStepGranularity="1sp"/>
+            app:autoSizeTextType="uniform"/>
 
         <TextView
             android:text="Organisation"
@@ -37,12 +34,9 @@
             android:layout_centerHorizontal="true"
             android:textAlignment="center"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_below="@+id/check_event_name"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="15sp"
-            app:autoSizeMaxTextSize="30sp"
-            app:autoSizeStepGranularity="1sp"/>
+            app:autoSizeTextType="uniform" />
 
         <TextView
             android:textStyle="bold"
@@ -51,17 +45,14 @@
             android:layout_below="@+id/check_organisation_name"
             android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:textAlignment="center"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="15sp"
-            app:autoSizeMaxTextSize="45sp"
-            app:autoSizeStepGranularity="1sp"/>
+            app:autoSizeTextType="uniform" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textAppearance="?android:textAppearanceMedium"
             android:layout_marginTop="5dp"
             android:id="@+id/present_count"
             android:text="Present : "
@@ -70,7 +61,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textAppearance="?android:textAppearanceMedium"
             android:id="@+id/absent_count"
             android:text="Absent : "
             android:layout_below="@+id/present_count"/>
@@ -78,7 +69,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textAppearance="?android:textAppearanceMedium"
             android:id="@+id/count"
             android:text="Total : "
             android:layout_below="@+id/absent_count"/>

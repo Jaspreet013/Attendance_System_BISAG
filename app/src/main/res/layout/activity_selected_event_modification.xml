@@ -20,7 +20,7 @@
         android:layout_marginTop="15dp"
         android:text="event name"
         android:textColor="#1515FF"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
@@ -45,7 +45,7 @@
             android:layout_weight="4.95"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total no. of People : "
+            android:text="Total People : "
             android:textStyle="bold"
             android:textSize="20sp"
             android:id="@+id/disp_total_people" />

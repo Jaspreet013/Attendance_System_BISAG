@@ -22,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.text.HtmlCompat;
 
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,6 +61,7 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
     private TextView eventview,organisationview,person_count;
     private ImageButton delete_button;
     private ProgressBar loading;
+    private HashMap<String, BitmapTypeRequest<String>> images=new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,6 +146,7 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                 Person person = child.getValue(Person.class);
                                 arrayList.add(person);
                                 keys.put(person.getPerson_ID(),child.getKey());
+                                images.put(person.getPerson_ID(), Glide.with(SelectedEventModificationActivity.this).load(person.getPhotourl()).asBitmap());
                             }
                             Collections.sort(arrayList);
                             loading.setVisibility(View.GONE);
@@ -422,6 +427,11 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
             final Person std=arrayList.get(position);
             TextView tv1=view.findViewById(R.id.disp_name);
             tv1.setText(arrayList.get(position).getName());
+            try {
+                ImageView imageView=view.findViewById(R.id.person_image);
+                images.get(arrayList.get(position).getPerson_ID()).into(imageView);
+            }
+            catch (Exception e){ }
             if(std.getEnabled().equals("No")){
                 tv1.setTextColor(Color.RED);
             }
