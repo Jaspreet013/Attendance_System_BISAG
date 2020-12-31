@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
             android:layout_toEndOf="@+id/card_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             android:text="name" />
 

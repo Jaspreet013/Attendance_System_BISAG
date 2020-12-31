@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:weightSum="10"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:paddingBottom="5dp"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

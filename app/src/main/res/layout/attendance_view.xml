@@ -4,10 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
@@ -33,9 +31,9 @@
             android:layout_toEndOf="@id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000"
+            android:textStyle="bold"
             android:layout_alignParentTop="true"/>
 
         <TextView
@@ -54,8 +52,7 @@
             android:id="@+id/dispstatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic" />
 
 </RelativeLayout>

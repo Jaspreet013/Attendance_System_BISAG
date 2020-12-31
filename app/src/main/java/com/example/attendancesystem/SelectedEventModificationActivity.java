@@ -435,7 +435,7 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                     builder.setTitle("Are you sure to remove this person?");
                     builder.setMessage(Html.fromHtml("All the information regarding this person for this Event will be deleted from records. You can exclude them by clicking on the person and disable the "+"<b>"+"Future Attendance"+"</b>"+" option so that person can be excluded without damaging the previous records of the person.", HtmlCompat.FROM_HTML_MODE_COMPACT));
                     builder.setNegativeButton("Cancel",null);
-                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (!isNetworkAvailable()) {

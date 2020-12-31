@@ -8,9 +8,10 @@
         <TextView
             android:layout_toStartOf="@id/deleteButton"
             android:id="@+id/disp_name"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Name"
             android:textColor="#000"
             android:textStyle="bold"
