@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".SelectSubjectActivity"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    tools:context=".SelectEventActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
     android:weightSum="10"
     android:paddingStart="15dp"
     android:paddingEnd="15dp">
+
+    <ProgressBar
+        android:layout_weight="10"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/check_attendance_progress"/>
 
     <TextView
         app:autoSizeTextType="uniform"
@@ -24,7 +31,7 @@
         android:gravity="center"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Select an Event"
+        android:text=""
         android:textStyle="bold" />
 
     <ListView
@@ -35,7 +42,7 @@
         android:layout_width="match_parent"
         android:id="@+id/list_view3"
         android:layout_gravity="center_horizontal"
-        android:nestedScrollingEnabled="true"/>
+        android:nestedScrollingEnabled="true" />
 
     <TextView
         android:layout_width="match_parent"
@@ -44,18 +51,10 @@
         android:padding="15dp"
         android:id="@+id/select_empty_message"
         android:textSize="20sp"
-        android:text="You can create event by Manage Events -> Add New Event -> (Create event) and also add people to it by Manage Events -> (Click on the event) -> Click on Get code and share the code with people who you want to add"
+        android:text="Events will be visible once you are enrolled"
         android:textAlignment="center"
         android:gravity="center_vertical"
         android:layout_gravity="center"
-        android:visibility="gone"/>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="10"
-        android:layout_gravity="center"
-        android:id="@+id/check_attendance_progress"
         android:visibility="gone"/>
 
 </LinearLayout>

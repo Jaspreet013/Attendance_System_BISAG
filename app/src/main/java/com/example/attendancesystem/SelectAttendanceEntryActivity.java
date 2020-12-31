@@ -36,7 +36,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,6 +66,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private String event_key;
     private ArrayList<String> arrayList=new ArrayList<>();
     private final ArrayList<Person> persons=new ArrayList<>();
+    private final HashMap<String,String> keys=new HashMap<>();
     private DatePickerDialog picker;
     private ProgressBar loading;
     private TextView textView;
@@ -89,7 +89,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView=findViewById(R.id.list_view3);
         loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
-        people=FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
+        people=FirebaseDatabase.getInstance().getReference("People/"+event_key);
         adapter=new MyBaseAdapter(SelectAttendanceEntryActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
@@ -115,6 +115,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                         for(DataSnapshot child:children){
                             Person person=child.getValue(Person.class);
                             persons.add(person);
+                            keys.put(person.getPerson_ID(),child.getKey());
                         }
                         Collections.sort(persons);
                         loading.setVisibility(View.GONE);
@@ -307,6 +308,8 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             }
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText("Total People : "+current_event.dates.get(arrayList.get(position)));
+            TextView tv3=view.findViewById(R.id.coordinator_name);
+            tv3.setVisibility(View.GONE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -408,7 +411,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 table.setHeaderRows(1);
                 for(int i=0;i<persons.size();i++){
                     insertCell(table,Integer.toString(count),Element.ALIGN_CENTER,1,bf12);
-                    insertCell(table,persons.get(i).getFname().toUpperCase()+"  "+persons.get(i).getLname().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
+                    insertCell(table,persons.get(i).getName().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
                     insertCell(table,persons.get(i).getPerson_ID(),Element.ALIGN_LEFT,1,bf12);
                     for(String key:selected_keys) {
                         if (persons.get(i).dates.containsKey(key)){

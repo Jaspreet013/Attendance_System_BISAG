@@ -16,19 +16,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
+
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.itextpdf.text.Image;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,6 +50,8 @@ public class CheckAttendanceActivity extends AppCompatActivity {
     private TextView set_event_name,set_organisation_name,set_entry_name,presence,absence,text;
     private ProgressBar loading;
     private ImageButton delete;
+    private HashMap<String, BitmapTypeRequest<String>> images=new HashMap<>();
+    private long count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +67,9 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         absence = findViewById(R.id.absent_count);
         text = findViewById(R.id.count);
         loading=findViewById(R.id.check_attendance_progress);
-        event = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-        people = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
+        event = FirebaseDatabase.getInstance().getReference("Events/"+event_key);
+        people= FirebaseDatabase.getInstance().getReference("People/"+event_key);
+        //users_database=FirebaseDatabase.getInstance().getReference("Users");
         String date[]=key.split("-",5);
         String set;
         if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
@@ -165,14 +173,14 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
-                            long count = 0;
                             Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                            for (DataSnapshot child : children) {
-                                Person person = child.getValue(Person.class);
+                            for (final DataSnapshot child : children) {
+                                final Person person = child.getValue(Person.class);
                                 if(person.dates.containsKey(key)) {
                                     arrayList.add(person);
                                     count++;
                                     keys.put(person.getPerson_ID(),child.getKey());
+                                    images.put(person.getPerson_ID(), Glide.with(CheckAttendanceActivity.this).load(person.getPhotourl()).asBitmap());
                                     adapter.notifyDataSetChanged();
                                 }
                                 if(count == current_event.dates.get(key)) {
@@ -243,9 +251,14 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.attendance_view,null);
             TextView name=view.findViewById(R.id.dispname);
-            name.setText(arrayList.get(position).getFname()+" "+arrayList.get(position).getLname());
+            name.setText(arrayList.get(position).getName());
             TextView id=view.findViewById(R.id.disporganisation);
             id.setText(arrayList.get(position).getPerson_ID());
+            try {
+                ImageView imageView=view.findViewById(R.id.person_image);
+                images.get(arrayList.get(position).getPerson_ID()).into(imageView);
+            }
+            catch (Exception e){ }
             TextView status=view.findViewById(R.id.dispstatus);
             status.setText(arrayList.get(position).dates.get(key));
             if(arrayList.get(position).dates.get(key).equals("Absent")){
@@ -256,6 +269,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class);
                     intent.putExtra("Person",new Gson().toJson(arrayList.get(position)));
+                    //intent.putExtra("Image",new Gson().toJson(images.get(arrayList.get(position).getPerson_ID())));
                     startActivity(intent);
                 }
             });

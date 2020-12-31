@@ -27,7 +27,7 @@
         android:textAlignment="center"
         app:autoSizeTextType="uniform"
         android:textStyle="bold"
-        android:layout_weight="1"
+        android:layout_weight="0.33"
         android:text="Event"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeMaxTextSize="45sp"
@@ -44,7 +44,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.8" />
+        android:layout_weight="0.5" />
 
     <RelativeLayout
         android:layout_marginTop="15dp"
@@ -76,7 +76,7 @@
         android:layout_marginBottom="15dp"
         android:padding="15dp"
         android:layout_height="0dp"
-        android:layout_weight="8.25"
+        android:layout_weight="9.3"
         android:layout_width="match_parent"
         android:id="@+id/list_view3"
         android:layout_gravity="center_horizontal"
@@ -87,7 +87,7 @@
         style="?borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="0.33"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_button"
         android:padding="10dp"

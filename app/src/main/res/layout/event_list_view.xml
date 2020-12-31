@@ -17,4 +17,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/disporganisation" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:id="@+id/coordinator_name"
+        android:textStyle="italic"/>
+
 </LinearLayout>

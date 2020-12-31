@@ -36,7 +36,8 @@ public class CheckSelectActivity extends AppCompatActivity {
     private MyBaseAdapter adapter;
     private TextView textView;
     private ProgressBar loading;
-    private DatabaseReference events;
+    private DatabaseReference events,users_database;
+    private User user=new User();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,8 @@ public class CheckSelectActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        events = FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+        events = FirebaseDatabase.getInstance().getReference("Events");
+        users_database=FirebaseDatabase.getInstance().getReference("Users");
         loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
@@ -59,27 +61,37 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
         else {
             try {
-                events.addListenerForSingleValueEvent(new ValueEventListener() {
+                users_database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        try {
-                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                            for (DataSnapshot child : children) {
-                                Event ev = child.getValue(Event.class);
-                                arrayList.add(ev);
-                                keys.put(ev.getName()+", "+ev.getOrganisation(),child.getKey());
-                                adapter.notifyDataSetChanged();
+                        user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
+                        events.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                try {
+                                    for(String key:user.admin_events.keySet()){
+                                        Event ev = dataSnapshot.child(key).getValue(Event.class);
+                                        arrayList.add(ev);
+                                        keys.put(ev.getName()+", "+ev.getOrganisation(),key);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    loading.setVisibility(View.GONE);
+                                    Collections.sort(arrayList);
+                                    textView.setText("Total Events : "+arrayList.size());
+                                    textView.setVisibility(View.VISIBLE);
+                                    listView.setVisibility(View.VISIBLE);
+                                    listView.setEmptyView(findViewById(R.id.select_empty_message));
+                                } catch (Exception e) {
+                                    Log.e("Exception : ", e.getMessage());
+                                }
                             }
-                            loading.setVisibility(View.GONE);
-                            Collections.sort(arrayList);
-                            textView.setText("Total Events : "+arrayList.size());
-                            textView.setVisibility(View.VISIBLE);
-                            listView.setVisibility(View.VISIBLE);
-                            listView.setEmptyView(findViewById(R.id.select_empty_message));
-                        } catch (Exception e) {
-                            Log.e("Exception : ", e.getMessage());
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -122,6 +134,8 @@ public class CheckSelectActivity extends AppCompatActivity {
             tv1.setText(std.getName());
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
+            TextView tv3=view.findViewById(R.id.coordinator_name);
+            tv3.setVisibility(View.GONE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

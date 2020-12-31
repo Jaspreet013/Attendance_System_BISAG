@@ -36,9 +36,10 @@ public class ModifyEventActivity extends AppCompatActivity {
     private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private TextView total_events;
+    private DatabaseReference events;
     private ProgressBar loading;
     private Button add_event;
-    private DatabaseReference events;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +54,12 @@ public class ModifyEventActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        events=FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
         loading.setVisibility(View.VISIBLE);
         total_events.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         add_event.setVisibility(View.GONE);
+        DatabaseReference user_database = FirebaseDatabase.getInstance().getReference("Users/"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+        events=FirebaseDatabase.getInstance().getReference("Events");
         add_event.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,31 +69,43 @@ public class ModifyEventActivity extends AppCompatActivity {
         });
         if (!isNetworkAvailable()) {
             Toast.makeText(ModifyEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
         }
         else {
-            try {
-                events.addListenerForSingleValueEvent(new ValueEventListener() {
+            try{
+                user_database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         try {
-                            Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                            for (DataSnapshot child : children) {
-                                Event ev = child.getValue(Event.class);
-                                arrayList.add(ev);
-                                keys.put(ev.getName()+", "+ev.getOrganisation(),child.getKey());
-                                adapter.notifyDataSetChanged();
-                            }
-                            Collections.sort(arrayList);
-                            loading.setVisibility(View.GONE);
-                            total_events.setText(total_events.getText().toString() + arrayList.size());
-                            total_events.setVisibility(View.VISIBLE);
-                            listView.setVisibility(View.VISIBLE);
-                            add_event.setVisibility(View.VISIBLE);
-                            listView.setEmptyView(findViewById(R.id.modification_empty_message));
+                            user = dataSnapshot.getValue(User.class);
+                            events.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    try {
+                                        for (String key : user.admin_events.keySet()) {
+                                            Event ev = dataSnapshot.child(key).getValue(Event.class);
+                                            arrayList.add(ev);
+                                            keys.put(ev.getName() + ", " + ev.getOrganisation(), key);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                        Collections.sort(arrayList);
+                                        loading.setVisibility(View.GONE);
+                                        total_events.setText(total_events.getText().toString() + arrayList.size());
+                                        total_events.setVisibility(View.VISIBLE);
+                                        listView.setVisibility(View.VISIBLE);
+                                        add_event.setVisibility(View.VISIBLE);
+                                        listView.setEmptyView(findViewById(R.id.modification_empty_message));
+                                    } catch (Exception e) {
+                                        Log.e("Exception", e.getMessage());
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        } catch (Exception e) {
-                            Log.e("Exception : ", e.getMessage());
+                                }
+                            });
+                        }
+                        catch (Exception e){
+                            Log.e("Exception",e.getMessage());
                         }
                     }
 
@@ -105,7 +119,6 @@ public class ModifyEventActivity extends AppCompatActivity {
             }
         }
     }
-
     private class MyBaseAdapter extends BaseAdapter {
         final Context context;
         final LayoutInflater inflater;
@@ -139,10 +152,12 @@ public class ModifyEventActivity extends AppCompatActivity {
             tv1.setText(std.getName());
             TextView tv2 = view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
+            TextView tv3 = view.findViewById(R.id.coordinator_name);
+            tv3.setVisibility(View.GONE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(ModifyEventActivity.this,selectedEventModificationActivity.class);
+                    Intent intent=new Intent(ModifyEventActivity.this, SelectedEventModificationActivity.class);
                     intent.putExtra("Event",new Gson().toJson(std));
                     intent.putExtra("Key",keys.get(std.getName()+", "+std.getOrganisation()));
                     startActivityForResult(intent,RESULT_FIRST_USER);

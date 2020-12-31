@@ -13,7 +13,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+        //if(FirebaseAuth.getInstance().getCurrentUser()!=null){
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run(){
@@ -22,8 +22,8 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             },300);
-        }
-        else{
+        //}
+        /*else{
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run(){
@@ -32,6 +32,6 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             },300);
-        }
+        }*/
     }
 }

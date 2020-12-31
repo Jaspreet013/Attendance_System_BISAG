@@ -3,7 +3,7 @@ package com.example.attendancesystem;
 import java.util.HashMap;
 
 public class Person implements Comparable<Person>{
-    private String person_email, person_ID, fname, lname, enabled = "Yes";
+    private String person_ID,enabled = "Yes",name,email,photourl;
     private long attendance = 0, attendance_total = 0;
     private Boolean ispresent = null;
     public HashMap<String, String> dates = new HashMap<>();
@@ -11,36 +11,20 @@ public class Person implements Comparable<Person>{
     public Person() {
     }
 
-    public Person(String fname, String lname, String person_email, String person_ID) {
-        this.fname = fname;
-        this.lname = lname;
-        this.person_email = person_email;
+    public Person(String person_ID,String name,String email,String photourl) {
         this.person_ID = person_ID;
+        this.name = name;
+        this.email=email;
+        this.photourl=photourl;
     }
 
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getFname() {
-        return fname;
-    }
+    public String getName() { return name; }
 
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getLname() {
-        return lname;
-    }
-
-    public void setPerson_email(String person_email) {
-        this.person_email = person_email;
-    }
-
-    public String getPerson_email() {
-        return person_email;
-    }
+    public String getEmail() { return email; }
 
     public void setPerson_ID(String person_ID) {
         this.person_ID = person_ID;
@@ -49,6 +33,10 @@ public class Person implements Comparable<Person>{
     public String getPerson_ID() {
         return person_ID;
     }
+
+    public void setPhotourl(String photourl) { this.photourl = photourl; }
+
+    public String getPhotourl() { return photourl; }
 
     public long getAttendance() {
         return attendance;

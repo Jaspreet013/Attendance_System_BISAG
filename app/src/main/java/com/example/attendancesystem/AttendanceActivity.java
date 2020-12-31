@@ -4,8 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,19 +19,26 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.auth.FirebaseAuth;
+
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+
+import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +58,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private DatabaseReference event,people;
     private TextView set_event_name,set_organisation_name;
     private Button submit;
+    private HashMap<String, BitmapTypeRequest<String>> images=new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +79,8 @@ public class AttendanceActivity extends AppCompatActivity {
         selectall=findViewById(R.id.select_all);
         total=findViewById(R.id.total_people);
         loading=findViewById(R.id.check_attendance_progress);
-        event=FirebaseDatabase.getInstance().getReference("Events/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
-        people = FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
+        event=FirebaseDatabase.getInstance().getReference("Events/"+key);
+        people = FirebaseDatabase.getInstance().getReference("People");
         set_event_name.setVisibility(View.GONE);
         set_organisation_name.setVisibility(View.GONE);
         total.setVisibility(View.GONE);
@@ -138,7 +151,7 @@ public class AttendanceActivity extends AppCompatActivity {
                                 }
                                 else {
                                     for (int i = 0; i < keys.size(); i++) {
-                                        people.child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
+                                        people.child(key).child(keys.get(arrayList.get(i).getPerson_ID())).setValue(arrayList.get(i));
                                     }
                                     Toast.makeText(AttendanceActivity.this,"Entry saved successfully",Toast.LENGTH_SHORT).show();
                                 }
@@ -163,32 +176,26 @@ public class AttendanceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     try {
-                        Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                        for (DataSnapshot child : children) {
-                            Person person = child.getValue(Person.class);
-                            if(person.getEnabled().equals("Yes")) {
+                        Iterable<DataSnapshot> children = dataSnapshot.child(key).getChildren();
+                        for (final DataSnapshot child : children) {
+                            final Person person = child.getValue(Person.class);
+                            if (person.getEnabled().equals("Yes")) {
+                                ImageView imageView=new ImageView(AttendanceActivity.this);
+                                try {
+                                    images.put(person.getPerson_ID(),Glide.with(AttendanceActivity.this).load(person.getPhotourl()).asBitmap());
+                                    //Uri selectedimage=new Uri(person.getPhotourl());
+                                    //Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                    //images.put(person.getPerson_ID(),bmp);
+                                }
+                                catch (Exception e){ }
                                 person.setIspresent(false);
                                 arrayList.add(person);
-                                keys.put(person.getPerson_ID(),child.getKey());
+                                keys.put(person.getPerson_ID(), child.getKey());
                                 adapter.notifyDataSetChanged();
                             }
                         }
-                        total.setText(total.getText()+Integer.toString(arrayList.size()));
-                        if(arrayList.isEmpty()) {
-                            loading.setVisibility(View.GONE);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setMessage("Please go to manage events -> (click on this Event) -> add new person to add people or include people if you have excluded them");
-                            builder.setTitle("No people are in this Event");
-                            builder.setCancelable(false);
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            });
-                            builder.show();
-                        }
-                        else{
+                        if(!arrayList.isEmpty()){
+                            total.setText(total.getText() + Integer.toString(arrayList.size()));
                             Collections.sort(arrayList);
                             listView.setAdapter(adapter);
                             loading.setVisibility(View.GONE);
@@ -198,6 +205,20 @@ public class AttendanceActivity extends AppCompatActivity {
                             total.setVisibility(View.VISIBLE);
                             submit.setVisibility(View.VISIBLE);
                             listView.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            loading.setVisibility(View.GONE);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
+                            builder.setMessage("Either no people are enrolled into the event or all the people are excluded from this event");
+                            builder.setTitle("No people are in this Event");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            builder.show();
                         }
                     } catch (Exception e) {
                         Log.e("Exception : ", e.getMessage());
@@ -248,9 +269,19 @@ public class AttendanceActivity extends AppCompatActivity {
             LayoutInflater inflater=getLayoutInflater();
             View view = inflater.inflate(R.layout.person_attendance,null);
             TextView tv1 = view.findViewById(R.id.disp_name);
-            tv1.setText(arrayList.get(position).getFname() + " " + arrayList.get(position).getLname());
+            tv1.setText(arrayList.get(position).getName());
             TextView tv2 = view.findViewById(R.id.disp_id);
             tv2.setText(arrayList.get(position).getPerson_ID());
+            //imageView.setImageDrawable(Glide.with(images.get(arrayList.get(position).getPerson_ID())));
+            try {
+                ImageView imageView=view.findViewById(R.id.person_image);
+                images.get(arrayList.get(position).getPerson_ID()).into(imageView);
+            }
+            catch (Exception e){ }
+            /*try{
+                Glide.with(AttendanceActivity.this).load(arrayList.get(position).getPhotourl()).into(imageView);
+            }catch (Exception e){}*/
+            //imageView.setImageBitmap(images.get(arrayList.get(position).getPerson_ID()));
             final CheckBox ispresent = view.findViewById(R.id.ispresent);
             if(arrayList.get(position).getIspresent()){
                 ispresent.setChecked(true);

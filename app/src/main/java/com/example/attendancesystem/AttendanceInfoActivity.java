@@ -9,10 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -26,24 +31,22 @@ public class AttendanceInfoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         person=new Gson().fromJson(getIntent().getStringExtra("Person"),Person.class);
         TextView name=findViewById(R.id.disp_user_name);
-        name.setText(person.getFname()+" "+person.getLname());
+        name.setText(person.getName());
         TextView id=findViewById(R.id.disp_user_id);
         id.setText(id.getText()+person.getPerson_ID());
         TextView email=findViewById(R.id.disp_user_email);
-        email.setText(email.getText().toString()+person.getPerson_email());
+        email.setText(email.getText().toString()+person.getEmail());
         TextView attendance=findViewById(R.id.disp_user_attendance);
-        attendance.setText(attendance.getText().toString()+person.getAttendance());
-        TextView total_attendance=findViewById(R.id.disp_user_total_attendance);
-        total_attendance.setText(total_attendance.getText().toString()+person.getAttendance_total());
-        TextView percent_attendance=findViewById(R.id.disp_user_percent_attendance);
+        ImageView imageView=findViewById(R.id.person_image);
+        Glide.with(this).load(person.getPhotourl()).into(imageView);
         float percent;
         if(person.getAttendance()!=0) {
             percent = ((float)person.getAttendance() / (float)person.getAttendance_total()) * 100;
+            attendance.setText("Attendance : "+person.getAttendance()+"/"+person.getAttendance_total()+" -- "+String.format("%.2f",percent)+"%");
         }
         else{
-            percent=0;
+            attendance.setText("Attendance : "+person.getAttendance()+"/"+person.getAttendance_total());
         }
-        percent_attendance.setText(percent_attendance.getText().toString()+String.format("%.2f",percent)+"%");
         MyBaseAdapter adapter=new MyBaseAdapter(AttendanceInfoActivity.this);
         ListView listView=findViewById(R.id.list_view);
         listView.setSmoothScrollbarEnabled(true);
@@ -82,6 +85,8 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             View view = inflater.inflate(R.layout.event_list_view, null);
             TextView tv1=view.findViewById(R.id.dispname);
             TextView tv2=view.findViewById(R.id.disporganisation);
+            TextView tv3=view.findViewById(R.id.coordinator_name);
+            tv3.setVisibility(View.GONE);
             String date[]=arraylist.get(position).split("-",5);
             String set;
             if (!DateFormat.is24HourFormat(AttendanceInfoActivity.this))

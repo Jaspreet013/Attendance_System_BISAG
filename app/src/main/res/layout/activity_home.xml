@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeActivity">
+    tools:context=".HomeActivity"
+    android:id="@+id/home_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,30 +34,86 @@
                 android:layout_width="wrap_content"
                 android:textAlignment="center"
                 android:text="Display Name Here"
-                android:textColor="#00f"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/welcome_message"
                 android:textSize="30sp"/>
 
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="User"
+            android:id="@+id/user"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/layout_welcome"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="15dp"
+            android:id="@+id/layout"
+            android:layout_below="@+id/user">
+
+            <Button
+                android:layout_marginEnd="7.5dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:id="@+id/enroll_button"
+                style="?borderlessButtonStyle"
+                android:layout_below="@+id/layout1"
+                android:textColor="#FFFFFF"
+                android:drawableTop="@drawable/ic_add"
+                android:text="Enroll into event"
+                android:padding="10dp"
+                android:background="@drawable/rounded_button"/>
+
+            <Button
+                android:layout_marginStart="7.5dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:id="@+id/check_button"
+                style="?borderlessButtonStyle"
+                android:layout_below="@+id/enroll_button"
+                android:textColor="#FFFFFF"
+                android:drawableTop="@drawable/ic_person"
+                android:text="Check Your Attendance"
+                android:padding="10dp"
+                android:background="@drawable/rounded_button"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Admin"
+            android:id="@+id/admin"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/layout"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
             android:orientation="horizontal"
-            android:layout_below="@+id/layout_welcome"
-            android:id="@+id/layout">
+            android:layout_below="@+id/admin"
+            android:id="@+id/layout1">
 
         <Button
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/take_attendance"
             android:textColor="#FFFFFF"
             android:drawableTop="@drawable/ic_add_box"
-            android:text="Take\nAttendance"
+            android:text="Take Attendance"
             android:padding="10dp"
             android:layout_marginEnd="7.5dp"
             style="?borderlessButtonStyle"
@@ -68,7 +124,7 @@
             style="?borderlessButtonStyle"
             android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="15dp"
             android:layout_marginStart="7.5dp"
             android:id="@+id/modify_subjects"
             android:drawableTop="@drawable/ic_event_available"
@@ -82,8 +138,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/layout1"
-            android:layout_below="@+id/layout"
+            android:id="@+id/layout2"
+            android:layout_below="@+id/layout1"
             android:orientation="horizontal"
             android:weightSum="2"
             android:layout_marginTop="15dp">

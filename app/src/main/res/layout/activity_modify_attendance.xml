@@ -25,7 +25,6 @@
         android:textStyle="bold"
         android:text="Fname"
         android:textAlignment="center"
-        android:textColor="#1515FF"
         android:id="@+id/disp_user_fname"/>
 
     <TextView
@@ -36,7 +35,6 @@
         android:textSize="25sp"
         android:textStyle="bold"
         android:text="Lname"
-        android:textColor="#1515FF"
         android:textAlignment="center"
         android:id="@+id/disp_user_lname"/>
 
@@ -44,19 +42,18 @@
 
     <TextView
         android:layout_weight="0.025"
-        android:id="@+id/disp_user_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Person ID : "
-        android:textColor="#1515FF"
-        android:textSize="20sp" />
-
-    <TextView
-        android:layout_weight="0.025"
         android:id="@+id/disp_user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email : "
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_weight="0.025"
+        android:id="@+id/disp_user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Person ID : "
         android:textColor="#1515FF"
         android:textSize="20sp" />
 

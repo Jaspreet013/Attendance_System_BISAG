@@ -22,16 +22,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class AddEventActivity extends AppCompatActivity {
     private EditText event_name,event_organisation;
-    private DatabaseReference events,people;
+    private DatabaseReference events,getUser;
+    private User user=new User();
     private TextInputLayout border7,border8;
     private ProgressBar loading;
+    private Event ev;
     private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,19 @@ public class AddEventActivity extends AppCompatActivity {
         border7=findViewById(R.id.border7);
         border8=findViewById(R.id.border8);
         loading=findViewById(R.id.check_attendance_progress);
-        events = FirebaseDatabase.getInstance().getReference("Events/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        events = FirebaseDatabase.getInstance().getReference("Events");
+        getUser=FirebaseDatabase.getInstance().getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());
+        getUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                user=dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,35 +80,26 @@ public class AddEventActivity extends AppCompatActivity {
                             events.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                                     boolean set = true;
-                                    Event ev = new Event(event_name.getText().toString().trim().toUpperCase(), event_organisation.getText().toString().trim().toUpperCase());
-                                    for (DataSnapshot child : children) {
-                                        Event eve = child.getValue(Event.class);
-                                        if (eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())) {
-                                            set = false;
-                                            break;
-                                        }
-                                    }
-                                    if (!set) {
-                                        loading.setVisibility(View.GONE);
-                                        Toast.makeText(AddEventActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        String key = events.push().getKey();
-                                        events.child(key).setValue(ev);
-                                        if (getIntent().getExtras() != null) {
-                                            people = FirebaseDatabase.getInstance().getReference("People/" + FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+key);
-                                            Type type = new TypeToken<ArrayList<Person>>() {
-                                            }.getType();
-                                            ArrayList<Person> person = new Gson().fromJson(getIntent().getStringExtra("People"), type);
-                                            for (Person temp : person) {
-                                                String push_key = people.push().getKey();
-                                                temp.setAttendance(0);
-                                                temp.setAttendance_total(0);
-                                                temp.dates.clear();
-                                                people.child(push_key).setValue(temp);
+                                    ev = new Event(event_name.getText().toString().trim().toUpperCase(), event_organisation.getText().toString().trim().toUpperCase(),FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    if(!user.admin_events.isEmpty()) {
+                                        for (String ev_key : user.admin_events.keySet()) {
+                                            Event eve = dataSnapshot.child(ev_key).getValue(Event.class);
+                                            if (eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())) {
+                                                set = false;
+                                                break;
                                             }
                                         }
+                                    }
+                                    if(!set) {
+                                        loading.setVisibility(View.GONE);
+                                        Toast.makeText(AddEventActivity.this, "Your another Event with same name and organisation already exists", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        String key = events.push().getKey();
+                                        events.child(key).setValue(ev);
+                                        user.admin_events.put(key,1);
+                                        FirebaseDatabase.getInstance().getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/admin_events").setValue(user.admin_events);
                                         Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
                                         loading.setVisibility(View.GONE);
                                         setResult(RESULT_OK);

@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,15 +64,17 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         Collections.sort(arrayList);
         Collections.reverse(arrayList);
         adapter.notifyDataSetChanged();
-        person = FirebaseDatabase.getInstance().getReference("People/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key+"/"+key);
+        person = FirebaseDatabase.getInstance().getReference("People/"+event_key+"/"+key);
         userfname = findViewById(R.id.disp_user_fname);
         userlname  = findViewById(R.id.disp_user_lname);
         id = findViewById(R.id.disp_user_id);
         email = findViewById(R.id.disp_user_email);
-        userfname.setText(current_person.getFname());
-        userlname.setText(current_person.getLname());
+        //User user=new Gson().fromJson(getIntent().getStringExtra("User"),User.class);
+        String str[]=current_person.getName().split(" ",2);
+        userfname.setText(str[0]);
+        userlname.setText(str[1]);
+        email.setText(email.getText().toString() + current_person.getEmail());
         id.setText(id.getText().toString() + current_person.getPerson_ID());
-        email.setText(email.getText().toString() + current_person.getPerson_email());
         enable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -125,104 +125,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 }
             }
         });
-        userfname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                alertDialog.setTitle("Rename First Name");
-                final EditText input = new EditText(ModifyAttendanceActivity.this);
-                input.setText(current_person.getFname());
-                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!isNetworkAvailable()) {
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
-                        }
-                        else if(input.getText().toString().trim().length()>15){
-                            Toast.makeText(ModifyAttendanceActivity.this,"First name length cannot be more than 15",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper first name",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!input.getText().toString().trim().equals(current_person.getFname())){
-                            current_person.setFname(input.getText().toString().trim());
-                            person.setValue(current_person);
-                            userfname.setText(input.getText().toString().trim());
-                            Toast.makeText(ModifyAttendanceActivity.this,"Person first name changed successfully",Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
-                        }
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog dialog = alertDialog.create();
-                dialog.show();
-                input.selectAll();
-                input.requestFocus();
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
-        });
-        userlname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                alertDialog.setTitle("Rename Last name");
-                final EditText input = new EditText(ModifyAttendanceActivity.this);
-                input.setText(current_person.getLname());
-                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!isNetworkAvailable()) {
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(input.getText().toString().trim().length()>15){
-                            Toast.makeText(ModifyAttendanceActivity.this,"Last name length cannot be more than 15",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!(input.getText().toString().trim().matches("^[a-zA-Z]*$")) || TextUtils.isEmpty(input.getText().toString().trim())){
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a proper last name",Toast.LENGTH_SHORT).show();
-                        }
-                        else if(!input.getText().toString().trim().equals(current_person.getLname())){
-                            current_person.setLname(input.getText().toString().trim());
-                            DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("People/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+event_key);
-                            databaseReference.child(key).setValue(current_person);
-                            userlname.setText(input.getText().toString().trim());
-                            Toast.makeText(ModifyAttendanceActivity.this,"Person last name changed successfully",Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
-                        }
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog dialog = alertDialog.create();
-                dialog.show();
-                input.selectAll();
-                input.requestFocus();
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
-        });
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,7 +158,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                         boolean set=true;
                                         for(DataSnapshot child:children){
                                             Person person=child.getValue(Person.class);
-                                            if(person.getPerson_ID().equals(input.getText().toString().trim()) && !person.getPerson_email().equals(current_person.getPerson_email())){
+                                            if(person.getPerson_ID().equals(input.getText().toString().trim())){
                                                 set=false;
                                                 Toast.makeText(ModifyAttendanceActivity.this,"This ID is already registered to this Event",Toast.LENGTH_SHORT).show();
                                                 break;
@@ -278,79 +180,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                 });
                             } catch (Exception ex) {
                                 Log.e("Exception",ex.getMessage());
-                            }
-                        }
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                AlertDialog dialog = alertDialog.create();
-                dialog.show();
-                input.selectAll();
-                input.requestFocus();
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
-        });
-        email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                alertDialog.setTitle("Rename Email");
-                final EditText input = new EditText(ModifyAttendanceActivity.this);
-                input.setText(current_person.getPerson_email());
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!isNetworkAvailable()) {
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
-
-                        }
-                        else if(!input.getText().toString().trim().matches("^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$")){
-                            Toast.makeText(ModifyAttendanceActivity.this,"Please provide a valid email",Toast.LENGTH_SHORT).show();
-
-                        }
-                        else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
-                            try {
-                                person.getParent().addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Iterable<DataSnapshot> children=dataSnapshot.getChildren();
-                                        boolean set=true;
-                                        for(DataSnapshot child:children){
-                                            Person person=child.getValue(Person.class);
-                                            if(!person.getPerson_ID().equals(current_person.getPerson_ID()) && person.getPerson_email().equals(input.getText().toString().trim())){
-                                                set=false;
-                                                Toast.makeText(ModifyAttendanceActivity.this,"This email is already registered to this Event",Toast.LENGTH_SHORT).show();
-                                                break;
-                                            }
-                                        }
-                                        if(set) {
-                                            current_person.setPerson_email(input.getText().toString().trim());
-                                            person.setValue(current_person);
-                                            Toast.makeText(ModifyAttendanceActivity.this,"Email changed successfully",Toast.LENGTH_SHORT).show();
-                                            email.setText("Email : "+input.getText().toString().trim());
-                                            setResult(RESULT_OK);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            } catch (Exception ex) {
-                                Log.e("Super exception",ex.getMessage());
                             }
                         }
                     }

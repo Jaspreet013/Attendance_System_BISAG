@@ -1,12 +1,14 @@
 package com.example.attendancesystem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,70 +25,68 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class SelectSubjectActivity extends AppCompatActivity {
-    private TextView textView;
+public class SelectEventActivity extends AppCompatActivity {
     private ListView listView;
     private final ArrayList<Event> arrayList=new ArrayList<>();
     private final HashMap<String,String> keys=new HashMap<>();
+    private final HashMap<String, User> coordinators=new HashMap<>();
     private MyBaseAdapter adapter;
+    private TextView textView,empty_message;
     private ProgressBar loading;
     private DatabaseReference events,users_database;
-    private User user;
+    private User user=new User();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_subject);
+        setContentView(R.layout.activity_select_event);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         listView=findViewById(R.id.list_view3);
         textView=findViewById(R.id.select_subject_text);
-        loading=findViewById(R.id.check_attendance_progress);
-        adapter=new MyBaseAdapter(SelectSubjectActivity.this);
-        users_database=FirebaseDatabase.getInstance().getReference("Users");
-        events = FirebaseDatabase.getInstance().getReference("Events");
-        //user=new User();
-        //user=getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        empty_message=findViewById(R.id.select_empty_message);
+        adapter=new MyBaseAdapter(SelectEventActivity.this);
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);
         listView.setVerticalScrollBarEnabled(false);
-        loading.setVisibility(View.VISIBLE);
+        events = FirebaseDatabase.getInstance().getReference("Events");
+        users_database=FirebaseDatabase.getInstance().getReference("Users");
+        loading=findViewById(R.id.check_attendance_progress);
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
         if (!isNetworkAvailable()) {
-            Toast.makeText(SelectSubjectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SelectEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
         }
         else {
             try {
                 users_database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
+                    public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
                         events.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                try {
-                                    for (String key:user.admin_events.keySet()) {
-                                        Event ev = dataSnapshot.child(key).getValue(Event.class);
-                                        arrayList.add(ev);
-                                        keys.put(ev.getName()+", "+ev.getOrganisation(),key);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                    Collections.sort(arrayList);
-                                    loading.setVisibility(View.GONE);
-                                    listView.setVisibility(View.VISIBLE);
-                                    listView.setEmptyView(findViewById(R.id.select_empty_message));
-                                    textView.setVisibility(View.VISIBLE);
-                                    if(arrayList.isEmpty()) {
-                                        textView.setText("No Events");
-                                    }
-                                } catch (Exception e) {
-                                    Log.e("Exception : ", e.getMessage());
+                            public void onDataChange(@NonNull DataSnapshot mdataSnapshot) {
+                                for (String key : user.events.keySet()) {
+                                    Event ev = mdataSnapshot.child(key).getValue(Event.class);
+                                    keys.put(ev.getName() + ", " + ev.getOrganisation() + ", "+ev.getAdmin(), key);
+                                    coordinators.put(ev.getName() + ", " + ev.getOrganisation() + ", "+ev.getAdmin(),dataSnapshot.child(ev.getAdmin()).getValue(User.class));
+                                    arrayList.add(ev);
+                                    adapter.notifyDataSetChanged();
                                 }
+                                loading.setVisibility(View.GONE);
+                                Collections.sort(arrayList);
+                                textView.setText("Total Events : "+arrayList.size());
+                                textView.setVisibility(View.VISIBLE);
+                                listView.setEmptyView(empty_message);
+                                listView.setVisibility(View.VISIBLE);
+                                listView.setEmptyView(findViewById(R.id.select_empty_message));
                             }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -100,9 +99,8 @@ public class SelectSubjectActivity extends AppCompatActivity {
 
                     }
                 });
-            } catch (Exception e) {
-
             }
+            catch (Exception e){}
         }
     }
     private class MyBaseAdapter extends BaseAdapter {
@@ -138,17 +136,18 @@ public class SelectSubjectActivity extends AppCompatActivity {
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
             TextView tv3=view.findViewById(R.id.coordinator_name);
-            tv3.setVisibility(View.GONE);
+            tv3.setText(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+arrayList.get(position).getAdmin()).getFname()+" "+coordinators.get(arrayList.get(position).getName()+", "+arrayList.get(position).getOrganisation()+", "+arrayList.get(position).getAdmin()).getLname());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!isNetworkAvailable()) {
-                        Toast.makeText(SelectSubjectActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SelectEventActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        Intent intent=new Intent(SelectSubjectActivity.this, AttendanceActivity.class);
+                        Intent intent=new Intent(SelectEventActivity.this, AttendanceInfoUserActivity.class);
                         intent.putExtra("Event",new Gson().toJson(std));
-                        intent.putExtra("Key",keys.get(std.getName()+", "+std.getOrganisation()));
+                        intent.putExtra("Event_Key",keys.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()));
+                        intent.putExtra("Coordinator",new Gson().toJson(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin())));
                         startActivity(intent);
                     }
                 }

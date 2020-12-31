@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".selectedEventModificationActivity"
+    tools:context=".SelectedEventModificationActivity"
     android:weightSum="20"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="25dp"
+    android:paddingBottom="15dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingStart="15dp"
     android:paddingEnd="15dp">
@@ -65,7 +65,7 @@
     <ListView
         android:layout_marginTop="15dp"
         android:padding="15dp"
-        android:layout_weight="16"
+        android:layout_weight="18.5"
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:id="@+id/list_view1"
@@ -74,7 +74,7 @@
 
     <TextView
         android:visibility="gone"
-        android:layout_weight="16"
+        android:layout_weight="18.5"
         android:padding="15dp"
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
@@ -94,25 +94,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/add_person_button"
         android:textColor="#FFFFFF"
+        android:padding="10dp"
         android:background="@drawable/rounded_button"
-        android:text="Add New Person"
-        app:autoSizeMaxTextSize="25sp"
-        app:autoSizeMinTextSize="10sp"
-        app:autoSizeStepGranularity="1sp"
-        app:autoSizeTextType="uniform"/>
-
-    <Button
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_marginTop="15dp"
-        android:padding="5dp"
-        style="?borderlessButtonStyle"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_new_event"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/rounded_button"
-        android:text="Copy people and create new event"
+        android:text="Get code to add people"
         app:autoSizeMaxTextSize="25sp"
         app:autoSizeMinTextSize="10sp"
         app:autoSizeStepGranularity="1sp"
