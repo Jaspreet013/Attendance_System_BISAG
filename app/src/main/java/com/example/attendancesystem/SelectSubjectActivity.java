@@ -48,8 +48,6 @@ public class SelectSubjectActivity extends AppCompatActivity {
         adapter=new MyBaseAdapter(SelectSubjectActivity.this);
         users_database=FirebaseDatabase.getInstance().getReference("Users");
         events = FirebaseDatabase.getInstance().getReference("Events");
-        //user=new User();
-        //user=getUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
         listView.setAdapter(adapter);
         listView.setSmoothScrollbarEnabled(true);
         listView.setBackgroundResource(R.drawable.rounded_corners);

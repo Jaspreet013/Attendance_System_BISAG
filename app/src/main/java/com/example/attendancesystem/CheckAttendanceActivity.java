@@ -32,7 +32,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.itextpdf.text.Image;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -269,7 +268,6 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class);
                     intent.putExtra("Person",new Gson().toJson(arrayList.get(position)));
-                    //intent.putExtra("Image",new Gson().toJson(images.get(arrayList.get(position).getPerson_ID())));
                     startActivity(intent);
                 }
             });

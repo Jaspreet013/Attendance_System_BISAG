@@ -113,7 +113,6 @@ public class EnrollActivity extends AppCompatActivity {
                                 });
                             }
                             else{
-                                //Toast.makeText(EnrollActivity.this,"Invalid Event Code",Toast.LENGTH_SHORT).show();
                                 border7.setError("Invalid Event Code");
                                 bar.setVisibility(View.GONE);
                             }

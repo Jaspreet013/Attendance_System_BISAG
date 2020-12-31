@@ -4,13 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,16 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import java.io.File;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -180,12 +171,8 @@ public class AttendanceActivity extends AppCompatActivity {
                         for (final DataSnapshot child : children) {
                             final Person person = child.getValue(Person.class);
                             if (person.getEnabled().equals("Yes")) {
-                                ImageView imageView=new ImageView(AttendanceActivity.this);
                                 try {
                                     images.put(person.getPerson_ID(),Glide.with(AttendanceActivity.this).load(person.getPhotourl()).asBitmap());
-                                    //Uri selectedimage=new Uri(person.getPhotourl());
-                                    //Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                                    //images.put(person.getPerson_ID(),bmp);
                                 }
                                 catch (Exception e){ }
                                 person.setIspresent(false);
@@ -272,16 +259,11 @@ public class AttendanceActivity extends AppCompatActivity {
             tv1.setText(arrayList.get(position).getName());
             TextView tv2 = view.findViewById(R.id.disp_id);
             tv2.setText(arrayList.get(position).getPerson_ID());
-            //imageView.setImageDrawable(Glide.with(images.get(arrayList.get(position).getPerson_ID())));
             try {
                 ImageView imageView=view.findViewById(R.id.person_image);
                 images.get(arrayList.get(position).getPerson_ID()).into(imageView);
             }
             catch (Exception e){ }
-            /*try{
-                Glide.with(AttendanceActivity.this).load(arrayList.get(position).getPhotourl()).into(imageView);
-            }catch (Exception e){}*/
-            //imageView.setImageBitmap(images.get(arrayList.get(position).getPerson_ID()));
             final CheckBox ispresent = view.findViewById(R.id.ispresent);
             if(arrayList.get(position).getIspresent()){
                 ispresent.setChecked(true);
