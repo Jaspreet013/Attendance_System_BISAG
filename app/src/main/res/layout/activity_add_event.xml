@@ -29,7 +29,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:hint="Enter Event Name"
+                android:hint="Event Name"
                 android:maxLength="22"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"
@@ -54,7 +54,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:hint="Enter Organisation Name"
+                android:hint="Organisation Name"
                 android:maxLength="22"
                 android:paddingLeft="15sp"
                 android:paddingRight="15sp"

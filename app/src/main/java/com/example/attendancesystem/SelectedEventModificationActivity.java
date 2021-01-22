@@ -8,12 +8,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Size;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,16 +110,18 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder=new AlertDialog.Builder(SelectedEventModificationActivity.this);
                 builder.setTitle("Code");
-                EditText code=new EditText(SelectedEventModificationActivity.this);
+                TextView code=new TextView(SelectedEventModificationActivity.this);
                 code.setText(event_key);
-                code.setClickable(false);
-                code.setEnabled(false);
+                code.setTypeface(code.getTypeface(),Typeface.BOLD);
+                code.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                code.setTextColor(Color.BLACK);
+                code.setTextSize(TypedValue.COMPLEX_UNIT_SP,25f);
                 LinearLayout ll=new LinearLayout(SelectedEventModificationActivity.this);
                 ll.setOrientation(LinearLayout.VERTICAL);
                 ll.addView(code);
                 builder.setMessage("Share this code with people who you want to add");
                 builder.setView(ll);
-                builder.setCancelable(false);
+                builder.setCancelable(true);
                 builder.setPositiveButton("Copy to Clipboard", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:weightSum="10"
-    android:paddingTop="10dp"
-    android:paddingBottom="5dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -16,18 +16,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000"
         android:textStyle="bold"
-        app:autoSizeMaxTextSize="25sp"
-        app:autoSizeMinTextSize="15sp"
-        app:autoSizeStepGranularity="1sp"
-        app:autoSizeTextType="uniform"/>
+        android:text="Entry"
+        android:textSize="20sp" />
 
     <CheckBox
         android:layout_weight="1"
         android:id="@+id/ispresent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:scaleX="1"
-        android:scaleY="1" />
+        android:layout_gravity="end"/>
 
 </LinearLayout>

@@ -29,8 +29,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:hint="Enter Event Code"
-            android:maxLength="22"
+            android:hint="Event Code"
+            android:maxLength="9"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
             android:id="@+id/event_code"
@@ -54,7 +54,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:hint="Enter ID"
+            android:hint="ID"
             android:maxLength="22"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
@@ -69,7 +69,7 @@
         android:id="@+id/event_enroll"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Enroll into event"
+        android:text="Join"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
         android:padding="10dp"

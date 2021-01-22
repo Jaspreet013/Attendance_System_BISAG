@@ -90,7 +90,7 @@
         android:padding="15dp"
         android:id="@+id/select_empty_message"
         android:textSize="20sp"
-        android:text="Entries will be visible once your coordinator takes your attendance"
+        android:text="No Record"
         android:textAlignment="center"
         android:gravity="center"
         android:visibility="gone"/>

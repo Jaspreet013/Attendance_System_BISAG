@@ -45,11 +45,21 @@ public class EnrollActivity extends AppCompatActivity {
         enroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(code.getText().toString().trim().isEmpty()){
-                    border7.setError("Event code cannot be left blank");
+                if(code.getText().toString().trim().length()<8){
+                    border7.setError("Event code should be 8 or 9 letters and numbers");
                 }
                 else{
-                    border7.setError(null);
+                    boolean set=true;
+                    for (int i=0;i<code.getText().toString().length();i++) {
+                        if ((!Character.isLetterOrDigit(code.getText().toString().toLowerCase().charAt(i)))) {
+                            border7.setError("Event code should be 8 or 9 letters and numbers");
+                            set=false;
+                            break;
+                        }
+                    }
+                    if(set) {
+                        border7.setError(null);
+                    }
                 }
                 if(id.getText().toString().trim().isEmpty()){
                     border8.setError("ID cannot be left blank");
@@ -63,16 +73,16 @@ public class EnrollActivity extends AppCompatActivity {
                     events.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.child(code.getText().toString().trim()).exists()) {
+                            if (dataSnapshot.child(code.getText().toString().trim().toLowerCase()).exists()) {
                                 people.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
-                                        if (!dataSnapshot.child(code.getText().toString().trim()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).exists()) {
+                                        if (!dataSnapshot.child(code.getText().toString().trim().toLowerCase()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).exists()) {
                                             set=true;
                                             users.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot udataSnapshot) {
-                                                    Iterable<DataSnapshot> children=dataSnapshot.child(code.getText().toString().trim()).getChildren();
+                                                    Iterable<DataSnapshot> children=dataSnapshot.child(code.getText().toString().trim().toLowerCase()).getChildren();
                                                     for(DataSnapshot child:children){
                                                         Person person=child.getValue(Person.class);
                                                         if(person.getPerson_ID().equals(id.getText().toString().trim())){
@@ -81,9 +91,9 @@ public class EnrollActivity extends AppCompatActivity {
                                                         }
                                                     }
                                                     if(set) {
-                                                        people.child(code.getText().toString().trim() + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new_person);
+                                                        people.child(code.getText().toString().trim().toLowerCase()+ "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new_person);
                                                         User user = udataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                                                        user.events.put(code.getText().toString().trim(), 1);
+                                                        user.events.put(code.getText().toString().trim().toLowerCase(), 1);
                                                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("events").setValue(user.events);
                                                         bar.setVisibility(View.GONE);
                                                         Toast.makeText(EnrollActivity.this, "Successfully Enrolled into this event", Toast.LENGTH_SHORT).show();

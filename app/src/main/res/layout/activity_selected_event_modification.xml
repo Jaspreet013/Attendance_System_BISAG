@@ -65,7 +65,7 @@
     <ListView
         android:layout_marginTop="15dp"
         android:padding="15dp"
-        android:layout_weight="18.5"
+        android:layout_weight="18.75"
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:id="@+id/list_view1"
@@ -74,7 +74,7 @@
 
     <TextView
         android:visibility="gone"
-        android:layout_weight="18.5"
+        android:layout_weight="18.75"
         android:padding="15dp"
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
         android:gravity="center_vertical" />
 
     <Button
-        android:layout_weight="1"
+        android:layout_weight="0.75"
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         style="?borderlessButtonStyle"
@@ -94,9 +94,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/add_person_button"
         android:textColor="#FFFFFF"
-        android:padding="10dp"
         android:background="@drawable/rounded_button"
-        android:text="Get code to add people"
+        android:text="Get event code"
+        android:padding="10dp"
         app:autoSizeMaxTextSize="25sp"
         app:autoSizeMinTextSize="10sp"
         app:autoSizeStepGranularity="1sp"

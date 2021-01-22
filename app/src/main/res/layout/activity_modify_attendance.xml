@@ -45,7 +45,6 @@
         android:id="@+id/disp_user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email : "
         android:textSize="20sp" />
 
     <TextView
@@ -53,7 +52,7 @@
         android:id="@+id/disp_user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Person ID : "
+        android:text="ID : "
         android:textColor="#1515FF"
         android:textSize="20sp" />
 
@@ -88,7 +87,7 @@
     </RelativeLayout>
 
     <ListView
-        android:layout_weight="9.25"
+        android:layout_weight="9.35"
         android:padding="15dp"
         android:layout_marginTop="15dp"
         android:layout_height="5dp"
@@ -102,7 +101,7 @@
         android:visibility="gone"
         android:layout_marginTop="15dp"
         android:textAlignment="center"
-        android:layout_weight="9.25"
+        android:layout_weight="9.35"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:textSize="25sp"

@@ -44,7 +44,7 @@
         android:padding="15dp"
         android:id="@+id/select_empty_message"
         android:textSize="20sp"
-        android:text="You can create event by Manage Events -> Add New Event -> (Create event) and also add people to it by Manage Events -> (Click on the event) -> Click on Get code and share the code with people who you want to add"
+        android:text="You can create event by Manage Events -> Add New Event -> (Add event) and also add people to it by Manage Events -> (Click on the event) -> Click on Get event code and share the code with people who you want to add"
         android:textAlignment="center"
         android:gravity="center_vertical"
         android:layout_gravity="center"

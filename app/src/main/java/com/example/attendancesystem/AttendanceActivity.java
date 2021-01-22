@@ -196,10 +196,10 @@ public class AttendanceActivity extends AppCompatActivity {
                         else{
                             loading.setVisibility(View.GONE);
                             AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceActivity.this);
-                            builder.setMessage("Either no people are enrolled into the event or all the people are excluded from this event");
+                            builder.setMessage("Either no people have joined the event or all the people are excluded from this event");
                             builder.setTitle("No people are in this Event");
                             builder.setCancelable(false);
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            builder.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     finish();

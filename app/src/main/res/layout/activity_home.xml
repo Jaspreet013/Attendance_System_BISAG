@@ -68,7 +68,7 @@
                 android:layout_below="@+id/layout1"
                 android:textColor="#FFFFFF"
                 android:drawableTop="@drawable/ic_add"
-                android:text="Enroll into event"
+                android:text="Join event"
                 android:padding="10dp"
                 android:background="@drawable/rounded_button"/>
 
@@ -113,7 +113,7 @@
             android:id="@+id/take_attendance"
             android:textColor="#FFFFFF"
             android:drawableTop="@drawable/ic_add_box"
-            android:text="Take Attendance"
+            android:text="Take\nAttendance"
             android:padding="10dp"
             android:layout_marginEnd="7.5dp"
             style="?borderlessButtonStyle"
