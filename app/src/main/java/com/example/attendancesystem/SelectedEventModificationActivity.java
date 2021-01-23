@@ -211,20 +211,21 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                     boolean set=true;
                                                     for(String evkey:user.admin_events.keySet()){
-                                                        Event ev=dataSnapshot.child(evkey).getValue(Event.class);
+                                                        Event ev=dataSnapshot.child(user.admin_events.get(evkey)).getValue(Event.class);
                                                         if(input.getText().toString().trim().toUpperCase().equals(ev.getName().toUpperCase()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation().toUpperCase())){
                                                             set=false;
                                                             key="";
                                                             break;
                                                         }
                                                         else if(current_event.getName().equals(ev.getName()) && current_event.getOrganisation().toUpperCase().equals(ev.getOrganisation())){
-                                                            key=evkey;
+                                                            key=user.admin_events.get(evkey);
                                                         }
                                                     }
                                                     if(set){
                                                         event_database.child(key).child("name").setValue(input.getText().toString().trim().toUpperCase());
                                                         Toast.makeText(SelectedEventModificationActivity.this,"Event name Changed successfully",Toast.LENGTH_SHORT).show();
                                                         eventview.setText(input.getText().toString().toUpperCase().trim());
+                                                        current_event.setName(input.getText().toString().toUpperCase().trim());
                                                         setResult(RESULT_OK);
                                                     }
                                                     else{
@@ -294,20 +295,21 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             boolean set=true;
                                             for(String evkey:user.admin_events.keySet()){
-                                                Event ev=dataSnapshot.child(evkey).getValue(Event.class);
+                                                Event ev=dataSnapshot.child(user.admin_events.get(evkey)).getValue(Event.class);
                                                 if(input.getText().toString().trim().toUpperCase().equals(ev.getOrganisation()) && current_event.getName().toUpperCase().equals(ev.getName().toUpperCase())){
                                                     set=false;
                                                     key="";
                                                     break;
                                                 }
                                                 else if(current_event.getOrganisation().equals(ev.getOrganisation()) && current_event.getName().equals(ev.getName())){
-                                                    key=evkey;
+                                                    key=user.admin_events.get(evkey);
                                                 }
                                             }
                                             if(set){
                                                 event_database.child(key).child("organisation").setValue(input.getText().toString().trim().toUpperCase());
                                                 Toast.makeText(SelectedEventModificationActivity.this,"Organisation Changed successfully",Toast.LENGTH_SHORT).show();
                                                 organisationview.setText(input.getText().toString().toUpperCase().trim());
+                                                current_event.setOrganisation(input.getText().toString().toUpperCase().trim());
                                                 setResult(RESULT_OK);
                                             }
                                             else{
