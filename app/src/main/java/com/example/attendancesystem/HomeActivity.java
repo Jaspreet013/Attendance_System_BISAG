@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,14 +73,14 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                    if(!account.getGivenName().equals(user.getFname()) || !account.getFamilyName().equals(user.getLname()) || !account.getPhotoUrl().equals(user.getPhotourl())) {
-                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/fname").setValue(account.getGivenName());
-                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/lname").setValue(account.getFamilyName());
+                    if(!(account.getGivenName().equals(user.getFname()) && account.getFamilyName().equals(user.getLname()) && account.getPhotoUrl().toString().equals(user.getPhotourl()))) {
+                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Fname").setValue(account.getGivenName());
+                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Lname").setValue(account.getFamilyName());
                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString());
                         final User user1 = dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
                         for (String key : user1.events.keySet()) {
-                            users.getParent().child("People/" + key + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
-                            users.getParent().child("People/" + key + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString());
+                            users.getParent().child("People/" + user1.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
+                            users.getParent().child("People/" + user1.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString());
                         }
                     }
                     dialog.dismiss();
@@ -192,7 +193,6 @@ public class HomeActivity extends AppCompatActivity {
     private  void handleSignInResult(Task<GoogleSignInAccount> task){
         try{
             GoogleSignInAccount acc = task.getResult(ApiException.class);
-            //Toast.makeText(HomeActivity.this,"Signed In Successfully",Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(acc);
         }
         catch (ApiException e){
