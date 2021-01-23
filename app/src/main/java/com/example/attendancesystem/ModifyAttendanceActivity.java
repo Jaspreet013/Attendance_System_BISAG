@@ -69,7 +69,6 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         userlname  = findViewById(R.id.disp_user_lname);
         id = findViewById(R.id.disp_user_id);
         email = findViewById(R.id.disp_user_email);
-        //User user=new Gson().fromJson(getIntent().getStringExtra("User"),User.class);
         String str[]=current_person.getName().split(" ",2);
         userfname.setText(str[0]);
         userlname.setText(str[1]);

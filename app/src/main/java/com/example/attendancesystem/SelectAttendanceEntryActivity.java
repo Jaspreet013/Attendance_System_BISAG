@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -18,14 +19,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -57,6 +62,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,13 +73,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private ArrayList<String> arrayList=new ArrayList<>();
     private final ArrayList<Person> persons=new ArrayList<>();
     private final HashMap<String,String> keys=new HashMap<>();
-    private DatePickerDialog picker;
     private ProgressBar loading;
     private TextView textView;
     private ListView listView;
     private MyBaseAdapter adapter;
     private Button download;
     private DatabaseReference people;
+    private String start_date,end_date;
+    private AlertDialog.Builder builder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,114 +146,159 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-                final ArrayList<String> selected_keys = new ArrayList<>();
-                SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-                String date[] = format.format(new Date()).split("-", 3);
-                if (date[1].equals("1")) {
-                    date[2] = Integer.toString(Integer.parseInt(date[2]) - 1);
-                    date[1] = "12";
+                builder=new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                builder.setTitle("Select Duration");
+                LinearLayout rl =new LinearLayout(SelectAttendanceEntryActivity.this);
+                rl.setOrientation(LinearLayout.HORIZONTAL);
+                rl.setGravity(Gravity.CENTER);
+                final TextView start=new TextView(SelectAttendanceEntryActivity.this);
+                start.setText("Start Date");
+                start.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f);
+                start.setTextColor(getResources().getColor(R.color.colorAccent,null));
+                start.setTypeface(start.getTypeface(), Typeface.BOLD);
+                start.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                if(!TextUtils.isEmpty(start_date)){
+                    start.setText(start_date);
                 }
-                picker = new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                final TextView end=new TextView(SelectAttendanceEntryActivity.this);
+                end.setPadding(50,0,0,0);
+                end.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f);
+                end.setText("End Date");
+                end.setTextColor(getResources().getColor(R.color.colorAccent,null));
+                end.setTypeface(end.getTypeface(),Typeface.BOLD);
+                end.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                if(!TextUtils.isEmpty(end_date)) {
+                    end.setText(end_date);
+                }
+                start.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        PrintReport report = new PrintReport();
-                        month += 1;
-                        for (String key : arrayList) {
-                            String str[] = key.split("-", 5);
-                            int d = Integer.parseInt(str[2]);
-                            int m = Integer.parseInt(str[1]);
-                            int y = Integer.parseInt(str[0]);
-                            if(month == 12) {
-                                if (m == 1 && y == year + 1 && dayOfMonth > d) {
-                                    selected_keys.add(key); }
-                                else if (m == 12 && year == y && dayOfMonth <= d) {
-                                    selected_keys.add(key);
-                                }
-                            }
-                            else {
-                                if (year == y && month == m && d >= dayOfMonth) {
-                                    selected_keys.add(key);
-                                }
-                                else if (year == y && m == (month + 1) && d < dayOfMonth) {
-                                    selected_keys.add(key);
-                                }
-                            }
-                        }
-                        if(!selected_keys.isEmpty()) {
-                            int end_day, end_month, end_year;
-                            if (dayOfMonth == 1) {
-                                if (month >= 1 && month <= 7) {
-                                    end_month = month;
-                                    end_year = year;
-                                    if (month != 2) {
-                                        if (month % 2 == 1) {
-                                            end_day = 31;
-                                        }
-                                        else {
-                                            end_day = 30;
-                                        }
-                                    }
-                                    else {
-                                        if (year % 2 == 0) {
-                                            end_day = 29;
-                                        }
-                                        else {
-                                            end_day = 28;
-                                        }
+                    public void onClick(View v) {
+                        Calendar set=Calendar.getInstance();
+                        DatePickerDialog picker = new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                month += 1;
+                                start_date=dayOfMonth+"/"+month+"/"+year;
+                                start.setText(start_date);
+                                try {
+                                    if (TextUtils.isEmpty(end_date)) {
+                                        Calendar calendar = Calendar.getInstance();
+                                        calendar.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(start_date));
+                                        calendar.add(Calendar.MONTH, 1);
+                                        calendar.add(Calendar.DAY_OF_MONTH, -1);
+                                        end_date=new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime());
                                     }
                                 }
-                                else {
-                                    end_month = month;
-                                    end_year = year;
-                                    if (month % 2 == 0) {
-                                        end_day = 31;
+                                catch (Exception e){}
+                            }
+                        },set.get(Calendar.YEAR),set.get(Calendar.MONTH),set.get(Calendar.DAY_OF_MONTH));
+                        //if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        picker.show();
+                        //}
+                    }
+                });
+                rl.addView(start);
+                end.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar set=Calendar.getInstance();
+                        DatePickerDialog picker = new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                month += 1;
+                                end_date=dayOfMonth+"/"+month+"/"+year;
+                                end.setText(end_date);
+                                try {
+                                    if (TextUtils.isEmpty(start_date)) {
+                                        Calendar calendar = Calendar.getInstance();
+                                        calendar.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(end_date));
+                                        calendar.add(Calendar.MONTH, -1);
+                                        calendar.add(Calendar.DAY_OF_MONTH,1);
+                                        start_date=new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime());
                                     }
-                                    else {
-                                        end_day = 30;
-                                    }
                                 }
+                                catch (Exception e){}
                             }
-                            else {
-                                end_day = dayOfMonth - 1;
-                                if (month == 12) {
-                                    end_month = 1;
-                                    end_year = year + 1;
-                                }
-                                else {
-                                    end_month = month + 1;
-                                    end_year = year;
-                                }
-                            }
-                            if(end_month == 2 && (end_day == 30 || end_day == 29)) {
-                                if(end_year % 4 == 0) {
-                                    end_day = 29;
-                                }
-                                else {
-                                    end_day = 28;
-                                }
-                            }
-                            File file = new File(report.createPDF(current_event, persons, selected_keys, dayOfMonth, month, year, end_day, end_month, end_year));
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                            dialog.setCancelable(false);
-                            dialog.setTitle("File Saved Successfully");
-                            dialog.setMessage("File has been successfully saved in " + file.getPath());
-                            dialog.setPositiveButton("Ok", null);
-                            dialog.show();
-                            addNotification(file.getName());
+                        },set.get(Calendar.YEAR),set.get(Calendar.MONTH),set.get(Calendar.DAY_OF_MONTH));
+                        //if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            picker.show();
+                        //}
+                        //else{
+                        //}
+                    }
+                });
+                rl.addView(end);
+                builder.setMessage("Select Duration of at most one month by clicking on start date and end date");
+                builder.setView(rl);
+                builder.setCancelable(false);
+                builder.setPositiveButton("Download PDF", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Date start,end;
+                        ArrayList<String> selected_keys=new ArrayList<>();
+                        if(TextUtils.isEmpty(start_date) || TextUtils.isEmpty(end_date)){
+                            Toast.makeText(SelectAttendanceEntryActivity.this,"You have not selected any date",Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                            dialog.setCancelable(false);
-                            dialog.setTitle("No Entry found during given duration");
-                            dialog.setPositiveButton("Ok", null);
-                            dialog.show();
+                            try {
+                                start = new SimpleDateFormat("dd/MM/yyyy").parse(start_date);
+                                end = new SimpleDateFormat("dd/MM/yyyy").parse(end_date);
+                                Calendar calendar=Calendar.getInstance();
+                                calendar.setTime(end);
+                                calendar.add(Calendar.MONTH,-1);
+                                calendar.add(Calendar.DAY_OF_MONTH,1);
+                                Date month_back=calendar.getTime();
+                                calendar.setTime(start);
+                                calendar.add(Calendar.MONTH,1);
+                                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                                Date month_ahead=calendar.getTime();
+                                if(start.compareTo(end)>0){
+                                    Toast.makeText(SelectAttendanceEntryActivity.this,"Start Date is more than end date",Toast.LENGTH_SHORT).show();
+                                }
+                                else if(month_back.compareTo(start)>0 || month_ahead.compareTo(end)<0){
+                                    Toast.makeText(SelectAttendanceEntryActivity.this,"You can select only one month duration",Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    for (String key : arrayList) {
+                                        String str[] = key.split("-", 5);
+                                        int d = Integer.parseInt(str[2]);
+                                        int m = Integer.parseInt(str[1]);
+                                        int y = Integer.parseInt(str[0]);
+                                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                                        if (temp.compareTo(start) >= 0 && temp.compareTo(end) <= 0) {
+                                            selected_keys.add(key);
+                                        }
+                                    }
+                                    if (selected_keys.isEmpty()) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                        builder.setCancelable(false);
+                                        builder.setTitle("No Entry found during given duration");
+                                        builder.setPositiveButton("Ok", null);
+                                        builder.show();
+                                    } else {
+                                        PrintReport printReport = new PrintReport();
+                                        String[] date0 = start_date.split("/", 3);
+                                        String[] date1 = end_date.split("/", 3);
+                                        File file = new File(printReport.createPDF(current_event, persons, selected_keys, Integer.parseInt(date0[0]), Integer.parseInt(date0[1]), Integer.parseInt(date0[2]), Integer.parseInt(date1[0]), Integer.parseInt(date1[1]), Integer.parseInt(date1[2])));
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                        builder.setCancelable(false);
+                                        builder.setTitle("File Saved Successfully");
+                                        builder.setMessage("File has been successfully saved in " + file.getPath());
+                                        builder.setPositiveButton("Ok", null);
+                                        builder.show();
+                                        addNotification(file.getName());
+                                    }
+                                }
+                            } catch (Exception e) { }
                         }
                     }
-                }, Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 2, Integer.parseInt(date[0]));
-                picker.setMessage("Select your start of month");
-                if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    picker.show();
+                });
+                builder.setNegativeButton("Cancel",null);
+                if(SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    builder.show();
+                }
+                else{
+                    ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
                 }
             }
         });
@@ -526,7 +578,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            picker.show();
+            builder.show();
         }
         else if(!(ActivityCompat.shouldShowRequestPermissionRationale(SelectAttendanceEntryActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) && !(SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
