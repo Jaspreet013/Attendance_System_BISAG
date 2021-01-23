@@ -20,6 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class EnrollActivity extends AppCompatActivity {
     private Person new_person;
     private EditText code,id;
@@ -93,10 +96,12 @@ public class EnrollActivity extends AppCompatActivity {
                                                     if(set) {
                                                         people.child(code.getText().toString().trim().toLowerCase()+ "/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new_person);
                                                         User user = udataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                                                        user.events.put(code.getText().toString().trim().toLowerCase(), 1);
+                                                        Date date=new Date();
+                                                        SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                                                        user.events.put(datef.format(date),code.getText().toString().trim().toLowerCase());
                                                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("events").setValue(user.events);
                                                         bar.setVisibility(View.GONE);
-                                                        Toast.makeText(EnrollActivity.this, "Successfully Enrolled into this event", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(EnrollActivity.this, "Successfully joined this event", Toast.LENGTH_SHORT).show();
                                                         finish();
                                                     }
                                                     else{
@@ -111,7 +116,7 @@ public class EnrollActivity extends AppCompatActivity {
                                                 }
                                             });
                                         } else {
-                                            Toast.makeText(EnrollActivity.this, "You have already enrolled into this event", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(EnrollActivity.this, "You have already joined this event", Toast.LENGTH_SHORT).show();
                                             bar.setVisibility(View.GONE);
                                         }
                                     }

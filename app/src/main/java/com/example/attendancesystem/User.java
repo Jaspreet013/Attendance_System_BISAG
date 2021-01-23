@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class User {
     private String Fname,Lname,email,photourl;
-    public HashMap<String,Integer> events=new HashMap<>(),admin_events=new HashMap<>();
+    public HashMap<String,String> events=new HashMap<>(),admin_events=new HashMap<>();
     public User(){}
     public User(String Fname,String Lname,String email,String photourl){
         this.Fname=Fname;
@@ -29,13 +29,13 @@ public class User {
 
     public String getPhotourl() { return photourl; }
 
-    public void setEvents(HashMap<String, Integer> events) { this.events = events; }
+    public void setEvents(HashMap<String, String> events) { this.events = events; }
 
-    public HashMap<String, Integer> getEvents() { return events; }
+    public HashMap<String, String> getEvents() { return events; }
 
-    public void setAdmin_events(HashMap<String, Integer> admin_events) { this.admin_events = admin_events; }
+    public void setAdmin_events(HashMap<String, String> admin_events) { this.admin_events = admin_events; }
 
-    public HashMap<String, Integer> getAdmin_events() { return admin_events; }
+    public HashMap<String, String> getAdmin_events() { return admin_events; }
 
     /*public User getUser(){
         DatabaseReference user_database= FirebaseDatabase.getInstance().getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid());

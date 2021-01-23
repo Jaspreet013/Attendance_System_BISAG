@@ -31,7 +31,8 @@ import java.util.HashMap;
 
 public class CheckSelectActivity extends AppCompatActivity {
     private ListView listView;
-    private final ArrayList<Event> arrayList=new ArrayList<>();
+    private final ArrayList<String> dates=new ArrayList<>();
+    private final HashMap<String,Event> event_data=new HashMap<>();
     private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private TextView textView;
@@ -70,14 +71,16 @@ public class CheckSelectActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 try {
                                     for(String key:user.admin_events.keySet()){
-                                        Event ev = dataSnapshot.child(key).getValue(Event.class);
-                                        arrayList.add(ev);
-                                        keys.put(ev.getName()+", "+ev.getOrganisation(),key);
+                                        Event ev = dataSnapshot.child(user.admin_events.get(key)).getValue(Event.class);
+                                        event_data.put(key,ev);
+                                        dates.add(key);
+                                        keys.put(ev.getName()+", "+ev.getOrganisation(),user.admin_events.get(key));
                                         adapter.notifyDataSetChanged();
                                     }
                                     loading.setVisibility(View.GONE);
-                                    Collections.sort(arrayList);
-                                    textView.setText("Total Events : "+arrayList.size());
+                                    Collections.sort(dates);
+                                    Collections.reverse(dates);
+                                    textView.setText("Total Events : "+dates.size());
                                     textView.setVisibility(View.VISIBLE);
                                     listView.setVisibility(View.VISIBLE);
                                     listView.setEmptyView(findViewById(R.id.select_empty_message));
@@ -112,12 +115,12 @@ public class CheckSelectActivity extends AppCompatActivity {
         }
         @Override
         public int getCount() {
-            return arrayList.size();
+            return dates.size();
         }
 
         @Override
-        public Event getItem(int position) {
-            return arrayList.get(position);
+        public String getItem(int position) {
+            return dates.get(position);
         }
 
         @Override
@@ -129,7 +132,7 @@ public class CheckSelectActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.event_list_view, null);
-            final Event std=arrayList.get(position);
+            final Event std=event_data.get(dates.get(position));
             TextView tv1=view.findViewById(R.id.dispname);
             tv1.setText(std.getName());
             TextView tv2=view.findViewById(R.id.disporganisation);

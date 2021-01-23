@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class AddEventActivity extends AppCompatActivity {
@@ -86,7 +88,7 @@ public class AddEventActivity extends AppCompatActivity {
                                     ev = new Event(event_name.getText().toString().trim().toUpperCase(), event_organisation.getText().toString().trim().toUpperCase(),FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     if(!user.admin_events.isEmpty()) {
                                         for (String ev_key : user.admin_events.keySet()) {
-                                            Event eve = dataSnapshot.child(ev_key).getValue(Event.class);
+                                            Event eve = dataSnapshot.child(user.admin_events.get(ev_key)).getValue(Event.class);
                                             if (eve.getName().equals(ev.getName()) && eve.getOrganisation().equals(ev.getOrganisation())) {
                                                 set = false;
                                                 break;
@@ -106,7 +108,9 @@ public class AddEventActivity extends AppCompatActivity {
                                                     key=generateRandomCode();
                                                 }while(dataSnapshot.child(key).exists());
                                                 events.child(key).setValue(ev);
-                                                user.admin_events.put(key,1);
+                                                Date date=new Date();
+                                                SimpleDateFormat datef=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                                                user.admin_events.put(datef.format(date),key);
                                                 FirebaseDatabase.getInstance().getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/admin_events").setValue(user.admin_events);
                                                 Toast.makeText(AddEventActivity.this, "Event Added", Toast.LENGTH_SHORT).show();
                                                 loading.setVisibility(View.GONE);

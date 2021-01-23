@@ -31,7 +31,8 @@ import java.util.HashMap;
 public class SelectSubjectActivity extends AppCompatActivity {
     private TextView textView;
     private ListView listView;
-    private final ArrayList<Event> arrayList=new ArrayList<>();
+    private final HashMap<String,Event> event_data=new HashMap<>();
+    private final ArrayList<String> dates=new ArrayList<>();
     private final HashMap<String,String> keys=new HashMap<>();
     private MyBaseAdapter adapter;
     private ProgressBar loading;
@@ -69,17 +70,19 @@ public class SelectSubjectActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 try {
                                     for (String key:user.admin_events.keySet()) {
-                                        Event ev = dataSnapshot.child(key).getValue(Event.class);
-                                        arrayList.add(ev);
-                                        keys.put(ev.getName()+", "+ev.getOrganisation(),key);
+                                        Event ev = dataSnapshot.child(user.admin_events.get(key)).getValue(Event.class);
+                                        dates.add(key);
+                                        event_data.put(key,ev);
+                                        keys.put(ev.getName()+", "+ev.getOrganisation(),user.admin_events.get(key));
                                         adapter.notifyDataSetChanged();
                                     }
-                                    Collections.sort(arrayList);
+                                    Collections.sort(dates);
+                                    Collections.reverse(dates);
                                     loading.setVisibility(View.GONE);
                                     listView.setVisibility(View.VISIBLE);
                                     listView.setEmptyView(findViewById(R.id.select_empty_message));
                                     textView.setVisibility(View.VISIBLE);
-                                    if(arrayList.isEmpty()) {
+                                    if(dates.isEmpty()) {
                                         textView.setText("No Events");
                                     }
                                 } catch (Exception e) {
@@ -113,12 +116,12 @@ public class SelectSubjectActivity extends AppCompatActivity {
         }
         @Override
         public int getCount() {
-            return arrayList.size();
+            return dates.size();
         }
 
         @Override
-        public Event getItem(int position) {
-            return arrayList.get(position);
+        public String getItem(int position) {
+            return dates.get(position);
         }
 
         @Override
@@ -130,7 +133,7 @@ public class SelectSubjectActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.event_list_view, null);
-            final Event std=arrayList.get(position);
+            final Event std=event_data.get(dates.get(position));
             TextView tv1=view.findViewById(R.id.dispname);
             tv1.setText(std.getName());
             TextView tv2=view.findViewById(R.id.disporganisation);

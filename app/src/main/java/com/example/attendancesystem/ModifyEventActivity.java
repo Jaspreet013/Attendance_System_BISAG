@@ -32,8 +32,9 @@ import java.util.HashMap;
 
 public class ModifyEventActivity extends AppCompatActivity {
     private ListView listView;
-    private final ArrayList<Event> arrayList = new ArrayList<>();
+    private final HashMap<String,Event> event_data = new HashMap<>();
     private final HashMap<String,String> keys=new HashMap<>();
+    private final ArrayList<String> dates=new ArrayList<>();
     private MyBaseAdapter adapter;
     private TextView total_events;
     private DatabaseReference events;
@@ -82,14 +83,16 @@ public class ModifyEventActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     try {
                                         for (String key : user.admin_events.keySet()) {
-                                            Event ev = dataSnapshot.child(key).getValue(Event.class);
-                                            arrayList.add(ev);
-                                            keys.put(ev.getName() + ", " + ev.getOrganisation(), key);
+                                            Event ev = dataSnapshot.child(user.admin_events.get(key)).getValue(Event.class);
+                                            dates.add(key);
+                                            event_data.put(key,ev);
+                                            keys.put(ev.getName() + ", " + ev.getOrganisation(), user.admin_events.get(key));
                                             adapter.notifyDataSetChanged();
                                         }
-                                        Collections.sort(arrayList);
+                                        Collections.sort(dates);
+                                        Collections.reverse(dates);
                                         loading.setVisibility(View.GONE);
-                                        total_events.setText(total_events.getText().toString() + arrayList.size());
+                                        total_events.setText(total_events.getText().toString() + dates.size());
                                         total_events.setVisibility(View.VISIBLE);
                                         listView.setVisibility(View.VISIBLE);
                                         add_event.setVisibility(View.VISIBLE);
@@ -130,12 +133,12 @@ public class ModifyEventActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return arrayList.size();
+            return dates.size();
         }
 
         @Override
-        public Event getItem(int position) {
-            return arrayList.get(position);
+        public String getItem(int position) {
+            return dates.get(position);
         }
 
         @Override
@@ -147,13 +150,14 @@ public class ModifyEventActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater.inflate(R.layout.event_list_view, null);
-            final Event std = arrayList.get(position);
+            final Event std = event_data.get(dates.get(position));
             TextView tv1 = view.findViewById(R.id.dispname);
             tv1.setText(std.getName());
             TextView tv2 = view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
             TextView tv3 = view.findViewById(R.id.coordinator_name);
-            tv3.setVisibility(View.GONE);
+            String[] str=dates.get(position).split("-",6);
+            tv3.setText("Created on "+str[2]+"/"+str[1]+"/"+str[0]);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

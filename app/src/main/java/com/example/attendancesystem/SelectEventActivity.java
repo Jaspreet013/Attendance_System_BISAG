@@ -32,7 +32,8 @@ import java.util.HashMap;
 
 public class SelectEventActivity extends AppCompatActivity {
     private ListView listView;
-    private final ArrayList<Event> arrayList=new ArrayList<>();
+    private final HashMap<String,Event> event_data=new HashMap<>();
+    private final ArrayList<String> dates =new ArrayList<>();
     private final HashMap<String,String> keys=new HashMap<>();
     private final HashMap<String, User> coordinators=new HashMap<>();
     private MyBaseAdapter adapter;
@@ -72,15 +73,17 @@ public class SelectEventActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot mdataSnapshot) {
                                 for (String key : user.events.keySet()) {
-                                    Event ev = mdataSnapshot.child(key).getValue(Event.class);
-                                    keys.put(ev.getName() + ", " + ev.getOrganisation() + ", "+ev.getAdmin(), key);
+                                    Event ev = mdataSnapshot.child(user.events.get(key)).getValue(Event.class);
+                                    keys.put(ev.getName() + ", " + ev.getOrganisation() + ", "+ev.getAdmin(), user.events.get(key));
                                     coordinators.put(ev.getName() + ", " + ev.getOrganisation() + ", "+ev.getAdmin(),dataSnapshot.child(ev.getAdmin()).getValue(User.class));
-                                    arrayList.add(ev);
+                                    event_data.put(key,ev);
+                                    dates.add(key);
                                     adapter.notifyDataSetChanged();
                                 }
                                 loading.setVisibility(View.GONE);
-                                Collections.sort(arrayList);
-                                textView.setText("Total Events : "+arrayList.size());
+                                Collections.sort(dates);
+                                Collections.reverse(dates);
+                                textView.setText("Total Events : "+dates.size());
                                 textView.setVisibility(View.VISIBLE);
                                 listView.setEmptyView(empty_message);
                                 listView.setVisibility(View.VISIBLE);
@@ -113,12 +116,12 @@ public class SelectEventActivity extends AppCompatActivity {
         }
         @Override
         public int getCount() {
-            return arrayList.size();
+            return dates.size();
         }
 
         @Override
-        public Event getItem(int position) {
-            return arrayList.get(position);
+        public String getItem(int position) {
+            return dates.get(position);
         }
 
         @Override
@@ -130,13 +133,13 @@ public class SelectEventActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.event_list_view, null);
-            final Event std=arrayList.get(position);
+            final Event std=event_data.get(dates.get(position));
             TextView tv1=view.findViewById(R.id.dispname);
             tv1.setText(std.getName());
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
             TextView tv3=view.findViewById(R.id.coordinator_name);
-            tv3.setText(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+arrayList.get(position).getAdmin()).getFname()+" "+coordinators.get(arrayList.get(position).getName()+", "+arrayList.get(position).getOrganisation()+", "+arrayList.get(position).getAdmin()).getLname());
+            tv3.setText(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()).getFname()+" "+coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()).getLname());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

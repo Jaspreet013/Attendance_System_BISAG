@@ -373,13 +373,23 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                                        user.admin_events.remove(event_key);
+                                        for(String ev_key:user.admin_events.keySet()){
+                                            if(user.admin_events.get(ev_key).equals(event_key)) {
+                                                user.admin_events.remove(ev_key);
+                                                break;
+                                            }
+                                        }
                                         event_database.child(event_key).removeValue();
                                         people.removeValue();
                                         users_database.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("admin_events").setValue(user.admin_events);
                                         for (String key : keys.values()) {
                                             user = dataSnapshot.child(key).getValue(User.class);
-                                            user.events.remove(event_key);
+                                            for(String ev_key:user.events.keySet()) {
+                                                if(user.events.get(ev_key).equals(event_key)) {
+                                                    user.events.remove(ev_key);
+                                                    break;
+                                                }
+                                            }
                                             users_database.child(key).child("events").setValue(user.events);
                                         }
                                         Toast.makeText(SelectedEventModificationActivity.this,"Event Deleted Successfully",Toast.LENGTH_SHORT).show();
@@ -484,7 +494,12 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         user=dataSnapshot.child(keys.get(std.getPerson_ID())).getValue(User.class);
-                                                        user.events.remove(event_key);
+                                                        for(String ev_key:user.events.keySet()){
+                                                            if(user.events.get(ev_key).equals(event_key)){
+                                                                user.events.remove(ev_key);
+                                                                break;
+                                                            }
+                                                        }
                                                         FirebaseDatabase.getInstance().getReference("Users/"+keys.get(std.getPerson_ID())+"/events").setValue(user.events);
                                                     }
 
