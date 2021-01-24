@@ -26,6 +26,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,29 +130,25 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                alertDialog.setTitle("Rename ID");
-                final EditText input = new EditText(ModifyAttendanceActivity.this);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ModifyAttendanceActivity.this);
+                View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
+                TextInputLayout layout = view.findViewById(R.id.border7);
+                final TextInputEditText input = view.findViewById(R.id.input);
+                layout.setHint("Rename ID");
                 input.setText(current_person.getPerson_ID());
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
+                alertDialog.setView(view);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
                             Toast.makeText(ModifyAttendanceActivity.this,"Please check your internet connection and try again",Toast.LENGTH_SHORT).show();
                         }
-                        else if(input.getText().toString().trim().length()>20){
-                            Toast.makeText(ModifyAttendanceActivity.this,"ID length cannot be more than 15",Toast.LENGTH_SHORT).show();
-                        }
                         else if(TextUtils.isEmpty(input.getText().toString().trim())){
                             Toast.makeText(ModifyAttendanceActivity.this,"ID cannot be left blank",Toast.LENGTH_SHORT).show();
                         }
                         else if(!input.getText().toString().trim().equals(current_person.getPerson_ID())){
                             try {
+                                Toast.makeText(ModifyAttendanceActivity.this,"Please Wait....",Toast.LENGTH_SHORT).show();
                                 person.getParent().addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,7 +166,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                                             current_person.setPerson_ID(input.getText().toString().trim());
                                             person.setValue(current_person);
                                             Toast.makeText(ModifyAttendanceActivity.this,"ID changed successfully",Toast.LENGTH_SHORT).show();
-                                            id.setText("Person ID : "+input.getText().toString());
+                                            id.setText("ID : "+input.getText().toString());
                                             setResult(RESULT_OK);
                                         }
                                     }

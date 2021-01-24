@@ -7,15 +7,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -38,6 +42,8 @@ import androidx.core.text.HtmlCompat;
 
 import com.bumptech.glide.BitmapTypeRequest;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -179,15 +185,13 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
         eventview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
-                alertDialog.setTitle("Rename Event");
-                final EditText input = new EditText(SelectedEventModificationActivity.this);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
+                View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
+                TextInputLayout layout = view.findViewById(R.id.border7);
+                final TextInputEditText input = view.findViewById(R.id.input);
+                layout.setHint("Rename Event");
                 input.setText(current_event.getName());
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
+                alertDialog.setView(view);
                 alertDialog.setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -197,10 +201,8 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                                 else if (TextUtils.isEmpty(input.getText().toString().trim())) {
                                     Toast.makeText(SelectedEventModificationActivity.this,"Event Name cannot be set as empty",Toast.LENGTH_SHORT).show();
                                 }
-                                else if(input.getText().toString().trim().length()>22){
-                                    Toast.makeText(SelectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
-                                }
                                 else if(!input.getText().toString().trim().toUpperCase().equals(eventview.getText().toString().trim().toUpperCase())){
+                                    Toast.makeText(SelectedEventModificationActivity.this,"Please Wait....",Toast.LENGTH_SHORT).show();
                                     users_database.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -265,14 +267,12 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
-                alertDialog.setTitle("Rename Organisation");
-                final EditText input = new EditText(SelectedEventModificationActivity.this);
+                final View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
+                final TextInputLayout layout = view.findViewById(R.id.border7);
+                final TextInputEditText input = view.findViewById(R.id.input);
+                layout.setHint("Rename Organisation");
                 input.setText(current_event.getOrganisation());
-                ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
+                alertDialog.setView(view);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (!isNetworkAvailable()) {
@@ -281,10 +281,8 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
                         else if (TextUtils.isEmpty(input.getText().toString().trim())) {
                             Toast.makeText(SelectedEventModificationActivity.this,"Organisation cannot be set as empty",Toast.LENGTH_SHORT).show();
                         }
-                        else if(input.getText().toString().trim().length()>22){
-                            Toast.makeText(SelectedEventModificationActivity.this,"Length cannot be more than 22",Toast.LENGTH_SHORT).show();
-                        }
                         else if(!input.getText().toString().trim().toUpperCase().equals(organisationview.getText().toString().trim().toUpperCase())){
+                            Toast.makeText(SelectedEventModificationActivity.this,"Please Wait....",Toast.LENGTH_SHORT).show();
                             users_database.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
