@@ -137,10 +137,9 @@ public class AttendanceInfoUserActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceInfoUserActivity.this);
                     View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
-                    TextInputLayout layout = view.findViewById(R.id.border7);
                     final TextInputEditText input = view.findViewById(R.id.input);
-                    layout.setHint("Rename ID");
                     input.setText(person.getPerson_ID());
+                    alertDialog.setTitle("Rename ID");
                     alertDialog.setView(view);
                     alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override

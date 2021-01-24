@@ -187,9 +187,8 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
                 View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
-                TextInputLayout layout = view.findViewById(R.id.border7);
                 final TextInputEditText input = view.findViewById(R.id.input);
-                layout.setHint("Rename Event");
+                alertDialog.setTitle("Rename Event");
                 input.setText(current_event.getName());
                 alertDialog.setView(view);
                 alertDialog.setPositiveButton("Ok",
@@ -266,11 +265,10 @@ public class SelectedEventModificationActivity extends AppCompatActivity {
         organisationview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
-                final View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
-                final TextInputLayout layout = view.findViewById(R.id.border7);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedEventModificationActivity.this);
+                View view=getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
                 final TextInputEditText input = view.findViewById(R.id.input);
-                layout.setHint("Rename Organisation");
+                alertDialog.setTitle("Rename Organisation");
                 input.setText(current_event.getOrganisation());
                 alertDialog.setView(view);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
