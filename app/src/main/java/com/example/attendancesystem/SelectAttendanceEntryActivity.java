@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -269,18 +270,24 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                                         builder.setTitle("No Entry found during given duration");
                                         builder.setPositiveButton("Ok", null);
                                         builder.show();
-                                    } else {
+                                    }
+                                    else {
                                         PrintReport printReport = new PrintReport();
                                         String[] date0 = start_date.split("/", 3);
                                         String[] date1 = end_date.split("/", 3);
                                         File file = new File(printReport.createPDF(current_event, persons, selected_keys, Integer.parseInt(date0[0]), Integer.parseInt(date0[1]), Integer.parseInt(date0[2]), Integer.parseInt(date1[0]), Integer.parseInt(date1[1]), Integer.parseInt(date1[2])));
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
-                                        builder.setCancelable(false);
-                                        builder.setTitle("File Saved Successfully");
-                                        builder.setMessage("File has been successfully saved in " + file.getPath());
-                                        builder.setPositiveButton("Ok", null);
-                                        builder.show();
-                                        addNotification(file.getName());
+                                        if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + file.getName()).exists()) {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                            builder.setCancelable(false);
+                                            builder.setTitle("File Saved Successfully");
+                                            builder.setMessage("File has been successfully saved in " + file.getPath());
+                                            builder.setPositiveButton("Ok", null);
+                                            builder.show();
+                                            addNotification(file.getName());
+                                        }
+                                        else {
+                                            Toast.makeText(SelectAttendanceEntryActivity.this, "Unable to save file", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             } catch (Exception e) { }
@@ -528,20 +535,26 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         createNotificationChannel();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        File file=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+name);
-        intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0");
-        builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
-        builder.setContentText("Download Complete");
-        builder.setContentTitle(file.getName());
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        builder.setAutoCancel(true);
-        builder.setContentIntent(pendingIntent);
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE), builder.build());
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + name);
+        try {
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "0");
+            builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
+            builder.setContentText("Download Complete");
+            builder.setContentTitle(file.getName());
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            builder.setAutoCancel(true);
+            builder.setContentIntent(pendingIntent);
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE), builder.build());
+        }
+        catch (ActivityNotFoundException e){
+            Toast.makeText(SelectAttendanceEntryActivity.this,"Install apps first to Open PDF",Toast.LENGTH_SHORT).show();
+        }
+        catch(Exception e){}
     }
     private void createNotificationChannel(){
         CharSequence name = "Personal";
