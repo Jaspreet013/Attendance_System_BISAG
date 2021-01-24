@@ -96,7 +96,7 @@ public class AttendanceInfoActivity extends AppCompatActivity {
                 format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
             try{
-                tv1.setText(format1.format(format.parse(arraylist.get(position))));
+                tv1.setText(format1.format(format.parse(arraylist.get(position))).replace("am","AM").replace("pm","PM"));
             }
             catch (Exception e){}
             tv2.setText(person.dates.get(arraylist.get(position)));

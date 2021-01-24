@@ -266,7 +266,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
                 format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
             try{
-                tv1.setText(format1.format(format.parse(arrayList.get(position))));
+                tv1.setText(format1.format(format.parse(arrayList.get(position))).replace("am","AM").replace("pm","PM"));
             }
             catch (Exception e){}
             final CheckBox ispresent=view.findViewById(R.id.ispresent);

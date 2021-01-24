@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,10 +69,22 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         loading=findViewById(R.id.check_attendance_progress);
         event = FirebaseDatabase.getInstance().getReference("Events/"+event_key);
         people= FirebaseDatabase.getInstance().getReference("People/"+event_key);
-        //users_database=FirebaseDatabase.getInstance().getReference("Users");
         String date[]=key.split("-",5);
         String set;
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+        SimpleDateFormat format1;
         if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
+        {
+            format1=new SimpleDateFormat("dd/MM/yyyy  hh:mm aa");
+        }
+        else{
+            format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
+        }
+        try{
+            set_entry_name.setText(format1.format(format.parse(key)).replace("am","AM").replace("pm","PM"));
+        }
+        catch (Exception e){}
+        /*if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
         {
             if(Integer.parseInt(date[3])>12){
                 if(Integer.parseInt(date[3])-12<10) {
@@ -96,7 +109,7 @@ public class CheckAttendanceActivity extends AppCompatActivity {
         }
         else {
             set_entry_name.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
-        }
+        }*/
         set_event_name.setText(current_event.getName());
         set_organisation_name.setText(current_event.getOrganisation());
         listView=findViewById(R.id.list_view2);
