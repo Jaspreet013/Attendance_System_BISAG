@@ -84,32 +84,6 @@ public class CheckAttendanceActivity extends AppCompatActivity {
             set_entry_name.setText(format1.format(format.parse(key)).replace("am","AM").replace("pm","PM"));
         }
         catch (Exception e){}
-        /*if (!DateFormat.is24HourFormat(CheckAttendanceActivity.this))
-        {
-            if(Integer.parseInt(date[3])>12){
-                if(Integer.parseInt(date[3])-12<10) {
-                    date[3]="0"+(Integer.parseInt(date[3])-12);
-                }
-                else{
-                    date[3]=Integer.toString(Integer.parseInt(date[3])-12);
-                }
-                set="PM";
-            }
-            else if(date[3].equals("00")){
-                date[3]="12";
-                set="AM";
-            }
-            else if(date[3].equals("12")){
-                set="PM";
-            }
-            else{
-                set="AM";
-            }
-            set_entry_name.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]+" "+set);
-        }
-        else {
-            set_entry_name.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
-        }*/
         set_event_name.setText(current_event.getName());
         set_organisation_name.setText(current_event.getOrganisation());
         listView=findViewById(R.id.list_view2);
