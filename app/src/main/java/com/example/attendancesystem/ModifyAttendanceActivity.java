@@ -35,6 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -255,34 +257,19 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater.inflate(R.layout.disp_modify_attendance, null);
             final TextView tv1=view.findViewById(R.id.dispname);
-            String str[]=arrayList.get(position).split("-",5);
-            String set;
+            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+            SimpleDateFormat format1;
             if (!DateFormat.is24HourFormat(ModifyAttendanceActivity.this))
             {
-                if(Integer.parseInt(str[3])>12){
-                    if(Integer.parseInt(str[3])-12<10) {
-                        str[3]="0"+(Integer.parseInt(str[3])-12);
-                    }
-                    else{
-                        str[3]=Integer.toString(Integer.parseInt(str[3])-12);
-                    }
-                    set="PM";
-                }
-                else if(str[3].equals("00")){
-                    str[3]="12";
-                    set="AM";
-                }
-                else if(str[3].equals("12")){
-                    set="PM";
-                }
-                else{
-                    set="AM";
-                }
-                tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]+" "+set);
+                format1=new SimpleDateFormat("dd/MM/yyyy  hh:mm aa");
             }
-            else {
-                tv1.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            else{
+                format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
+            try{
+                tv1.setText(format1.format(format.parse(arrayList.get(position))));
+            }
+            catch (Exception e){}
             final CheckBox ispresent=view.findViewById(R.id.ispresent);
             if(current_person.dates.get(arrayList.get(position)).equals("Present")){
                 ispresent.setChecked(true);

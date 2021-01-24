@@ -192,9 +192,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                                 catch (Exception e){}
                             }
                         },set.get(Calendar.YEAR),set.get(Calendar.MONTH),set.get(Calendar.DAY_OF_MONTH));
-                        //if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         picker.show();
-                        //}
                     }
                 });
                 rl.addView(start);
@@ -220,11 +218,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                                 catch (Exception e){}
                             }
                         },set.get(Calendar.YEAR),set.get(Calendar.MONTH),set.get(Calendar.DAY_OF_MONTH));
-                        //if (SelectAttendanceEntryActivity.this.checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            picker.show();
-                        //}
-                        //else{
-                        //}
+                        picker.show();
                     }
                 });
                 rl.addView(end);
@@ -330,34 +324,19 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
             LayoutInflater inflater=getLayoutInflater();
             View view=inflater.inflate(R.layout.event_list_view,null);
             TextView tv=view.findViewById(R.id.dispname);
-            String str[]=arrayList.get(position).split("-",5);
-            String set;
+            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+            SimpleDateFormat format1;
             if (!DateFormat.is24HourFormat(SelectAttendanceEntryActivity.this))
             {
-                if(Integer.parseInt(str[3])>12){
-                    if(Integer.parseInt(str[3])-12<10) {
-                        str[3]="0"+(Integer.parseInt(str[3])-12);
-                    }
-                    else{
-                        str[3]=Integer.toString(Integer.parseInt(str[3])-12);
-                    }
-                    set="PM";
-                }
-                else if(str[3].equals("00")){
-                    str[3]="12";
-                    set="AM";
-                }
-                else if(str[3].equals("12")){
-                    set="PM";
-                }
-                else{
-                    set="AM";
-                }
-                tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]+" "+set);
+                format1=new SimpleDateFormat("dd/MM/yyyy  hh:mm aa");
             }
-            else {
-                tv.setText(str[2]+"/"+str[1]+"/"+str[0]+"  "+str[3]+":"+str[4]);
+            else{
+                format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
+            try{
+                tv.setText(format1.format(format.parse(arrayList.get(position))));
+            }
+            catch (Exception e){}
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText("Total People : "+current_event.dates.get(arrayList.get(position)));
             TextView tv3=view.findViewById(R.id.coordinator_name);

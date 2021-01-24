@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -85,34 +86,19 @@ public class AttendanceInfoActivity extends AppCompatActivity {
             TextView tv2=view.findViewById(R.id.disporganisation);
             TextView tv3=view.findViewById(R.id.coordinator_name);
             tv3.setVisibility(View.GONE);
-            String date[]=arraylist.get(position).split("-",5);
-            String set;
+            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+            SimpleDateFormat format1;
             if (!DateFormat.is24HourFormat(AttendanceInfoActivity.this))
             {
-                if(Integer.parseInt(date[3])>12){
-                    if(Integer.parseInt(date[3])-12<10) {
-                        date[3]="0"+(Integer.parseInt(date[3])-12);
-                    }
-                    else{
-                        date[3]=Integer.toString(Integer.parseInt(date[3])-12);
-                    }
-                    set="PM";
-                }
-                else if(date[3].equals("00")){
-                    date[3]="12";
-                    set="AM";
-                }
-                else if(date[3].equals("12")){
-                    set="PM";
-                }
-                else{
-                    set="AM";
-                }
-                tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]+" "+set);
+                format1=new SimpleDateFormat("dd/MM/yyyy  hh:mm aa");
             }
-            else {
-                tv1.setText(date[2]+"/"+date[1]+"/"+date[0]+"  "+date[3]+":"+date[4]);
+            else{
+                format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
+            try{
+                tv1.setText(format1.format(format.parse(arraylist.get(position))));
+            }
+            catch (Exception e){}
             tv2.setText(person.dates.get(arraylist.get(position)));
             if(person.dates.get(arraylist.get(position)).equals("Absent")){
                 tv2.setTextColor(Color.parseColor("#FF0000"));
