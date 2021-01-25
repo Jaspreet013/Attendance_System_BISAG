@@ -9,10 +9,9 @@
 
     <com.google.android.material.textfield.TextInputLayout
         app:boxBackgroundMode="outline"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:errorEnabled="true"
         android:id="@+id/border7"
         app:boxCornerRadiusBottomStart="5dp"
         app:boxCornerRadiusBottomEnd="5dp"
@@ -21,7 +20,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:maxLength="22"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
