@@ -37,7 +37,7 @@
 
         <TextView
             android:id="@+id/disp_id"
-            android:layout_toStartOf="@id/deleteButton"
+            android:layout_toStartOf="@id/seperator_line"
             android:textAppearance="?android:textAppearanceSmall"
             android:layout_toEndOf="@id/card_view"
             android:layout_below="@+id/disp_name"
@@ -46,6 +46,14 @@
             android:layout_marginBottom="5dp"
             android:text="ID" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/deleteButton"
+            android:background="@color/cardview_shadow_start_color"
+            android:id="@+id/seperator_line"/>
+
         <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
@@ -53,8 +61,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_gravity="end"
-            android:tint="#000"
             android:backgroundTint="#FFF"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+            android:tint="@android:color/tab_indicator_text"
+            android:src="@drawable/ic_remove_circle_outline" />
 
 </RelativeLayout>
