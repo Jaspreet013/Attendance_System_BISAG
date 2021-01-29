@@ -202,7 +202,7 @@ public class ModifyAttendanceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ModifyAttendanceActivity.this);
-                builder.setTitle("Are you sure you want to update attendance?");
+                builder.setMessage("Are you sure you want to update attendance?");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

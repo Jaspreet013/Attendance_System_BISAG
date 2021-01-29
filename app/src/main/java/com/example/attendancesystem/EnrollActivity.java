@@ -72,7 +72,7 @@ public class EnrollActivity extends AppCompatActivity {
                 }
                 if(bar.getVisibility()==View.GONE && TextUtils.isEmpty(border7.getError()) && TextUtils.isEmpty(border8.getError()) && !code.getText().toString().trim().contains(".") && !code.getText().toString().trim().contains("$") && !code.getText().toString().trim().contains("#") && !code.getText().toString().trim().contains("[") && !code.getText().toString().trim().contains("]") &&  !code.getText().toString().trim().contains("/") && !code.getText().toString().trim().contains(Character.getName(92))) {
                     bar.setVisibility(View.VISIBLE);
-                    new_person = new Person(id.getText().toString().trim(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), FirebaseAuth.getInstance().getCurrentUser().getEmail(),FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+                    new_person = new Person(id.getText().toString().trim(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), FirebaseAuth.getInstance().getCurrentUser().getEmail(),FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString().replace("s96-c","s700-c"));
                     events.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

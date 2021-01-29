@@ -42,6 +42,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,6 +61,9 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -71,17 +76,18 @@ import java.util.HashMap;
 public class SelectAttendanceEntryActivity extends AppCompatActivity {
     private Event current_event;
     private String event_key;
-    private ArrayList<String> arrayList=new ArrayList<>();
+    private ArrayList<String> selected_keys=new ArrayList<>();
     private final ArrayList<Person> persons=new ArrayList<>();
     private final HashMap<String,String> keys=new HashMap<>();
     private ProgressBar loading;
-    private TextView textView;
+    private TextView textView,start,end;
     private ListView listView;
     private MyBaseAdapter adapter;
     private Button download;
     private DatabaseReference people;
     private String start_date,end_date;
     private AlertDialog.Builder builder;
+    private LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +96,12 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builders.build());
         builders.detectFileUriExposure();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        linearLayout=findViewById(R.id.layout);
         textView=findViewById(R.id.select_subject_text);
         current_event=new Gson().fromJson(getIntent().getStringExtra("Event"), Event.class);
         textView.setText("Total Entries : "+current_event.dates.size());
+        start=findViewById(R.id.start_date);
+        end=findViewById(R.id.end_date);
         event_key=getIntent().getStringExtra("Event_Key");
         listView=findViewById(R.id.list_view3);
         loading=findViewById(R.id.check_attendance_progress);
@@ -103,10 +112,14 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         listView.setSmoothScrollbarEnabled(true);
         listView.setVerticalScrollBarEnabled(false);
         listView.setBackgroundResource(R.drawable.rounded_corners);
-        arrayList.addAll(current_event.dates.keySet());
-        Collections.sort(arrayList);
-        Collections.reverse(arrayList);
+        //arrayList.addAll(current_event.dates.keySet());
+        selected_keys.addAll(current_event.dates.keySet());
+        //Collections.sort(arrayList);
+        //Collections.reverse(arrayList);
+        Collections.sort(selected_keys);
+        Collections.reverse(selected_keys);
         adapter.notifyDataSetChanged();
+        linearLayout.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
         download=findViewById(R.id.download_pdf);
@@ -129,9 +142,17 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                         loading.setVisibility(View.GONE);
                         textView.setVisibility(View.VISIBLE);
                         listView.setVisibility(View.VISIBLE);
+                        linearLayout.setVisibility(View.VISIBLE);
                         listView.setEmptyView(findViewById(R.id.select_empty_message));
-                        if(!arrayList.isEmpty()){
-                            download.setVisibility(View.VISIBLE);
+                        download.setVisibility(View.VISIBLE);
+                        if(selected_keys.isEmpty()){
+                            //download.setVisibility(View.VISIBLE);
+                            download.setBackgroundResource(R.drawable.disabled_button);
+                            download.setEnabled(false);
+                            start.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.fadedcolorAccent));
+                            start.setEnabled(false);
+                            end.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.fadedcolorAccent));
+                            end.setEnabled(false);
                         }
                     }
                     @Override
@@ -144,7 +165,281 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 Log.e("Database exception is",e.getMessage());
             }
         }
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar=Calendar.getInstance();
+                if(TextUtils.isEmpty(start_date)) {
+                    Date date=new Date();
+                    calendar.setTime(date);
+                }
+                else{
+                    try {
+                        calendar.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(start_date));
+                    }
+                    catch (Exception e){}
+                }
+                DatePickerDialog datePickerDialog=new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        month+=1;
+                        try {
+                            SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy");
+                            Date startd = format.parse(dayOfMonth + "/" + month + "/" + year);
+                            if(TextUtils.isEmpty(end_date)){
+                                selected_keys=new ArrayList<>();
+                                start_date=format.format(startd);
+                                for (String key : current_event.dates.keySet()) {
+                                    String str[] = key.split("-", 5);
+                                    int d = Integer.parseInt(str[2]);
+                                    int m = Integer.parseInt(str[1]);
+                                    int y = Integer.parseInt(str[0]);
+                                    Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                                    if (temp.compareTo(startd) >= 0) {
+                                        selected_keys.add(key);
+                                    }
+                                }
+                                if(selected_keys.isEmpty()){
+                                    download.setBackgroundResource(R.drawable.disabled_button);
+                                    download.setEnabled(false);
+                                }
+                                else{
+                                    Collections.sort(selected_keys);
+                                    Collections.reverse(selected_keys);
+                                    download.setBackgroundResource(R.drawable.rounded_button);
+                                    download.setEnabled(true);
+                                }
+                                textView.setText("Total Entries : "+selected_keys.size());
+                                adapter.notifyDataSetChanged();
+                                start.setText(start_date);
+                            }
+                            else{
+                                selected_keys=new ArrayList<>();
+                                Date endd=format.parse(end_date);
+                                if(startd.compareTo(endd)>0){
+                                    Toast.makeText(SelectAttendanceEntryActivity.this,"Start Date cannot be more than End Date",Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    start_date=format.format(startd);
+                                    for (String key : current_event.dates.keySet()) {
+                                        String str[] = key.split("-", 5);
+                                        int d = Integer.parseInt(str[2]);
+                                        int m = Integer.parseInt(str[1]);
+                                        int y = Integer.parseInt(str[0]);
+                                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                                        if (temp.compareTo(startd) >= 0 && temp.compareTo(endd) <= 0) {
+                                            selected_keys.add(key);
+                                        }
+                                    }
+                                    if(selected_keys.isEmpty()){
+                                        download.setBackgroundResource(R.drawable.disabled_button);
+                                        download.setEnabled(false);
+                                    }
+                                    else{
+                                        download.setBackgroundResource(R.drawable.rounded_button);
+                                        download.setEnabled(true);
+                                        Collections.sort(selected_keys);
+                                        Collections.reverse(selected_keys);
+                                    }
+                                    textView.setText("Total Entries : "+selected_keys.size());
+                                    adapter.notifyDataSetChanged();
+                                    start.setText(start_date);
+                                }
+                            }
+                        }
+                        catch(Exception e){}
+                    }
+                },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+        end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar=Calendar.getInstance();
+                if(TextUtils.isEmpty(end_date)) {
+                    Date date=new Date();
+                    calendar.setTime(date);
+                }
+                else{
+                    try {
+                        calendar.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(end_date));
+                    }
+                    catch (Exception e){}
+                }
+                DatePickerDialog datePickerDialog=new DatePickerDialog(SelectAttendanceEntryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        month+=1;
+                        try {
+                            selected_keys=new ArrayList<>();
+                            SimpleDateFormat format=new SimpleDateFormat("dd/MM/yyyy");
+                            Date endd = format.parse(dayOfMonth + "/" + month + "/" + year);
+                            if(TextUtils.isEmpty(start_date)){
+                                end_date=format.format(endd);
+                                for (String key : current_event.dates.keySet()) {
+                                    String str[] = key.split("-", 5);
+                                    int d = Integer.parseInt(str[2]);
+                                    int m = Integer.parseInt(str[1]);
+                                    int y = Integer.parseInt(str[0]);
+                                    Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                                    if (temp.compareTo(endd)<=0) {
+                                        selected_keys.add(key);
+                                    }
+                                }
+                                if(selected_keys.isEmpty()){
+                                    download.setBackgroundResource(R.drawable.disabled_button);
+                                    download.setEnabled(false);
+                                }
+                                else{
+                                    Collections.sort(selected_keys);
+                                    Collections.reverse(selected_keys);
+                                    download.setBackgroundResource(R.drawable.rounded_button);
+                                    download.setEnabled(true);
+                                }
+                                textView.setText("Total Entries : "+selected_keys.size());
+                                adapter.notifyDataSetChanged();
+                                end.setText(end_date);
+                            }
+                            else{
+                                Date startd=format.parse(start_date);
+                                if(endd.compareTo(startd)<0){
+                                    Toast.makeText(SelectAttendanceEntryActivity.this,"End Date cannot be less than Start Date",Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    selected_keys=new ArrayList<>();
+                                    end_date=format.format(endd);
+                                    for (String key : current_event.dates.keySet()) {
+                                        String str[] = key.split("-", 5);
+                                        int d = Integer.parseInt(str[2]);
+                                        int m = Integer.parseInt(str[1]);
+                                        int y = Integer.parseInt(str[0]);
+                                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                                        if (temp.compareTo(startd) >= 0 && temp.compareTo(endd) <= 0) {
+                                            selected_keys.add(key);
+                                        }
+                                    }
+                                    if(selected_keys.isEmpty()){
+                                        download.setBackgroundResource(R.drawable.disabled_button);
+                                        download.setEnabled(false);
+                                    }
+                                    else{
+                                        Collections.sort(selected_keys);
+                                        Collections.reverse(selected_keys);
+                                        download.setBackgroundResource(R.drawable.rounded_button);
+                                        download.setEnabled(true);
+                                    }
+                                    textView.setText("Total Entries : "+selected_keys.size());
+                                    adapter.notifyDataSetChanged();
+                                    end.setText(end_date);
+                                }
+                            }
+                        }
+                        catch(Exception e){}
+                    }
+                },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
         download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder=new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                builder.setMessage("Download PDF?");
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                            if (TextUtils.isEmpty(start_date)) {
+                                calendar.setTime(format.parse(end_date));
+                                calendar.add(Calendar.MONTH,-1);
+                                calendar.add(Calendar.DAY_OF_MONTH,1);
+                                String[] date0=format.format(calendar.getTime()).split("/",3);
+                                String[] date1=end_date.split("/",3);
+                                PrintReport printReport=new PrintReport();
+                                File file = new File(printReport.createPDF(current_event, persons, selected_keys, Integer.parseInt(date0[0]), Integer.parseInt(date0[1]), Integer.parseInt(date0[2]), Integer.parseInt(date1[0]), Integer.parseInt(date1[1]), Integer.parseInt(date1[2])));
+                                if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + file.getName()).exists()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle("File Saved Successfully");
+                                    builder.setMessage("File has been successfully saved in " + file.getPath());
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.show();
+                                    addNotification(file.getName());
+                                }
+                                else {
+                                    Toast.makeText(SelectAttendanceEntryActivity.this, "Unable to save file", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else if(TextUtils.isEmpty(end_date)){
+                                calendar.setTime(format.parse(start_date));
+                                calendar.add(Calendar.MONTH,1);
+                                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                                Date Today=new Date();
+                                if(Today.compareTo(calendar.getTime())<=0) {
+                                    calendar.setTime(Today);
+                                }
+                                String[] date0=start_date.split("/",3);
+                                String[] date1=format.format(calendar.getTime()).split("/",3);
+                                PrintReport printReport=new PrintReport();
+                                File file = new File(printReport.createPDF(current_event, persons, selected_keys, Integer.parseInt(date0[0]), Integer.parseInt(date0[1]), Integer.parseInt(date0[2]), Integer.parseInt(date1[0]), Integer.parseInt(date1[1]), Integer.parseInt(date1[2])));
+                                if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + file.getName()).exists()) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                    builder.setCancelable(false);
+                                    builder.setTitle("File Saved Successfully");
+                                    builder.setMessage("File has been successfully saved in " + file.getPath());
+                                    builder.setPositiveButton("Ok", null);
+                                    builder.show();
+                                    addNotification(file.getName());
+                                }
+                                else {
+                                    Toast.makeText(SelectAttendanceEntryActivity.this, "Unable to save file", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else{
+                                Date startd=format.parse(start_date);
+                                Date endd=format.parse(end_date);
+                                calendar.setTime(startd);
+                                calendar.add(Calendar.MONTH,1);
+                                calendar.add(Calendar.DAY_OF_MONTH,-1);
+                                if(endd.compareTo(calendar.getTime())>0){
+                                    Toast.makeText(SelectAttendanceEntryActivity.this,"Please select duration of one month only",Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    String[] date0=start_date.split("/",3);
+                                    String[] date1=end_date.split("/",3);
+                                    PrintReport printReport=new PrintReport();
+                                    File file = new File(printReport.createPDF(current_event, persons, selected_keys, Integer.parseInt(date0[0]), Integer.parseInt(date0[1]), Integer.parseInt(date0[2]), Integer.parseInt(date1[0]), Integer.parseInt(date1[1]), Integer.parseInt(date1[2])));
+                                    if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + file.getName()).exists()) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
+                                        builder.setCancelable(false);
+                                        builder.setTitle("File Saved Successfully");
+                                        builder.setMessage("File has been successfully saved in " + file.getPath());
+                                        builder.setPositiveButton("Ok", null);
+                                        builder.show();
+                                        addNotification(file.getName());
+                                    }
+                                    else {
+                                        Toast.makeText(SelectAttendanceEntryActivity.this, "Unable to save file", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        }
+                        catch(Exception e){}
+                    }
+                });
+                builder.setNegativeButton("Cancel",null);
+                if (TextUtils.isEmpty(start_date) && TextUtils.isEmpty(end_date)) {
+                    Toast.makeText(SelectAttendanceEntryActivity.this, "Please select Start Date or End Date or both for one month duration", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    builder.show();
+                }
+            }
+        });
+        /*download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 builder=new AlertDialog.Builder(SelectAttendanceEntryActivity.this);
@@ -302,7 +597,7 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(SelectAttendanceEntryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
                 }
             }
-        });
+        });*/
     }
     private class MyBaseAdapter extends BaseAdapter {
         final Context context;
@@ -313,12 +608,12 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         }
         @Override
         public int getCount() {
-            return arrayList.size();
+            return selected_keys.size();
         }
 
         @Override
         public String getItem(int position) {
-            return arrayList.get(position);
+            return selected_keys.get(position);
         }
 
         @Override
@@ -341,11 +636,11 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 format1=new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             }
             try{
-                tv.setText(format1.format(format.parse(arrayList.get(position))).replace("am","AM").replace("pm","PM"));
+                tv.setText(format1.format(format.parse(selected_keys.get(position))).replace("am","AM").replace("pm","PM"));
             }
             catch (Exception e){}
             TextView tv2=view.findViewById(R.id.disporganisation);
-            tv2.setText("Total People : "+current_event.dates.get(arrayList.get(position)));
+            tv2.setText("Total People : "+current_event.dates.get(selected_keys.get(position)));
             TextView tv3=view.findViewById(R.id.coordinator_name);
             tv3.setVisibility(View.GONE);
             view.setOnClickListener(new View.OnClickListener() {
@@ -354,7 +649,19 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                     Intent intent=new Intent(SelectAttendanceEntryActivity.this,CheckAttendanceActivity.class);
                     intent.putExtra("Event",new Gson().toJson(current_event));
                     intent.putExtra("Event_Key",event_key);
-                    intent.putExtra("Entry_Key",arrayList.get(position));
+                    intent.putExtra("Entry_Key",selected_keys.get(position));
+                    if(TextUtils.isEmpty(start_date)){
+                        intent.putExtra("Start_date","Start");
+                    }
+                    else{
+                        intent.putExtra("Start_date",start_date);
+                    }
+                    if(TextUtils.isEmpty(end_date)){
+                        intent.putExtra("End_date","Today");
+                    }
+                    else{
+                        intent.putExtra("End_date",end_date);
+                    }
                     startActivityForResult(intent,RESULT_FIRST_USER);
                 }
             });
@@ -449,7 +756,24 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
                 table.setHeaderRows(1);
                 for(int i=0;i<persons.size();i++){
                     insertCell(table,Integer.toString(count),Element.ALIGN_CENTER,1,bf12);
-                    insertCell(table,persons.get(i).getName().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
+                    int space=0;
+                    for(int s=0;s<persons.get(i).getName().length();s++){
+                        if(persons.get(i).getName().charAt(s)==' '){
+                            space++;
+                        }
+                    }
+                    if(space>0) {
+                        String str[] = persons.get(i).getName().split(" ", space+1);
+                        StringBuilder stringBuilder = new StringBuilder(space);
+                        for (int s = 0; s < space; s++) {
+                            stringBuilder.append(str[s]+"  ");
+                        }
+                        stringBuilder.append(str[space]);
+                        insertCell(table,stringBuilder.toString().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
+                    }
+                    else{
+                        insertCell(table,persons.get(i).getName().toUpperCase(),Element.ALIGN_LEFT,1,bf12);
+                    }
                     insertCell(table,persons.get(i).getPerson_ID(),Element.ALIGN_LEFT,1,bf12);
                     for(String key:selected_keys) {
                         if (persons.get(i).dates.containsKey(key)){
@@ -597,13 +921,66 @@ public class SelectAttendanceEntryActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
             current_event=new Gson().fromJson(data.getStringExtra("Updated Data"),Event.class);
-            arrayList=new ArrayList<>();
-            arrayList.addAll(current_event.dates.keySet());
-            Collections.sort(arrayList);
-            Collections.reverse(arrayList);
-            textView.setText("Total Entries : "+current_event.dates.size());
+            selected_keys=new ArrayList<>();
+            if(TextUtils.isEmpty(start_date) && TextUtils.isEmpty(end_date)){
+                selected_keys.addAll(current_event.dates.keySet());
+            }
+            else if(TextUtils.isEmpty(start_date)){
+                try {
+                    Date endd=new SimpleDateFormat("dd/MM/yyyy").parse(end_date);
+                    for (String key : current_event.dates.keySet()) {
+                        String str[] = key.split("-", 5);
+                        int d = Integer.parseInt(str[2]);
+                        int m = Integer.parseInt(str[1]);
+                        int y = Integer.parseInt(str[0]);
+                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                        if (temp.compareTo(endd) <= 0) {
+                            selected_keys.add(key);
+                        }
+                    }
+                }
+                catch (Exception e){}
+            }
+            else if(TextUtils.isEmpty(end_date)) {
+                try {
+                    Date startd = new SimpleDateFormat("dd/MM/yyyy").parse(start_date);
+                    for (String key : current_event.dates.keySet()) {
+                        String str[] = key.split("-", 5);
+                        int d = Integer.parseInt(str[2]);
+                        int m = Integer.parseInt(str[1]);
+                        int y = Integer.parseInt(str[0]);
+                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                        if (temp.compareTo(startd) >= 0) {
+                            selected_keys.add(key);
+                        }
+                    }
+                }
+                catch (Exception e){}
+            }
+            else{
+                try {
+                    Date startd = new SimpleDateFormat("dd/MM/yyyy").parse(start_date);
+                    Date endd= new SimpleDateFormat("dd/MM/yyyy").parse(end_date);
+                    for (String key : current_event.dates.keySet()) {
+                        String str[] = key.split("-", 5);
+                        int d = Integer.parseInt(str[2]);
+                        int m = Integer.parseInt(str[1]);
+                        int y = Integer.parseInt(str[0]);
+                        Date temp = new SimpleDateFormat("yyyy-MM-dd").parse(y + "-" + m + "-" + d);
+                        if (temp.compareTo(startd) >= 0 && temp.compareTo(endd)<=0) {
+                            selected_keys.add(key);
+                        }
+                    }
+                }
+                catch (Exception e){}
+            }
+            //arrayList=new ArrayList<>();
+            //arrayList.addAll(current_event.dates.keySet());
+            Collections.sort(selected_keys);
+            Collections.reverse(selected_keys);
+            textView.setText("Total Entries : "+selected_keys.size());
             adapter.notifyDataSetChanged();
-            if(arrayList.isEmpty()){
+            if(selected_keys.isEmpty()){
                 download.setVisibility(View.GONE);
             }
             setResult(RESULT_OK);

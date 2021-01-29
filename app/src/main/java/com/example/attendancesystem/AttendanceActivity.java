@@ -105,7 +105,7 @@ public class AttendanceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(AttendanceActivity.this);
-                alertDialog.setTitle("Save this Entry?");
+                alertDialog.setMessage("Save this Entry?");
                 alertDialog.setNegativeButton("Cancel",null);
                 alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

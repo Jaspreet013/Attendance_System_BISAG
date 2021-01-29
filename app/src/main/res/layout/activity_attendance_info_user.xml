@@ -73,8 +73,52 @@
         android:layout_marginTop="5dp"
         android:textSize="15sp" />
 
+    <TextView
+        android:gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration : "
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/disp_user_attendance"
+        android:id="@+id/disp_duration" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start_date"
+        android:text="Start"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/colorAccent"
+        android:layout_toEndOf="@id/disp_duration"
+        android:layout_below="@+id/disp_user_attendance"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To"
+        android:textStyle="bold"
+        android:id="@+id/disp_to"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/start_date"
+        android:layout_below="@id/disp_user_attendance"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/end_date"
+        android:text="Today"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/colorAccent"
+        android:layout_toEndOf="@id/disp_to"
+        android:layout_below="@+id/disp_user_attendance"/>
+
     <ListView
-        android:layout_below="@id/disp_user_attendance"
+        android:layout_below="@id/disp_duration"
         android:padding="15dp"
         android:layout_marginTop="5dp"
         android:layout_height="match_parent"

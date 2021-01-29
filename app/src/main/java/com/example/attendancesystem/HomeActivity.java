@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,14 +73,13 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                    if(!(account.getGivenName().equals(user.getFname()) && account.getFamilyName().equals(user.getLname()) && account.getPhotoUrl().toString().equals(user.getPhotourl()))) {
+                    if(!(account.getGivenName().equals(user.getFname()) && account.getFamilyName().equals(user.getLname()) && account.getPhotoUrl().toString().replace("s96-c","s700-c").equals(user.getPhotourl()))) {
                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Fname").setValue(account.getGivenName());
                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Lname").setValue(account.getFamilyName());
-                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString());
-                        final User user1 = dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                        for (String key : user1.events.keySet()) {
-                            users.getParent().child("People/" + user1.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
-                            users.getParent().child("People/" + user1.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString());
+                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString().replace("s96-c","s700-c"));
+                        for (String key : user.events.keySet()) {
+                            users.getParent().child("People/" + user.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
+                            users.getParent().child("People/" + user.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString().replace("s96-c","s700-c"));
                         }
                     }
                     dialog.dismiss();

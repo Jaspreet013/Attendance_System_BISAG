@@ -70,8 +70,18 @@
         android:layout_marginTop="5dp"
         android:textSize="15sp" />
 
-    <ListView
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="Duration : "
+        android:id="@+id/disp_duration"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/disp_user_attendance"
+        android:textSize="15sp"/>
+
+    <ListView
+        android:layout_below="@id/disp_duration"
         android:padding="15dp"
         android:layout_marginTop="5dp"
         android:layout_height="match_parent"

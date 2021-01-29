@@ -255,6 +255,8 @@ public class CheckAttendanceActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent=new Intent(CheckAttendanceActivity.this, AttendanceInfoActivity.class);
                     intent.putExtra("Person",new Gson().toJson(arrayList.get(position)));
+                    intent.putExtra("Start_date",getIntent().getStringExtra("Start_date"));
+                    intent.putExtra("End_date",getIntent().getStringExtra("End_date"));
                     startActivity(intent);
                 }
             });
