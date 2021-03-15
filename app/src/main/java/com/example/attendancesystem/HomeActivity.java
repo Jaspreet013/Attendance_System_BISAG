@@ -73,9 +73,8 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user=dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue(User.class);
-                    if(!(account.getGivenName().equals(user.getFname()) && account.getFamilyName().equals(user.getLname()) && account.getPhotoUrl().toString().replace("s96-c","s700-c").equals(user.getPhotourl()))) {
-                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Fname").setValue(account.getGivenName());
-                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/Lname").setValue(account.getFamilyName());
+                    if(!(account.getDisplayName().equals(user.getName()) && account.getPhotoUrl().toString().replace("s96-c","s700-c").equals(user.getPhotourl()))) {
+                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
                         users.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/photourl").setValue(account.getPhotoUrl().toString().replace("s96-c","s700-c"));
                         for (String key : user.events.keySet()) {
                             users.getParent().child("People/" + user.events.get(key) + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/name").setValue(account.getDisplayName());
@@ -210,8 +209,8 @@ public class HomeActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(!dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).exists()) {
-                                String str[] = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().split(" ", 2);
-                                users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new User(str[0], str[1], FirebaseAuth.getInstance().getCurrentUser().getEmail(), FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
+                                //String str[] = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().split(" ", 2);
+                                users.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(new User(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), FirebaseAuth.getInstance().getCurrentUser().getEmail(), FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
                             }
                             else {
                             }

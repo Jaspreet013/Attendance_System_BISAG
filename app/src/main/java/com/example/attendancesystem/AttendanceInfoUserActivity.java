@@ -110,7 +110,7 @@ public class AttendanceInfoUserActivity extends AppCompatActivity {
                         Collections.sort(arrayList);
                         Collections.reverse(arrayList);
                         id.setText("ID : "+person.getPerson_ID());
-                        coordinator_name.setText("Coordinator Name : "+coordinator.getFname()+" "+coordinator.getLname());
+                        coordinator_name.setText("Coordinator Name : "+coordinator.getName());
                         email.setText("Coordinator Email : "+coordinator.getEmail());
                         Log.e("Person",person.getPerson_ID());
                         float percent_count;

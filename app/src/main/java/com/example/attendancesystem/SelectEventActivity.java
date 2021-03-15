@@ -139,7 +139,7 @@ public class SelectEventActivity extends AppCompatActivity {
             TextView tv2=view.findViewById(R.id.disporganisation);
             tv2.setText(std.getOrganisation());
             TextView tv3=view.findViewById(R.id.coordinator_name);
-            tv3.setText(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()).getFname()+" "+coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()).getLname());
+            tv3.setText(coordinators.get(std.getName()+", "+std.getOrganisation()+", "+std.getAdmin()).getName());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

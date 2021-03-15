@@ -3,23 +3,18 @@ package com.example.attendancesystem;
 import java.util.HashMap;
 
 public class User {
-    private String Fname,Lname,email,photourl;
+    private String name,email,photourl;
     public HashMap<String,String> events=new HashMap<>(),admin_events=new HashMap<>();
     public User(){}
-    public User(String Fname,String Lname,String email,String photourl){
-        this.Fname=Fname;
-        this.Lname=Lname;
+    public User(String name, String email,String photourl){
+        this.name=name;
         this.email=email;
         this.photourl=photourl;
     }
 
-    public String getFname() { return Fname; }
+    public String getName() { return name; }
 
-    public void setFname(String fname) { Fname = fname; }
-
-    public String getLname() { return Lname; }
-
-    public void setLname(String lname) { Lname = lname; }
+    public void setName(String name) { this.name = name; }
 
     public void setEmail(String email) { this.email = email; }
 
